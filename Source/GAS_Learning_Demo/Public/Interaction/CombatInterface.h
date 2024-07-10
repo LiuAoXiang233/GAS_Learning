@@ -25,4 +25,5 @@ public:
 
 	// 获取玩家或敌人的等级
 	virtual int32 GetCharacterLevel();
+	virtual FVector GetCombatSocketLocation();
 };
