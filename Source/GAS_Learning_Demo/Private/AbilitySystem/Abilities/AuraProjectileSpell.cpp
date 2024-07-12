@@ -12,8 +12,16 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	
+	
+	
+}
 
-	const bool bInServer = HasAuthority(&ActivationInfo);
+void UAuraProjectileSpell::SpawnProjectile()
+{
+	;
+	
+	const bool bInServer = GetAvatarActorFromActorInfo()->HasAuthority();
 
 	if ( !bInServer ) return;
 
@@ -38,7 +46,5 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		
 		Projectile->FinishSpawning(SpawnTransform);
 	}
-	
-	
 	
 }
