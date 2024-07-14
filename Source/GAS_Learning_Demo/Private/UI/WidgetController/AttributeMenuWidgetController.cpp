@@ -12,7 +12,6 @@ void UAttributeMenuWidgetController::BindCallBackToDependencies()
 
 	for (auto& Pair : AS->TagsToAttributes)
 	{
-		
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Value()).AddLambda(
 		[this, Pair] (const FOnAttributeChangeData& Data)
 			{

@@ -3,8 +3,14 @@
 
 #include "Actor/AuraProjectile.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "GAS_Learning_Demo/GAS_Learning_Demo.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AAuraProjectile::AAuraProjectile()
@@ -15,6 +21,8 @@ AAuraProjectile::AAuraProjectile()
 	
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	SetRootComponent(Sphere);
+	Sphere->SetCollisionObjectType(ECC_Projectile);
+	
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
@@ -32,13 +40,46 @@ AAuraProjectile::AAuraProjectile()
 void AAuraProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	SetLifeSpan(LifeSpan);
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AAuraProjectile::OnSphereOverlap);
+	AudioComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
+	AudioComponent->Play();
+	
+}
+
+void AAuraProjectile::Destroyed()
+{
+
+	if (!bHit && !HasAuthority())
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+		AudioComponent->Stop();
+
+	}
+	Super::Destroyed();
+	
 }
 
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+	AudioComponent->Stop();
 	
+	if (HasAuthority())
+	{
+		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+		{
+			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+		}
+		Destroy();
+	}
+	else
+	{
+		bHit = true;
+	}
 }
 
 

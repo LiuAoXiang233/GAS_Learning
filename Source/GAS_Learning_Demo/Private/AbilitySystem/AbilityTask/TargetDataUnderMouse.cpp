@@ -25,10 +25,12 @@ void UTargetDataUnderMouse::Activate()
 	}
 	else
 	{
+
+		// 在服务器端
 		const FGameplayAbilitySpecHandle SpecHandle = GetAbilitySpecHandle();
 		const FPredictionKey PredictionKey = GetActivationPredictionKey();
 		
-		// 在服务器端
+		
 		AbilitySystemComponent.Get()->AbilityTargetDataSetDelegate(SpecHandle, PredictionKey).AddUObject(this, &UTargetDataUnderMouse::OnTargetDataReplicatedCallback);
 		const bool bCalledDelegate = AbilitySystemComponent.Get()->CallReplicatedTargetDataDelegatesIfSet(SpecHandle, PredictionKey);
 

@@ -116,7 +116,7 @@ void AAuraPlayerController::AutoRun()
 		ControlPawn->AddMovementInput(Direction);
 
 		const float DistanceToDestination = ( Location - CachedDestination ).Length();
-		GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Green, FString::Printf(TEXT("Distance To End : [%.2f]"), DistanceToDestination));
+		// GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Green, FString::Printf(TEXT("Distance To End : [%.2f]"), DistanceToDestination));
 		if (DistanceToDestination <= ShortPressThreshold)
 		{
 			bAutoRunning = false;
@@ -220,7 +220,7 @@ void AAuraPlayerController::AbilityInputTagReleased(const FGameplayTag InputTag)
 				for (const FVector& Point : Path->PathPoints)
 				{
 					Spline->AddSplinePoint(Point, ESplineCoordinateSpace::World);
-					DrawDebugSphere(GetWorld(), Point, 30.f, 8, FColor::Red, false, 5.f);
+					// DrawDebugSphere(GetWorld(), Point, 30.f, 8, FColor::Red, false, 5.f);
 					
 				}
 				CachedDestination = Path->PathPoints[Path->PathPoints.Num() - 1];

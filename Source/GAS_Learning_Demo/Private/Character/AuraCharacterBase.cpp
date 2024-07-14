@@ -6,6 +6,8 @@
 #include "NavigationSystemTypes.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbilities.h"
+#include "Components/CapsuleComponent.h"
+#include "GAS_Learning_Demo/GAS_Learning_Demo.h"
 
 
 // Sets default values
@@ -19,6 +21,12 @@ AAuraCharacterBase::AAuraCharacterBase()
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
 	
 }
 

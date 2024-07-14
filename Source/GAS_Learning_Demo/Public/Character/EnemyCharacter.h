@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 #include "Interaction/EnemyInterface.h"
 #include "EnemyCharacter.generated.h"
 
+class UWidgetComponent;
 /**
  * 
  */
@@ -38,10 +40,20 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void InitAbilityActorInfo() override;
+	
 
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults", meta = (AllowPrivateAccess = "true"))
 	int32 Level = 1;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> ProgressBar;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributesChangedSignature OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributesChangedSignature OnMaxHealthChanged;
 	
 };
