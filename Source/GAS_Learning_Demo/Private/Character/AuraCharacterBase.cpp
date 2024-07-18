@@ -42,6 +42,11 @@ void AAuraCharacterBase::GiveChararcterAbilities()
 }
 
 
+UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
 // Called when the game starts or when spawned
 void AAuraCharacterBase::BeginPlay()
 {

@@ -108,5 +108,19 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 		FName("InputTag.4"),
 		FString("4键")
 	);
-	
+
+	/*
+	 *
+	 *	Other Tags
+	 */
+
+	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage"),
+		FString("伤害")
+	);
+
+	GameplayTags.Effect_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.HitReact"),
+		FString("受击时，赋予此tag")
+	);
 }

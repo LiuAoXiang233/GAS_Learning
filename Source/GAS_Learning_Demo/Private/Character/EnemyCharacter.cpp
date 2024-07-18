@@ -2,10 +2,13 @@
 
 
 #include "Character/EnemyCharacter.h"
+
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GAS_Learning_Demo/GAS_Learning_Demo.h"
 #include "UI/Widget/AuraUserWidget.h"
 
@@ -27,6 +30,12 @@ AEnemyCharacter::AEnemyCharacter()
 	
 }
 
+void AEnemyCharacter::HitReactTagChanged(const FGameplayTag Tag, int32 NewCount)
+{
+	bHitRecating = NewCount > 0;
+
+	GetCharacterMovement()->MaxWalkSpeed = bHitRecating ? 0.f : BaseWalkSpeed;
+}
 
 
 void AEnemyCharacter::HighLightActor()
@@ -51,7 +60,10 @@ int32 AEnemyCharacter::GetCharacterLevel()
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+	UAuraAbilitySystemLibrary::GiveStartUpAbilities(this, AbilitySystemComponent);
 	InitAbilityActorInfo();
+	
 
 	if (UAuraUserWidget* UserWidget = Cast<UAuraUserWidget>(ProgressBar->GetUserWidgetObject()))
 	{
@@ -65,13 +77,18 @@ void AEnemyCharacter::BeginPlay()
 		{
 			OnHealthChanged.Broadcast(Data.NewValue);
 		}
-	);
+		);
 
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMaxHPAttribute()).AddLambda(
 			[this] (const FOnAttributeChangeData& Data)
 			{
 				OnMaxHealthChanged.Broadcast(Data.NewValue);
 			}
+		);
+
+		AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
+			this,
+			&AEnemyCharacter::HitReactTagChanged
 		);
 
 		OnHealthChanged.Broadcast(AS->GetHealth());

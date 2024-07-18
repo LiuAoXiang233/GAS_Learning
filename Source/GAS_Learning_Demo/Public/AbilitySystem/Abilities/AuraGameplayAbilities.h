@@ -17,4 +17,10 @@ class GAS_LEARNING_DEMO_API UAuraGameplayAbilities : public UGameplayAbility
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	FGameplayTag StartUpGameplayTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
+	FScalableFloat DamagePower;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float AbilityLevel = 1.f;
 };

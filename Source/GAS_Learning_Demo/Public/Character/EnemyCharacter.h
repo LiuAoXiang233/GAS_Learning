@@ -20,6 +20,14 @@ class GAS_LEARNING_DEMO_API AEnemyCharacter : public AAuraCharacterBase, public 
 public:
 	AEnemyCharacter();
 
+	UPROPERTY(BlueprintReadOnly, Category="Combet")
+	bool bHitRecating = false;
+
+	void HitReactTagChanged(const FGameplayTag Tag, int32 NewCount);
+	
+	UPROPERTY(BlueprintReadOnly, Category="Combet")
+	float BaseWalkSpeed = 250.f;
+
 	/*
 	 *	EnemyInterface
 	 */
@@ -60,5 +68,8 @@ private:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributesChangedSignature OnMaxHealthChanged;
+
+
+	
 	
 };

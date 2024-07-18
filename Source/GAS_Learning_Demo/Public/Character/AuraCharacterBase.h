@@ -14,6 +14,7 @@ class UGameplayAbility;
 class UAuraGameplayAbilities;
 class UGameplayEffect;
 class UAttributeSet;
+class UAnimMontage;
 class UAbilitySystemComponent;
 
 UCLASS(Abstract)
@@ -32,6 +33,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
+
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -65,4 +68,9 @@ protected:
 
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameEffectClass, float Level) const;
 	virtual  void InitializeDefaultAttributes() const;
+
+private:
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 };
