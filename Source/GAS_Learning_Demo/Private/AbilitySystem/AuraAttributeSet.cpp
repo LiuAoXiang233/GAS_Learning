@@ -7,7 +7,10 @@
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
+#include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/AuraPlayerController.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -118,7 +121,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 		}
 		if (Props.SourceController)
 		{
-			ACharacter* Character = Cast<ACharacter>(Props.SourceController->GetCharacter());
+			Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetCharacter());
 		}
 	}
 
@@ -172,13 +175,34 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHP()));
 			const bool bFatal = NewHealth <= 0.f;
 
-			if (!bFatal)
+			
+			if (bFatal)
+			{
+
+				// 如果敌人收到伤害死亡
+				ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+				if(CombatInterface)
+				{
+					CombatInterface->Die();
+				}
+				
+			}
+			else
 			{
 				// 如果收到伤害没有死亡
 				FGameplayTagContainer TagContainer;
 				TagContainer.AddTag(FAuraGameplayTags::Get().Effect_HitReact);
-				
+                				
 				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+				
+			}
+
+			if ( Props.SourceCharacter != Props.TargetCharacter )
+			{
+				if ( AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceController, 0)) )
+				{
+					PC->ShowDamageNumber(LocalIncomingDamage, Props.TargetCharacter);
+				}
 			}
 		}
 	}

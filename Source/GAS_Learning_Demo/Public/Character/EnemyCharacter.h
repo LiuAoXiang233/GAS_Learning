@@ -19,7 +19,11 @@ class GAS_LEARNING_DEMO_API AEnemyCharacter : public AAuraCharacterBase, public 
 	GENERATED_BODY()
 public:
 	AEnemyCharacter();
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributesChangedSignature OnHealthChanged;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributesChangedSignature OnMaxHealthChanged;
 	UPROPERTY(BlueprintReadOnly, Category="Combet")
 	bool bHitRecating = false;
 
@@ -27,6 +31,9 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly, Category="Combet")
 	float BaseWalkSpeed = 250.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combet")
+	float LifeSpan = 4.f;
 
 	/*
 	 *	EnemyInterface
@@ -42,6 +49,7 @@ public:
 	 *	CombatInterface
 	 */
 	virtual int32 GetCharacterLevel() override;
+	virtual void Die() override;
 	/*
 	 *	End CombatInterface
 	 */
@@ -63,13 +71,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UWidgetComponent> ProgressBar;
 	
-	UPROPERTY(BlueprintAssignable)
-	FOnAttributesChangedSignature OnHealthChanged;
+	
 
-	UPROPERTY(BlueprintAssignable)
-	FOnAttributesChangedSignature OnMaxHealthChanged;
-
-
+	
 	
 	
 };
