@@ -109,6 +109,8 @@ public:
 
 	/*
 	 *	Sceondary Attribute
+	 *		-CriticalHitRate				暴击率				该值取决于 人物等级
+	 *		-CriticalHitResistance			抗暴					该值取决于 人物等级
 	 *		-Physical Damage Penetration	物理伤害穿透			该值取决于 Resilience 和 Strength				适应力 * 1.2 + 力量 * 1.1 + 7
 	 *		-Spell Damage Penetration		法术伤害穿透			该值取决于 Resilience 和 Intelligence			适应力 * 1 + 智力 * 3.2 + 3
 	 *		-Armor							护甲					该值取决于 Resilience 和 Strength				适应力 * 4 + 力量 * 2.1 + 11
@@ -119,6 +121,19 @@ public:
 	 *		-Max MP							最大法力值			该值取决于 Intelligence 和 Resilience			{（智力 + 1） * 5 + 3} + 适应力 * 1.5  
 	 *		-Speed							移速					该值取决于 Viger 和 Resilience 和 Strength	生命力 * 20 + 适应力 * 30.5 + 力量 * 10 
 	 */
+
+	/*
+	 *
+	 *UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitRate, Category = "Secondary Attributes")
+      	FGameplayAttributeData CriticalHitRate;
+      	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitRate);
+      
+      	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category = "Secondary Attributes")
+      	FGameplayAttributeData CriticalHitResistance;
+      	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance);
+	 * 
+	 */
+	
 
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_PhysicalDamagePenetration, Category = "Secondary Attributes")
