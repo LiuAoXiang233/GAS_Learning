@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -151,6 +152,17 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 	
 }
 
+void UAuraAttributeSet::ShowDamageText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit)
+{
+	if ( Props.SourceCharacter != Props.TargetCharacter )
+	{
+		if ( AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceController, 0)) )
+		{
+			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
+		}
+	}
+}
+
 
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
@@ -203,13 +215,9 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				
 			}
 
-			if ( Props.SourceCharacter != Props.TargetCharacter )
-			{
-				if ( AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceController, 0)) )
-				{
-					PC->ShowDamageNumber(LocalIncomingDamage, Props.TargetCharacter);
-				}
-			}
+			const bool bIsBolckedHit =UAuraAbilitySystemLibrary::IsBolckedHit(Props.EffectContextHandle);
+			const bool bIsCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
+			ShowDamageText(Props, LocalIncomingDamage, bIsBolckedHit, bIsCriticalHit);
 		}
 	}
 }

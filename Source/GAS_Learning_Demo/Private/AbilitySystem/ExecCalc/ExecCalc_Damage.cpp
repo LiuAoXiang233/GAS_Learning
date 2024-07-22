@@ -4,6 +4,7 @@
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
@@ -113,6 +114,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	CriticalHitRate = FMath::Max(CriticalHitRate, 0.f);
 	CriticalHitResistance = FMath::Max(CriticalHitResistance, 0.f);
 
+
+	// 获取 context，并设置是否 暴击 或者 该次攻击是否被阻挡 eg：法术护盾 抵挡了一次技能
+	
+	FGameplayEffectContextHandle EffectContextHandle = EffectSpec.GetContext();
+	// TODO: 未来可以在 Secondary Attributes 中添加一个 抵抗值， 用于抵抗敌人的技能
+	UAuraAbilitySystemLibrary::SetBlockedHit( EffectContextHandle, false);
+	
 	
 
 	// 开始计算	削减后的魔抗	=	魔抗 *=	（100 - 法穿) / 100
@@ -125,6 +133,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	Damage = Damage *= ((100.f - MagicResistance) / 100.f);
 	
 	const bool bCriticalHit = FMath::RandRange(0, 100) <  CriticalHitRate * 100 ;
+	UAuraAbilitySystemLibrary::SetCriticalHit( EffectContextHandle, bCriticalHit);
 	if (bCriticalHit)
 	{
 		// 如果暴击率 大于 随机的暴击率	
