@@ -2,7 +2,7 @@
 
 
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
-
+#include "GameplayEffectTypes.h"
 #include "AuraAbilityTypes.h"
 #include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -139,3 +139,4 @@ void UAuraAbilitySystemLibrary::SetCriticalHit(FGameplayEffectContextHandle& Eff
 		AuraGameplayEffectContext->SetIsCriticalHit(bInIsCriticalHit);
 	}
 }
+
