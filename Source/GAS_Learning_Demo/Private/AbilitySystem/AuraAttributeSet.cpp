@@ -30,6 +30,8 @@ UAuraAttributeSet::UAuraAttributeSet()
 	 *	Secondary Attributes
 	 * 
 	 */
+	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_CriticalHitRate, GetCriticalHitRateAttribute);
+	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_CriticalHitResistance, GetCriticalHitResistanceAttribute);
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_Armor, GetArmorAttribute);
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_Speed, GetSpeedAttribute);
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_AttackPower, GetAttackPowerAttribute);
@@ -39,6 +41,8 @@ UAuraAttributeSet::UAuraAttributeSet()
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_MaxMP, GetMaxMPAttribute);
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_PhysicalDamagePenetration, GetPhysicalDamagePenetrationAttribute);
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_SpellDamagePenetration, GetSpellDamagePenetrationAttribute);
+	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_Armor, GetArmorAttribute);
+	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_Armor, GetArmorAttribute);
 
 	
 
@@ -64,6 +68,8 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	 *	SecondaryAttribute
 	 * 
 	 */
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, CriticalHitRate, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, CriticalHitResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, PhysicalDamagePenetration, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, SpellDamagePenetration, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Armor, COND_None, REPNOTIFY_Always);
@@ -208,6 +214,16 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 }
 
+
+void UAuraAttributeSet::OnRep_CriticalHitRate(const FGameplayAttributeData& OldCriticalHitRate) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, CriticalHitRate, OldCriticalHitRate);
+}
+
+void UAuraAttributeSet::OnRep_CriticalHitResistance(const FGameplayAttributeData& OldCriticalHitResistance) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, CriticalHitResistance, OldCriticalHitResistance);
+}
 
 void UAuraAttributeSet::OnRep_PhysicalDamagePenetration(
 	const FGameplayAttributeData& OldPhysicalDamagePenetration) const

@@ -121,19 +121,14 @@ public:
 	 *		-Max MP							最大法力值			该值取决于 Intelligence 和 Resilience			{（智力 + 1） * 5 + 3} + 适应力 * 1.5  
 	 *		-Speed							移速					该值取决于 Viger 和 Resilience 和 Strength	生命力 * 20 + 适应力 * 30.5 + 力量 * 10 
 	 */
-
-	/*
-	 *
-	 *UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitRate, Category = "Secondary Attributes")
-      	FGameplayAttributeData CriticalHitRate;
-      	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitRate);
-      
-      	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category = "Secondary Attributes")
-      	FGameplayAttributeData CriticalHitResistance;
-      	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance);
-	 * 
-	 */
 	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitRate, Category = "Secondary Attributes")
+	FGameplayAttributeData CriticalHitRate;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitRate);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category = "Secondary Attributes")
+	FGameplayAttributeData CriticalHitResistance;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance);
 
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_PhysicalDamagePenetration, Category = "Secondary Attributes")
@@ -171,6 +166,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Speed, Category = "Secondary Attributes")
 	FGameplayAttributeData Speed;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Speed);
+
+	UFUNCTION()
+	void OnRep_CriticalHitRate(const FGameplayAttributeData& OldPhysicalDamagePenetration) const;
+
+	UFUNCTION()
+	void OnRep_CriticalHitResistance(const FGameplayAttributeData& OldPhysicalDamagePenetration) const;
+	
 
 	UFUNCTION()
 	void OnRep_PhysicalDamagePenetration(const FGameplayAttributeData& OldPhysicalDamagePenetration) const;

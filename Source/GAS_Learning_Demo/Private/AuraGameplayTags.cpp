@@ -37,10 +37,15 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 	 * 
 	 */
 	
+	GameplayTags.Attribute_Secondary_CriticalHitRate = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attribute.Secondary.CriticalHitRate"),
+		FString("暴击率。"));
+	GameplayTags.Attribute_Secondary_CriticalHitResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(
+			FName("Attribute.Secondary.CriticalHitResistance"),
+			FString("暴击抵抗。"));
 	GameplayTags.Attribute_Secondary_Armor = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attribute.Secondary.Armor"),
 		FString("护甲，降低收到的伤害，提高格挡几率。"));
-
 	GameplayTags.Attribute_Secondary_PhysicalDamagePenetration = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attribute.Secondary.PhysicalDamagePenetration"),
 		FString("物理伤害穿透。"));

@@ -56,11 +56,12 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
 	if (GameMode == nullptr) return;
 
 	UCharacterClassInfo* ClassInfo = GameMode->CharacterClassInfo;
-	
+
+	// 找到怪物是什么职业	战士/女巫/游侠
 	FCharacterClassDefaultInfo ClassDefaultInfo = ClassInfo->GetClassDefaultInfo(CharacterClass);
 
 	AActor* AvatorActor = ASC->GetAvatarActor();
-	
+	// 给不同的职业赋予不同的属性
 	FGameplayEffectContextHandle PrimaryAttributesContextHandle = ASC->MakeEffectContext();
 	PrimaryAttributesContextHandle.AddSourceObject(AvatorActor);
 	

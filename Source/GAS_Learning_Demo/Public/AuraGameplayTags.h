@@ -20,6 +20,8 @@ public:
 	 *	Secondary Attributes
 	 *	
 	 */
+	FGameplayTag Attribute_Secondary_CriticalHitRate;
+	FGameplayTag Attribute_Secondary_CriticalHitResistance;
 	FGameplayTag Attribute_Secondary_Armor;
 	FGameplayTag Attribute_Secondary_PhysicalDamagePenetration;
 	FGameplayTag Attribute_Secondary_SpellDamagePenetration;
