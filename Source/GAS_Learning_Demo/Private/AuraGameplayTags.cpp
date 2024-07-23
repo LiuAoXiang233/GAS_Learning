@@ -116,7 +116,7 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 
 	/*
 	 *
-	 *	Other Tags
+	 *	Damage Types
 	 */
 
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -124,6 +124,113 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 		FString("伤害")
 	);
 
+	GameplayTags.Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Damage.Fire"),
+		FString("火焰伤害")
+	);
+
+	GameplayTags.Damage_Water = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Damage.Water"),
+		FString("水属性伤害")
+	);
+
+	GameplayTags.Damage_Cryo = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Damage.Cryo"),
+		FString("冰元素伤害")
+	);
+
+	GameplayTags.Damage_Anemo = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Damage.Anemo"),
+		FString("风元素伤害")
+	);
+
+	GameplayTags.Damage_Dendro = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Damage.Dendro"),
+		FString("草元素伤害")
+	);
+
+	GameplayTags.Damage_Geo = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Damage.Geo"),
+		FString("岩元素伤害")
+	);
+
+	GameplayTags.Damage_Electro = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Damage.Electro"),
+		FString("雷元素伤害")
+	);
+
+	GameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Damage.Physical"),
+		FString("物理伤害")
+	);
+
+
+
+	/*
+	 *
+	 *	元素伤害抗性
+	 * 
+	 */
+	GameplayTags.Damage_Resistance_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Resistance.Fire"),
+		FString("火抗")
+	);
+	
+	GameplayTags.Damage_Resistance_Water = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Resistance.Water"),
+		FString("水抗")
+	);
+	
+	GameplayTags.Damage_Resistance_Cryo = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Resistance.Cryo"),
+		FString("冰抗")
+	);
+	
+	GameplayTags.Damage_Resistance_Anemo = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Resistance.Anemo"),
+		FString("风抗")
+	);
+	
+	GameplayTags.Damage_Resistance_Dendro = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Resistance.Dendro"),
+		FString("草抗")
+	);
+	
+	GameplayTags.Damage_Resistance_Geo = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Resistance.Geo"),
+		FString("岩抗")
+	);
+	
+	GameplayTags.Damage_Resistance_Electro = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Resistance.Electro"),
+		FString("雷抗")
+	);
+	
+	GameplayTags.Damage_Resistance_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.Resistance.Physical"),
+		FString("物抗")
+	);
+
+
+/*
+ *	Map of Damage Types To Resistance
+ * 
+ */
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Fire, GameplayTags.Damage_Resistance_Fire);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Cryo, GameplayTags.Damage_Resistance_Cryo);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Water, GameplayTags.Damage_Resistance_Water);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Anemo, GameplayTags.Damage_Resistance_Anemo);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Geo, GameplayTags.Damage_Resistance_Geo);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Dendro, GameplayTags.Damage_Resistance_Dendro);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Electro, GameplayTags.Damage_Resistance_Electro);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Physical, GameplayTags.Damage_Resistance_Physical);
+
+
+	/*
+	 *
+	 *	Effects
+	 */
+	
 	GameplayTags.Effect_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Effects.HitReact"),
 		FString("受击时，赋予此tag")

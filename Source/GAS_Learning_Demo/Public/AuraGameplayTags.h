@@ -57,9 +57,45 @@ public:
 
 	/*
 	 *	Other Tags
-	 * 
+	 *
+	 *	元素攻击	火 、 水 、 草 、 雷 、 冰 、 风 、 岩
+	*	火 Fire
+
+		水 Water
+
+		冰 Cryo
+
+		风 Anemo
+
+		草 Dendro
+
+		岩 Geo
+
+		雷 Electro
+	 *	物理攻击
 	 */
 	FGameplayTag Damage;
+	FGameplayTag Damage_Fire;
+	FGameplayTag Damage_Water;
+	FGameplayTag Damage_Cryo;
+	FGameplayTag Damage_Anemo;
+	FGameplayTag Damage_Dendro;
+	FGameplayTag Damage_Geo;
+	FGameplayTag Damage_Electro;
+	FGameplayTag Damage_Physical;
+
+	FGameplayTag Damage_Resistance_Fire;
+	FGameplayTag Damage_Resistance_Water;
+	FGameplayTag Damage_Resistance_Cryo;
+	FGameplayTag Damage_Resistance_Anemo;
+	FGameplayTag Damage_Resistance_Dendro;
+	FGameplayTag Damage_Resistance_Geo;
+	FGameplayTag Damage_Resistance_Electro;
+	FGameplayTag Damage_Resistance_Physical;
+
+
+
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;
 	FGameplayTag Effect_HitReact;
 private:
 	static  FAuraGameplayTags GameplayTags;
