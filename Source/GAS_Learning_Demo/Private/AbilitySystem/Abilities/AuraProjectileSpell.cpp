@@ -13,24 +13,24 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                            const FGameplayEventData* TriggerEventData)
 {
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 }
 
 void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 {
-	;
 	
 	const bool bInServer = GetAvatarActorFromActorInfo()->HasAuthority();
 
 	if ( !bInServer ) return;
-
+	UE_LOG(LogTemp, Log, TEXT("Multicast_SpawnSkillEffect called on: %s"), *GetName());
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 	if ( CombatInterface )
 	{
 		FVector WeaponLocation = CombatInterface->GetCombatSocketLocation();
 		FRotator Rotator = ( TargetLocation - WeaponLocation ).Rotation();
-		Rotator.Pitch = 0.f;
+		
 
 		// TODO: 设置 位置 和 旋转
 		FTransform SpawnTransform;
@@ -72,6 +72,9 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 		
 		Projectile->FinishSpawning(SpawnTransform);
+		
 	}
+
+	
 	
 }

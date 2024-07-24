@@ -13,6 +13,9 @@
 
 struct AuraDamageStatics
 {
+public:
+	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDefs;
+	
 	/*
 	 *	下面这个宏的意思是：
 	 *	FGameplayEffectAttributeCaptureDefinition ArmorDef;
@@ -23,6 +26,16 @@ struct AuraDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(SpellDamagePenetration)		// 法穿
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitRate)				// 暴击率
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitResistance)			// 抗暴
+
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Resistance_Fire)			// 火抗
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Resistance_Water)			// 水抗
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Resistance_Cryo)			// 冰抗
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Resistance_Anemo)			// 风抗
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Resistance_Dendro)		    // 草抗
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Resistance_Geo)			// 岩抗
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Resistance_Electro)		// 雷抗
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Resistance_Physical)		// 物抗
+
 
 	
 	AuraDamageStatics()
@@ -41,7 +54,33 @@ struct AuraDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, SpellDamagePenetration, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitRate, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitResistance, Target, false);
+		
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Resistance_Fire, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Resistance_Water, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Resistance_Cryo, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Resistance_Anemo, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Resistance_Dendro, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Resistance_Geo, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Resistance_Electro, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Resistance_Physical, Target, false);
 
+
+		const FAuraGameplayTags Tags = FAuraGameplayTags::Get();
+		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_MagicResistance, MagicResistanceDef);
+		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_SpellDamagePenetration, SpellDamagePenetrationDef);
+		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_CriticalHitRate, CriticalHitRateDef);
+		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_CriticalHitResistance, CriticalHitResistanceDef);
+		
+		TagsToCaptureDefs.Add(Tags.Damage_Resistance_Fire, Resistance_FireDef);
+		TagsToCaptureDefs.Add(Tags.Damage_Resistance_Anemo, Resistance_AnemoDef);
+		TagsToCaptureDefs.Add(Tags.Damage_Resistance_Cryo, Resistance_CryoDef);
+		TagsToCaptureDefs.Add(Tags.Damage_Resistance_Dendro, Resistance_DendroDef);
+		TagsToCaptureDefs.Add(Tags.Damage_Resistance_Electro, Resistance_ElectroDef);
+		TagsToCaptureDefs.Add(Tags.Damage_Resistance_Geo, Resistance_GeoDef);
+		TagsToCaptureDefs.Add(Tags.Damage_Resistance_Water, Resistance_WaterDef);
+		TagsToCaptureDefs.Add(Tags.Damage_Resistance_Physical, Resistance_PhysicalDef);
+
+		
 
 	}
 	
@@ -60,6 +99,16 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(DamageStatics().SpellDamagePenetrationDef);
 	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitRateDef);
 	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitResistanceDef);
+
+	RelevantAttributesToCapture.Add(DamageStatics().Resistance_AnemoDef);
+	RelevantAttributesToCapture.Add(DamageStatics().Resistance_CryoDef);
+	RelevantAttributesToCapture.Add(DamageStatics().Resistance_DendroDef);
+	RelevantAttributesToCapture.Add(DamageStatics().Resistance_ElectroDef);
+	RelevantAttributesToCapture.Add(DamageStatics().Resistance_FireDef);
+	RelevantAttributesToCapture.Add(DamageStatics().Resistance_GeoDef);
+	RelevantAttributesToCapture.Add(DamageStatics().Resistance_PhysicalDef);
+	RelevantAttributesToCapture.Add(DamageStatics().Resistance_WaterDef);
+
 
 }
 
@@ -86,7 +135,20 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float Damage = 0.f;
 	for (const TTuple<FGameplayTag, FGameplayTag>& Pair : FAuraGameplayTags::Get().DamageTypesToResistance)
 	{
-		const float DamageTypeValue = EffectSpec.GetSetByCallerMagnitude(Pair.Key);
+		const FGameplayTag DamageTypeTag = Pair.Key;
+		const FGameplayTag ResistanceTag = Pair.Value;
+
+		checkf(AuraDamageStatics().TagsToCaptureDefs.Contains(ResistanceTag), TEXT("TagsToCaptureDefs 没有 [%s] 这个 tag"), *ResistanceTag.ToString());
+		const FGameplayEffectAttributeCaptureDefinition CaptureDef = AuraDamageStatics().TagsToCaptureDefs[ResistanceTag];
+		
+		float DamageTypeValue = EffectSpec.GetSetByCallerMagnitude(Pair.Key);
+		
+		float Resitance = 0.f;
+		
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluateParameters, Resitance);
+		Resitance = FMath::Clamp(Resitance, 0.f, 100.f);
+		
+		DamageTypeValue *= (100.f - Resitance) / 100;
 		Damage += DamageTypeValue;
 	}
 	

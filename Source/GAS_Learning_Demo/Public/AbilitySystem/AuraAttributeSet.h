@@ -143,9 +143,77 @@ public:
 	FGameplayAttributeData Armor;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor);
 
+	/*
+	 *	抗性
+	 *	Start 
+	 */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MagicResistance, Category = "Secondary Attributes")
 	FGameplayAttributeData MagicResistance;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MagicResistance);
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resistance_Fire, Category = "Secondary Attributes")
+	FGameplayAttributeData Resistance_Fire;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resistance_Fire);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resistance_Water, Category = "Secondary Attributes")
+	FGameplayAttributeData Resistance_Water;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resistance_Water);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resistance_Cryo, Category = "Secondary Attributes")
+	FGameplayAttributeData Resistance_Cryo;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resistance_Cryo);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resistance_Anemo, Category = "Secondary Attributes")
+	FGameplayAttributeData Resistance_Anemo;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resistance_Anemo);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resistance_Dendro, Category = "Secondary Attributes")
+	FGameplayAttributeData Resistance_Dendro;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resistance_Dendro);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resistance_Geo, Category = "Secondary Attributes")
+	FGameplayAttributeData Resistance_Geo;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resistance_Geo);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resistance_Electro, Category = "Secondary Attributes")
+	FGameplayAttributeData Resistance_Electro;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resistance_Electro);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resistance_Physical, Category = "Secondary Attributes")
+	FGameplayAttributeData Resistance_Physical;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resistance_Physical);
+
+	UFUNCTION()
+	void OnRep_MagicResistance(const FGameplayAttributeData& OldMagicResistance) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Fire(const FGameplayAttributeData& OldResistance_Fire) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Water(const FGameplayAttributeData& OldResistance_Water) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Cryo(const FGameplayAttributeData& OldResistance_Cryo) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Anemo(const FGameplayAttributeData& OldResistance_Anemo) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Dendro(const FGameplayAttributeData& OldResistance_Dendro) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Geo(const FGameplayAttributeData& OldResistance_Geo) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Electro(const FGameplayAttributeData& OldResistance_Electro) const;
+
+	UFUNCTION()
+	void OnRep_Resistance_Physical(const FGameplayAttributeData& OldResistance_Physical) const;
+	/*
+	 *	抗性
+	 *	End
+	 * 
+	 */
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_SpellStrength, Category = "Secondary Attributes")
 	FGameplayAttributeData SpellStrength;
@@ -183,8 +251,7 @@ public:
 	UFUNCTION()
 	void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;
 
-	UFUNCTION()
-	void OnRep_MagicResistance(const FGameplayAttributeData& OldMagicResistance) const;
+	
 
 	UFUNCTION()
 	void OnRep_SpellStrength(const FGameplayAttributeData& OldSpellStrength) const;

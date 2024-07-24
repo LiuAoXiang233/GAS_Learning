@@ -43,7 +43,17 @@ UAuraAttributeSet::UAuraAttributeSet()
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_PhysicalDamagePenetration, GetPhysicalDamagePenetrationAttribute);
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_SpellDamagePenetration, GetSpellDamagePenetrationAttribute);
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_Armor, GetArmorAttribute);
-	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_Armor, GetArmorAttribute);
+	
+	TagsToAttributes.Add(GameplayTags.Damage_Resistance_Anemo, GetResistance_AnemoAttribute);
+	TagsToAttributes.Add(GameplayTags.Damage_Resistance_Cryo, GetResistance_CryoAttribute);
+	TagsToAttributes.Add(GameplayTags.Damage_Resistance_Fire, GetResistance_FireAttribute);
+	TagsToAttributes.Add(GameplayTags.Damage_Resistance_Water, GetResistance_WaterAttribute);
+	TagsToAttributes.Add(GameplayTags.Damage_Resistance_Dendro, GetResistance_DendroAttribute);
+	TagsToAttributes.Add(GameplayTags.Damage_Resistance_Geo, GetResistance_GeoAttribute);
+	TagsToAttributes.Add(GameplayTags.Damage_Resistance_Electro, GetResistance_ElectroAttribute);
+	TagsToAttributes.Add(GameplayTags.Damage_Resistance_Physical, GetResistance_PhysicalAttribute);
+	
+
 
 	
 
@@ -78,8 +88,17 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, SpellStrength, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, AttackPower, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, MaxHP, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, MaxMP, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Speed, COND_None, REPNOTIFY_Always);
+	
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resistance_Anemo, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resistance_Cryo, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resistance_Dendro, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resistance_Electro, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resistance_Fire, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resistance_Geo, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resistance_Physical, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resistance_Water, COND_None, REPNOTIFY_Always);
+	
+
 
 	
 	/*
@@ -156,7 +175,7 @@ void UAuraAttributeSet::ShowDamageText(const FEffectProperties& Props, float Dam
 {
 	if ( Props.SourceCharacter != Props.TargetCharacter )
 	{
-		if ( AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceController, 0)) )
+		if ( AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller))
 		{
 			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
@@ -253,6 +272,54 @@ void UAuraAttributeSet::OnRep_Armor(const FGameplayAttributeData& OldArmor) cons
 void UAuraAttributeSet::OnRep_MagicResistance(const FGameplayAttributeData& OldMagicResistance) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, MagicResistance, OldMagicResistance);
+
+}
+
+void UAuraAttributeSet::OnRep_Resistance_Fire(const FGameplayAttributeData& OldResistance_Fire) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Resistance_Fire, OldResistance_Fire);
+
+}
+
+void UAuraAttributeSet::OnRep_Resistance_Water(const FGameplayAttributeData& OldResistance_Water) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Resistance_Water, OldResistance_Water);
+
+}
+
+void UAuraAttributeSet::OnRep_Resistance_Cryo(const FGameplayAttributeData& OldResistance_Cryo) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Resistance_Cryo, OldResistance_Cryo);
+
+}
+
+void UAuraAttributeSet::OnRep_Resistance_Anemo(const FGameplayAttributeData& OldResistance_Anemo) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Resistance_Anemo, OldResistance_Anemo);
+
+}
+
+void UAuraAttributeSet::OnRep_Resistance_Dendro(const FGameplayAttributeData& OldResistance_Dendro) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Resistance_Dendro, OldResistance_Dendro);
+
+}
+
+void UAuraAttributeSet::OnRep_Resistance_Geo(const FGameplayAttributeData& OldResistance_Geo) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Resistance_Geo, OldResistance_Geo);
+
+}
+
+void UAuraAttributeSet::OnRep_Resistance_Electro(const FGameplayAttributeData& OldResistance_Electro) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Resistance_Electro, OldResistance_Electro);
+
+}
+
+void UAuraAttributeSet::OnRep_Resistance_Physical(const FGameplayAttributeData& OldResistance_Physical) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Resistance_Physical, OldResistance_Physical);
 
 }
 
