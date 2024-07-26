@@ -3,8 +3,11 @@
 
 #include "AI/BTTask_Attack.h"
 
+#include "AIController.h"
+
 
 EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	
 	return Super::ExecuteTask(OwnerComp, NodeMemory);
 }

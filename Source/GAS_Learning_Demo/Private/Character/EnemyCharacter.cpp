@@ -96,7 +96,7 @@ void AEnemyCharacter::BeginPlay()
 
 	if (HasAuthority())
 	{
-		UAuraAbilitySystemLibrary::GiveStartUpAbilities(this, AbilitySystemComponent);
+		UAuraAbilitySystemLibrary::GiveStartUpAbilities(this, AbilitySystemComponent, CharacterClass);
 	}
 	
 	InitAbilityActorInfo();
