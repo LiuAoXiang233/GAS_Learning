@@ -10,6 +10,8 @@
 #include "EnemyCharacter.generated.h"
 
 class UWidgetComponent;
+class UBehaviorTree;
+class AAuraAIController;
 /**
  * 
  */
@@ -24,9 +26,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributesChangedSignature OnMaxHealthChanged;
+	
 	UPROPERTY(BlueprintReadOnly, Category="Combet")
 	bool bHitRecating = false;
 
+	
+	
 	void HitReactTagChanged(const FGameplayTag Tag, int32 NewCount);
 	
 	UPROPERTY(BlueprintReadOnly, Category="Combet")
@@ -35,6 +40,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combet")
 	float LifeSpan = 4.f;
 
+	virtual void PossessedBy(AController* NewController) override;
 	/*
 	 *	EnemyInterface
 	 */
@@ -59,7 +65,6 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
 
-
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults", meta = (AllowPrivateAccess = "true"))
@@ -72,8 +77,13 @@ private:
 	TObjectPtr<UWidgetComponent> ProgressBar;
 	
 	
+protected:
 
-	
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AAuraAIController> AIController;
 	
 	
 };

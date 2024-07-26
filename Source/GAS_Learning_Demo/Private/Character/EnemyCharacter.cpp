@@ -7,6 +7,9 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AI/AuraAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GAS_Learning_Demo/GAS_Learning_Demo.h"
@@ -18,6 +21,12 @@ AEnemyCharacter::AEnemyCharacter()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystem");
 	AbilitySystemComponent->SetIsReplicated(true);
@@ -35,8 +44,25 @@ void AEnemyCharacter::HitReactTagChanged(const FGameplayTag Tag, int32 NewCount)
 	bHitRecating = NewCount > 0;
 
 	GetCharacterMovement()->MaxWalkSpeed = bHitRecating ? 0.f : BaseWalkSpeed;
+	AIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitRecating);
+
 }
 
+
+void AEnemyCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (!HasAuthority()) return;
+	
+	AIController = Cast<AAuraAIController>(NewController);
+	AIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->GetBlackboardAsset());
+	AIController->RunBehaviorTree(BehaviorTree);
+
+	AIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
+	AIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
+
+}
 
 void AEnemyCharacter::HighLightActor()
 {
