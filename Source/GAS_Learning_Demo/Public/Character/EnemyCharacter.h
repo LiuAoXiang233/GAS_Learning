@@ -41,11 +41,17 @@ public:
 	float LifeSpan = 4.f;
 
 	virtual void PossessedBy(AController* NewController) override;
+
+	UPROPERTY(BlueprintReadWrite, Category="Combat")
+	TObjectPtr<AActor> CombatTarget; 
 	/*
 	 *	EnemyInterface
 	 */
 	virtual void HighLightActor() override;
 	virtual void UnHighLightActor() override;
+
+	virtual void SetCombatTarget_Implementation(AActor* InTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
 	/*
 	 *	End EnemyInterface
 	 */

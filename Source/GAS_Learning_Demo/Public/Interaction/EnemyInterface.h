@@ -24,4 +24,10 @@ class GAS_LEARNING_DEMO_API IEnemyInterface
 public:
 	virtual void HighLightActor() = 0;
 	virtual void UnHighLightActor() = 0;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetCombatTarget(AActor* InTarget);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	AActor* GetCombatTarget() const;
 };
