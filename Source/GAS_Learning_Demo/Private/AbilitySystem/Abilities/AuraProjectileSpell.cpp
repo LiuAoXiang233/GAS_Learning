@@ -25,55 +25,53 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 
 	if ( !bInServer ) return;
 	UE_LOG(LogTemp, Log, TEXT("Multicast_SpawnSkillEffect called on: %s"), *GetName());
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
-	if ( CombatInterface )
-	{
-		FVector WeaponLocation = CombatInterface->GetCombatSocketLocation();
-		FRotator Rotator = ( TargetLocation - WeaponLocation ).Rotation();
+	FVector WeaponLocation = ICombatInterface::Execute_GetCombatSocketLocation(
+		GetAvatarActorFromActorInfo(),
+		FAuraGameplayTags::Get().Montage_Attack_Weapon);
+	FRotator Rotator = ( TargetLocation - WeaponLocation ).Rotation();
 		
 
-		// TODO: 设置 位置 和 旋转
-		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(WeaponLocation);
-		SpawnTransform.SetRotation(Rotator.Quaternion());
+	// TODO: 设置 位置 和 旋转
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(WeaponLocation);
+	SpawnTransform.SetRotation(Rotator.Quaternion());
 	
-		AAuraProjectile* Projectile =  GetWorld()->SpawnActorDeferred<AAuraProjectile>(
-			ProjectileClass,
-			SpawnTransform,
-			GetOwningActorFromActorInfo(),
-			Cast<APawn>(GetOwningActorFromActorInfo()),
-			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	AAuraProjectile* Projectile =  GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+		ProjectileClass,
+		SpawnTransform,
+		GetOwningActorFromActorInfo(),
+		Cast<APawn>(GetOwningActorFromActorInfo()),
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-		// TODO: 在这里，即火焰弹还没有生成完毕的时候， 给这个火焰弹添加 造成伤害的 GameplayEffect
-		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+	// TODO: 在这里，即火焰弹还没有生成完毕的时候， 给这个火焰弹添加 造成伤害的 GameplayEffect
+	const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
 		
-		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
-		EffectContextHandle.SetAbility(this);
-		EffectContextHandle.AddSourceObject(Projectile);
-		TArray<TWeakObjectPtr<AActor>> Actors;
-		Actors.Add(Projectile);
-		EffectContextHandle.AddActors(Actors);
-		FHitResult HitResult;
-		HitResult.Location = TargetLocation;
-		EffectContextHandle.AddHitResult(HitResult);
+	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+	EffectContextHandle.SetAbility(this);
+	EffectContextHandle.AddSourceObject(Projectile);
+	TArray<TWeakObjectPtr<AActor>> Actors;
+	Actors.Add(Projectile);
+	EffectContextHandle.AddActors(Actors);
+	FHitResult HitResult;
+	HitResult.Location = TargetLocation;
+	EffectContextHandle.AddHitResult(HitResult);
 
 		
-		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
+	const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
 
-		FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 
-		for (auto Pair : DamageTypes)
-		{
-			const float ScaledDamage = Pair.Value.GetValueAtLevel(AbilityLevel);
-			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
+	for (auto Pair : DamageTypes)
+	{
+		const float ScaledDamage = Pair.Value.GetValueAtLevel(AbilityLevel);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
 
-		}
-		
-		Projectile->DamageEffectSpecHandle = SpecHandle;
-		
-		Projectile->FinishSpawning(SpawnTransform);
-		
 	}
+		
+	Projectile->DamageEffectSpecHandle = SpecHandle;
+		
+	Projectile->FinishSpawning(SpawnTransform);
+		
 
 	
 	

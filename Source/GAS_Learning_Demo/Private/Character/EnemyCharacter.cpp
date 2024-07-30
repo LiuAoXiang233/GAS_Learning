@@ -44,7 +44,12 @@ void AEnemyCharacter::HitReactTagChanged(const FGameplayTag Tag, int32 NewCount)
 	bHitRecating = NewCount > 0;
 
 	GetCharacterMovement()->MaxWalkSpeed = bHitRecating ? 0.f : BaseWalkSpeed;
-	AIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitRecating);
+
+	if (AIController && AIController->GetBlackboardComponent())
+	{
+		AIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitRecating);
+	}
+	
 
 }
 
@@ -123,14 +128,14 @@ void AEnemyCharacter::BeginPlay()
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddLambda(
 		[this] (const FOnAttributeChangeData& Data)
 		{
-			OnHealthChanged.Broadcast(Data.NewValue);
+			OnEnemyHealthChanged.Broadcast(Data.NewValue);
 		}
 		);
 
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetMaxHPAttribute()).AddLambda(
 			[this] (const FOnAttributeChangeData& Data)
 			{
-				OnMaxHealthChanged.Broadcast(Data.NewValue);
+				OnEnemyMaxHealthChanged.Broadcast(Data.NewValue);
 			}
 		);
 
@@ -139,8 +144,8 @@ void AEnemyCharacter::BeginPlay()
 			&AEnemyCharacter::HitReactTagChanged
 		);
 
-		OnHealthChanged.Broadcast(AS->GetHealth());
-		OnMaxHealthChanged.Broadcast(AS->GetMaxHP());
+		OnEnemyHealthChanged.Broadcast(AS->GetHealth());
+		OnEnemyMaxHealthChanged.Broadcast(AS->GetMaxHP());
 	}
 
 	

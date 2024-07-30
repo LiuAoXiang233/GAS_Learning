@@ -21,11 +21,12 @@ class GAS_LEARNING_DEMO_API AEnemyCharacter : public AAuraCharacterBase, public 
 	GENERATED_BODY()
 public:
 	AEnemyCharacter();
+	
 	UPROPERTY(BlueprintAssignable)
-	FOnAttributesChangedSignature OnHealthChanged;
+	FOnAttributesChangedSignature OnEnemyHealthChanged;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnAttributesChangedSignature OnMaxHealthChanged;
+	FOnAttributesChangedSignature OnEnemyMaxHealthChanged;
 	
 	UPROPERTY(BlueprintReadOnly, Category="Combet")
 	bool bHitRecating = false;
@@ -34,7 +35,7 @@ public:
 	
 	void HitReactTagChanged(const FGameplayTag Tag, int32 NewCount);
 	
-	UPROPERTY(BlueprintReadOnly, Category="Combet")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combet")
 	float BaseWalkSpeed = 250.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combet")

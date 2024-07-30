@@ -13,12 +13,14 @@ UCLASS()
 class GAS_LEARNING_DEMO_API UAuraDamageGameplayAbilities : public UAuraGameplayAbilities
 {
 	GENERATED_BODY()
+public:
 
+	UFUNCTION(BlueprintCallable)
+	void CauseDamage(AActor* Target);
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 	
-
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
