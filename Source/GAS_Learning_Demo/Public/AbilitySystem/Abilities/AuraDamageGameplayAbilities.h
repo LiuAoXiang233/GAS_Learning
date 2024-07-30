@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbilities.h"
+#include "Interaction/CombatInterface.h"
 #include "AuraDamageGameplayAbilities.generated.h"
 
 /**
@@ -17,6 +18,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CauseDamage(AActor* Target);
+
+	UFUNCTION(BlueprintCallable)
+	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& Montages);
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
@@ -24,4 +28,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
+
+
+	
 };

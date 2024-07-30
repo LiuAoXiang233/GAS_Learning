@@ -34,7 +34,7 @@ AAuraProjectile::AAuraProjectile()
 	Sphere->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("Movement");
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("Projectile Movement");
 	ProjectileMovementComponent->InitialSpeed = 550.f;
 	ProjectileMovementComponent->MaxSpeed = 550.f;
 	ProjectileMovementComponent->ProjectileGravityScale = 0.f;

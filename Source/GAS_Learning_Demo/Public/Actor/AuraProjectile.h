@@ -21,6 +21,7 @@ public:
 	// Sets default values for this actor's properties
 	AAuraProjectile();
 
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
