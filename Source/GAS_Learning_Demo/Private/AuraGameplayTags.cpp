@@ -236,10 +236,7 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 		FString("受击时，赋予此tag")
 	);
 
-	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Attack"),
-		FString("Attack Ability Tag")
-	);
+	
 
 
 	/*
@@ -258,6 +255,27 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 	GameplayTags.Montage_Attack_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.Attack.LeftHand"),
 		FString("使用左手徒手攻击动画")
+	);
+
+
+	/*
+	 *	Ability Tags
+	 * 
+	 */
+
+	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Attack"),
+		FString("Attack Ability Tag")
+	);
+	
+	GameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Fire.FireBolt"),
+		FString("火焰箭")
+	);
+
+	GameplayTags.CoolDown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("CoolDown.Fire.FireBolt"),
+		FString("火焰箭冷却")
 	);
 	
 }

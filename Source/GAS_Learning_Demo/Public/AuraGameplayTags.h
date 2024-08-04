@@ -95,8 +95,13 @@ public:
 
 
 
+	/*
+	 *	Ability Tags
+	 * 
+	 */
 	FGameplayTag Abilities_Attack;
-
+	FGameplayTag Abilities_Fire_FireBolt;
+	FGameplayTag CoolDown_Fire_FireBolt;
 
 
 	FGameplayTag Montage_Attack_Weapon;

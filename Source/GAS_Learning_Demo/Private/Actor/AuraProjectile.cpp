@@ -51,8 +51,12 @@ void AAuraProjectile::BeginPlay()
 
 	if (LoopingSound)
 	{
-		AudioComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
-		AudioComponent->Play();
+		if (AudioComponent)
+		{
+			AudioComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
+			AudioComponent->Play();
+		}
+		
 	}
 	
 	
