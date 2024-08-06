@@ -78,6 +78,17 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 		FName("Attribute.Secondary.Speed"),
 		FString("速度，移动速度。"));
 
+
+	/*
+	 *	Meta Attributes
+	 * 
+	 */
+
+	GameplayTags.Attribute_Meta_IncomingXP = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attribute.Meta.IncomingXP"),
+		FString("Meta 属性 IncomingXP"));
+
+	
 	/*
 	 *
 	 *	Input Tags

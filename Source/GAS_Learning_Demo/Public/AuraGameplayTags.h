@@ -41,6 +41,12 @@ public:
 	FGameplayTag Attribute_Primary_Resilience;
 	FGameplayTag Attribute_Primary_Viger;
 
+	/*
+	 *	Meta Attributes
+	 * 
+	 */
+
+	FGameplayTag Attribute_Meta_IncomingXP;
 	
 	/*
 	 *

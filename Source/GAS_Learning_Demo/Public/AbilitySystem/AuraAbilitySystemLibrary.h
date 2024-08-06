@@ -52,4 +52,5 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayMechanics")
 	static void GetLivePlayerWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OnOverlappingActors, TArray<AActor*> ActorsToIgnore, float Radius, const FVector& SphereLocation);
 
+	static int32 GetXPRewardForClassLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLveel);
 };

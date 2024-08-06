@@ -21,6 +21,7 @@ class GAS_LEARNING_DEMO_API UAuraAbilitySystemComponent : public UAbilitySystemC
 public:
 	void AbilityActorInfoSet();
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities);
+	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& PassiveAbilities);
 	void AbilityInputTagHeld(const FGameplayTag& GameplayTag);
 	void AbilityInputTagReleased(const FGameplayTag& GameplayTag);
 	void ForEachAbility(const FForEachAbility& Delegate);

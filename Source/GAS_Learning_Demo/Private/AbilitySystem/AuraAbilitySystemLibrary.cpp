@@ -85,11 +85,10 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
 
 void UAuraAbilitySystemLibrary::GiveStartUpAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass)
 {
-	AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	
 
-	if (GameMode == nullptr) return;
-
-	UCharacterClassInfo* ClassInfo = GameMode->CharacterClassInfo;
+	UCharacterClassInfo* ClassInfo = GetCharacterClassInfo(WorldContextObject);
+	if (ClassInfo == nullptr) return;
 
 	for (TSubclassOf<UGameplayAbility> AbilityClass : ClassInfo->CommonAbilities)
 	{
@@ -109,6 +108,20 @@ void UAuraAbilitySystemLibrary::GiveStartUpAbilities(const UObject* WorldContext
 		
 	}
 }
+
+
+int32 UAuraAbilitySystemLibrary::GetXPRewardForClassLevel(const UObject* WorldContextObject,
+	ECharacterClass CharacterClass, int32 CharacterLveel)
+{
+	UCharacterClassInfo* ClassInfo = GetCharacterClassInfo(WorldContextObject);
+	if (ClassInfo == nullptr) return 0;
+
+	const FCharacterClassDefaultInfo Info = ClassInfo->GetClassDefaultInfo(CharacterClass);
+	const float XpReward = Info.XpReward.GetValueAtLevel(CharacterLveel);
+
+	return static_cast<float>(XpReward);
+}
+
 
 UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
 {
@@ -175,4 +188,5 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(const UObject* WorldCo
 		}
 	}
 }
+
 

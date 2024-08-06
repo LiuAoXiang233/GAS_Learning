@@ -9,7 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
-#include "Kismet/GameplayStatics.h"
+#include "Interaction/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/AuraPlayerController.h"
 
@@ -188,6 +188,25 @@ void UAuraAttributeSet::ShowDamageText(const FEffectProperties& Props, float Dam
 	}
 }
 
+void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
+{
+
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+	{
+		const int32 Level = CombatInterface->GetCharacterLevel();
+		const ECharacterClass CharacterClass = ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
+		const int32 XPReward = UAuraAbilitySystemLibrary::GetXPRewardForClassLevel(Props.TargetCharacter, CharacterClass, Level);
+
+		const FAuraGameplayTags& AuraGameplayTags = FAuraGameplayTags::Get();
+
+		FGameplayEventData Payload;
+		Payload.EventTag = AuraGameplayTags.Attribute_Meta_IncomingXP;
+		Payload.EventMagnitude = XPReward;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, AuraGameplayTags.Attribute_Meta_IncomingXP, Payload);
+		
+	}
+}
+
 
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
@@ -200,12 +219,14 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHP()));
-		UE_LOG(LogTemp, Warning, TEXT("Changed on %s , Health is : %F"), *Props.TargetAvatarActor->GetName(), GetHealth());
+		//UE_LOG(LogTemp, Warning, TEXT("Changed on %s , Health is : %F"), *Props.TargetAvatarActor->GetName(), GetHealth());
 	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
 		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMP()));
 	}
+
+	
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
 
@@ -228,6 +249,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				{
 					CombatInterface->Die();
 				}
+
+				SendXPEvent(Props);
 				
 			}
 			else
@@ -245,6 +268,22 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			ShowDamageText(Props, LocalIncomingDamage, bIsBolckedHit, bIsCriticalHit);
 		}
 	}
+
+
+	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+	{
+		const float LocalIncomingXP = Data.EffectSpec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Attribute_Meta_IncomingXP);
+;
+		SetIncomingXP(0.f);
+		//UE_LOG(LogTemp, Warning, TEXT("Get XP [%f]"), LocalIncomingXP);
+
+		if (Props.SourceCharacter->Implements<UPlayerInterface>())
+		{
+			IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
+		}
+	}
+
+	
 }
 
 

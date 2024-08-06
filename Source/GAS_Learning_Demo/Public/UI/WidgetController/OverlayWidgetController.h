@@ -64,6 +64,10 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
 	FOnAttributesChangedSignature OnMaxManaChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "GAS|LevelUp")
+	FOnAttributesChangedSignature OnLevelUpXPBarPercentChangedDelegate;
+	
 	
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Message")
 	FOnMessageWidgetRowChangedSignature OnMessageWidgetDelegate;
@@ -80,6 +84,8 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Data")
 	TObjectPtr<UAbilityInfo> AbilityInfo;
+
+	void OnXpChanged(int32 InXP) const;
 	
 	template<typename T>
 	T* GetDelegateRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);

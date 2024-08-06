@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
-
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
@@ -16,6 +16,7 @@ class UGameplayEffect;
 class UAttributeSet;
 class UAnimMontage;
 class UAbilitySystemComponent;
+
 
 UCLASS(Abstract)
 class GAS_LEARNING_DEMO_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -34,6 +35,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
 
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf<UGameplayAbility>> DefaultPassiveAbilities;
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();
@@ -67,6 +70,7 @@ protected:
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvator_Implementation() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
+	virtual ECharacterClass GetCharacterClass_Implementation() override;
 	/*
 	 *	Combat Interface End
 	 */
@@ -114,6 +118,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults", meta = (AllowPrivateAccess = "true"))
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")

@@ -39,6 +39,7 @@ void AAuraCharacterBase::GiveChararcterAbilities()
 {
 	UAuraAbilitySystemComponent* ASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 	ASC->AddCharacterAbilities(DefaultAbilities);
+	ASC->AddCharacterPassiveAbilities(DefaultPassiveAbilities);
 }
 
 
@@ -112,6 +113,11 @@ AActor* AAuraCharacterBase::GetAvator_Implementation()
 TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation()
 {
 	return AttackMontages;
+}
+
+ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation()
+{
+	return CharacterClass;
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()
