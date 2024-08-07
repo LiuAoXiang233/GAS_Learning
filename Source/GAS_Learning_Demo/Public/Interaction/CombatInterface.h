@@ -39,7 +39,8 @@ class GAS_LEARNING_DEMO_API ICombatInterface
 public:
 
 	// 获取玩家或敌人的等级
-	virtual int32 GetCharacterLevel();
+	UFUNCTION(BlueprintNativeEvent)
+	int32 GetCharacterLevel();
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FVector GetCombatSocketLocation(const FGameplayTag& MontageTag);

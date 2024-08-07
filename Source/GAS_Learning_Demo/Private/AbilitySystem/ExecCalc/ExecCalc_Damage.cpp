@@ -121,8 +121,19 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	AActor* SourceActor = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
 	AActor* TargetActor = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
 
-	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceActor);
-	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetActor);
+	int32 SourcePlayerLevel = 1;
+	if (SourceActor->Implements<UCombatInterface>())
+	{
+		SourcePlayerLevel = ICombatInterface::Execute_GetCharacterLevel(SourceActor);
+	}
+
+	int32 TargetPlayerLevel = 1;
+	if (TargetActor->Implements<UCombatInterface>())
+	{
+		TargetPlayerLevel = ICombatInterface::Execute_GetCharacterLevel(TargetActor);
+	}
+	
+	
 
 	const FGameplayEffectSpec& EffectSpec = ExecutionParams.GetOwningSpec();
 	const FGameplayTagContainer* SourceTags = EffectSpec.CapturedSourceTags.GetAggregatedTags();
@@ -162,8 +173,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	FRealCurve* AmendmentCurve = CharacterClassInfo->DamageCalculationCoefficients->FindCurve(FName("SpellDamagePenetration"), FString());
 	
 
-	float SpellDamagePenetrationAmendment = AmendmentCurve->Eval(SourceCombatInterface->GetCharacterLevel());
-	float MagicResistanceAmendment = AmendmentCurve->Eval(TargetCombatInterface->GetCharacterLevel());
+	float SpellDamagePenetrationAmendment = AmendmentCurve->Eval(SourcePlayerLevel);
+	float MagicResistanceAmendment = AmendmentCurve->Eval(TargetPlayerLevel);
 
 	// 
 	//	捕获敌人的 抗暴 和 魔抗

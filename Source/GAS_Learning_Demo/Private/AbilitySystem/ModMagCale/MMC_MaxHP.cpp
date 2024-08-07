@@ -41,8 +41,12 @@ float UMMC_MaxHP::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpe
 	Viger = FMath::Max<float>(Viger, 0.f);
 	Resilience = FMath::Max<float>(Resilience, 0.f);
 
-	ICombatInterface* CombatInterface =  Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	const int32 PlayerLevel = CombatInterface->GetCharacterLevel();
+	int32 PlayerLevel = 1;
+	if (Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
+	{
+		PlayerLevel = ICombatInterface::Execute_GetCharacterLevel(Spec.GetContext().GetSourceObject());
+	}
+	
 
 
 	/*

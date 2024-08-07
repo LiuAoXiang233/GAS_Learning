@@ -40,8 +40,11 @@ float UMMC_MaxMP::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpe
 	GetCapturedAttributeMagnitude(IntelligenceDef, Spec, EvaluateParameters, Intelligence);
 	GetCapturedAttributeMagnitude(IntelligenceDef, Spec, EvaluateParameters, Resilience);
 
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	float PlayerLevel = CombatInterface->GetCharacterLevel();
+	int32 PlayerLevel = 1;
+	if (Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
+	{
+		PlayerLevel = ICombatInterface::Execute_GetCharacterLevel(Spec.GetContext().GetSourceObject());
+	}
 
 	/*
 	 *	计算最大MP：{（智力 + 1） * 5 + 3} + 适应力 * 1.5 + 300 + 20 * Level 

@@ -191,9 +191,9 @@ void UAuraAttributeSet::ShowDamageText(const FEffectProperties& Props, float Dam
 void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
 {
 
-	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+	if (Props.TargetCharacter->Implements<UCombatInterface>())
 	{
-		const int32 Level = CombatInterface->GetCharacterLevel();
+		const int32 Level = ICombatInterface::Execute_GetCharacterLevel(Props.TargetCharacter);
 		const ECharacterClass CharacterClass = ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
 		const int32 XPReward = UAuraAbilitySystemLibrary::GetXPRewardForClassLevel(Props.TargetCharacter, CharacterClass, Level);
 
@@ -272,13 +272,36 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
 	{
+		// 不知道为什么 GetIncomingXP 获取不到玩家的XP，
 		const float LocalIncomingXP = Data.EffectSpec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Attribute_Meta_IncomingXP);
 ;
 		SetIncomingXP(0.f);
 		//UE_LOG(LogTemp, Warning, TEXT("Get XP [%f]"), LocalIncomingXP);
 
-		if (Props.SourceCharacter->Implements<UPlayerInterface>())
+		if (Props.SourceCharacter->Implements<UPlayerInterface>() && Props.SourceCharacter->Implements<UCombatInterface>())
 		{
+			const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
+			const int32 CurrentLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP);
+
+			const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
+
+			const int32 NumOfLevel = NewLevel - CurrentLevel;
+
+			if (NumOfLevel > 0)
+			{
+				// 如果升级了
+				// TODO: 获取属性点 和 技能点， 并且回复自身血量和蓝量
+				const int32 AttributePoints = IPlayerInterface::Execute_GetRewardAttributePoints(Props.SourceCharacter, CurrentLevel);
+				const int32 SpellPoints = IPlayerInterface::Execute_GetRewardSpellPoints(Props.SourceCharacter, CurrentLevel);
+
+				IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumOfLevel);
+				IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPoints);
+				IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePoints);
+				
+				IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
+			}
+			
+			
 			IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
 		}
 	}
