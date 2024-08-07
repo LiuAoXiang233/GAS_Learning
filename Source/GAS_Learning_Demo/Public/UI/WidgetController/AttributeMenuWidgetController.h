@@ -25,14 +25,22 @@ public:
 	virtual void BindCallBackToDependencies() override;
 	virtual void BroadcastInitalValues() override;
 
+	UFUNCTION(BlueprintCallable)
+	void UpgradeAttribute(const FGameplayTag& GameplayTag);
+	
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
 	FAttributeInfoSignature AttributeInfoDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category = "GAS|PlayerState")
+	FOnPlayerStateChangedSignature AttributePointsChangedDelegate;
+
+	
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAttributeInfo> AttributeInfo;
+
 
 
 private:

@@ -297,8 +297,14 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumOfLevel);
 				IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPoints);
 				IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePoints);
+
+				// 升级后恢复血量和蓝量
+				bTopOffHP = true;
+				bTopOffMP = true;
+				
 				
 				IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
+
 			}
 			
 			
@@ -307,6 +313,23 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 
 	
+}
+
+void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+	if (Attribute == GetMaxHPAttribute() && bTopOffHP == true)
+	{
+		SetHealth(GetMaxHP());
+		bTopOffHP = false;
+	}
+
+	if (Attribute == GetMaxMPAttribute() && bTopOffMP == true)
+	{
+		SetHealth(GetMaxMP());
+		bTopOffMP = false;
+	}
 }
 
 

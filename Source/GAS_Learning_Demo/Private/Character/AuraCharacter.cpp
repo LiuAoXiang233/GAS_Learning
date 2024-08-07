@@ -63,6 +63,7 @@ void AAuraCharacter::AddToXP_Implementation(int32 InXP)
 
 void AAuraCharacter::LevelUp_Implementation()
 {
+	// TODO: 添加升级后的 cue 之类的东西
 	IPlayerInterface::LevelUp_Implementation();
 }
 
@@ -97,6 +98,9 @@ int32 AAuraCharacter::GetRewardSpellPoints_Implementation(int32 Level) const
 void AAuraCharacter::AddToAttributePoints_Implementation(int32 InAttributePoints)
 {
 	// TODO: 添加属性点
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	AuraPlayerState->AddToAttributePoints(InAttributePoints);
 }
 
 void AAuraCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevels)
@@ -109,6 +113,23 @@ void AAuraCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevels)
 void AAuraCharacter::AddToSpellPoints_Implementation(int32 InSpellPoints)
 {
 	// TODO: 添加技能点
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	AuraPlayerState->AddToSpellPoints(InSpellPoints);
+}
+
+int32 AAuraCharacter::GetAttributePoints_Implementation()
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	return AuraPlayerState->GetAttributePoints();
+}
+
+int32 AAuraCharacter::GetSpellPoints_Implementation()
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	return AuraPlayerState->GetSpellPoints();
 }
 
 int32 AAuraCharacter::GetCharacterLevel_Implementation()
@@ -122,7 +143,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
+	
 	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
+	
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 	Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
 	
