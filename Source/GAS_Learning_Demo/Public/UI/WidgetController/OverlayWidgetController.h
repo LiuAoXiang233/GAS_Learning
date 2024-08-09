@@ -32,7 +32,6 @@ struct FUIWidegtRow : public FTableRowBase
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributesChangedSignature, float, NewValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMessageWidgetRowChangedSignature, FUIWidegtRow, Row);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, Info);
 
 
 
@@ -75,20 +74,18 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Message")
 	FOnMessageWidgetRowChangedSignature OnMessageWidgetDelegate;
 
-	UPROPERTY(BlueprintAssignable, Category = "GAS|Message")
-	FAbilityInfoSignature AbilityInfoDelegate;
+	
 
-	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraAbilitySystemComponent);
+	
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Data")
-	TObjectPtr<UAbilityInfo> AbilityInfo;
+	
 
-	void OnXpChanged(int32 InXP) const;
+	void OnXpChanged(int32 InXP);
 	
 	template<typename T>
 	T* GetDelegateRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
