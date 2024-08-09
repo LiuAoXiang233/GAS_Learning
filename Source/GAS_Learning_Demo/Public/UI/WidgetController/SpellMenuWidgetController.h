@@ -9,6 +9,9 @@
 /**
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpellPointsChanged, int32, SpellPoints);
+
 UCLASS(BlueprintType, Blueprintable)
 class GAS_LEARNING_DEMO_API USpellMenuWidgetController : public UAuraWidgetController
 {
@@ -16,7 +19,8 @@ class GAS_LEARNING_DEMO_API USpellMenuWidgetController : public UAuraWidgetContr
 
 public:
 
-
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Spell")
+	FOnSpellPointsChanged OnSpellPointsChangedDelegate;
 	
 	virtual void BroadcastInitalValues() override;
 	virtual void BindCallBackToDependencies() override;

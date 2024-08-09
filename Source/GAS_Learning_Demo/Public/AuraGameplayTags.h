@@ -112,7 +112,24 @@ public:
 	FGameplayTag Abilities_Fire_FireBolt;
 	FGameplayTag CoolDown_Fire_FireBolt;
 
+	FGameplayTag Abilities_Electro_ElectroBolt;
+	FGameplayTag CoolDown_Electro_ElectroBolt;
+	
+	FGameplayTag Abilities_HitReact;
 
+	FGameplayTag Abilities_Status_Locked;
+	FGameplayTag Abilities_Status_Eligible;
+	FGameplayTag Abilities_Status_Unlocked;
+	FGameplayTag Abilities_Status_Equipped;
+
+	FGameplayTag Abilities_Type_Offensive;
+	FGameplayTag Abilities_Type_Passive;
+	FGameplayTag Abilities_Type_Other;
+	
+	/*
+	 *	Attack Montage
+	 * 
+	 */
 	FGameplayTag Montage_Attack_Weapon;
 	FGameplayTag Montage_Attack_RightHand;
 	FGameplayTag Montage_Attack_LeftHand;

@@ -154,11 +154,20 @@ int32 UAuraAbilitySystemLibrary::GetXPRewardForClassLevel(const UObject* WorldCo
 
 UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
 {
-	AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	const AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 
 	if (GameMode == nullptr) return nullptr;
 
 	return GameMode->CharacterClassInfo;
+}
+
+UAbilityInfo* UAuraAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldContextObject)
+{
+	const AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+
+	if (GameMode == nullptr) return nullptr;
+
+	return GameMode->AbilityInfo;
 }
 
 bool UAuraAbilitySystemLibrary::IsBolckedHit(const FGameplayEffectContextHandle& EffectContextHandle)

@@ -12,6 +12,7 @@ class UAuraAbilitySystemComponent;
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* AssetTagContainer*/);
 DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilitiesStatusChanged, const FGameplayTag& /*Ability Tag*/, const FGameplayTag& /*Status Tag*/);
 
 UCLASS()
 class GAS_LEARNING_DEMO_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
@@ -27,6 +28,9 @@ public:
 	void ForEachAbility(const FForEachAbility& Delegate);
 	static FGameplayTag GetGameplayTagFormAbilitySpec(const FGameplayAbilitySpec& GameplayAbilitySpec);
 	static FGameplayTag GetInputTagFormAbilitySpec(const FGameplayAbilitySpec& GameplayAbilitySpec);
+	static FGameplayTag GetStatusFromSpec(const FGameplayAbilitySpec& GameplayAbilitySpec);
+
+	FGameplayAbilitySpec* GetAbilitySpecFromAbilityTag(const FGameplayTag& AbilityTag);
 
 	void UpgradeAttribute(const FGameplayTag& GameplayTag);
 
@@ -36,13 +40,19 @@ public:
 	
 	FEffectAssetTags EffectAssetTags;
 	FAbilitiesGiven AbilitiesGivenDelegate;
+	FAbilitiesStatusChanged AbilitiesStatusChanged;
 
 	bool bStartUpAbilitiesGiven = false;
+
+	void UpdateAbilityStatuses(int32 Level);
 
 
 protected:
 	UFUNCTION(Client, Reliable)
 	void ClintEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
+
+	UFUNCTION(Client, Reliable)
+	void ClintUpdateAbilitiesStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag);
 	virtual void OnRep_ActivateAbilities() override;
 };
 

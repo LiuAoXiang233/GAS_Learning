@@ -295,8 +295,64 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 	);
 
 	GameplayTags.CoolDown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("CoolDown.Fire.FireBolt"),
-		FString("火焰箭冷却")
+			FName("CoolDown.Fire.FireBolt"),
+			FString("火焰箭冷却")
+		);
+
+	GameplayTags.Abilities_Electro_ElectroBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Electro.ElectroBolt"),
+		FString("闪电箭")
 	);
+
+	GameplayTags.CoolDown_Electro_ElectroBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
+			FName("CoolDown.Electro.ElectroBolt"),
+			FString("闪电箭冷却")
+		);
 	
+	GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.HitReact"),
+		FString("受到攻击技能。")
+	);
+
+	/*
+	 *	Ability Status
+	 */
+	GameplayTags.Abilities_Status_Eligible = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Eligible"),
+		FString("Eligible Status")
+	);
+
+	GameplayTags.Abilities_Status_Equipped = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Equipped"),
+		FString("Equipped Status")
+	);
+
+	GameplayTags.Abilities_Status_Locked = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Locked"),
+		FString("Locked Status")
+	);
+
+	GameplayTags.Abilities_Status_Unlocked = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Unlocked"),
+		FString("Unlocked Status")
+	);
+
+	/*
+	 *	Ability Type
+	 * 
+	 */
+	GameplayTags.Abilities_Type_Other = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Type.Other"),
+		FString("Other Abilities type")
+	);
+
+	GameplayTags.Abilities_Type_Offensive = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Type.Offensive"),
+		FString("Offensive Abilities type")
+	);
+
+	GameplayTags.Abilities_Type_Passive = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Type.Passive"),
+		FString("Passive Abilities type")
+	);
 }
