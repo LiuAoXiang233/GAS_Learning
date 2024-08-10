@@ -166,6 +166,36 @@ void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& GameplayT
 	}
 }
 
+void UAuraAbilitySystemComponent::ServerSpendSpellPoints_Implementation(const FGameplayTag& GameplayTag)
+{
+	if (FGameplayAbilitySpec* AbilitySpec = GetAbilitySpecFromAbilityTag(GameplayTag))
+	{
+
+		if (GetAvatarActor()->Implements<UPlayerInterface>())
+		{
+			IPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(), -1);
+		}
+		
+		
+		FAuraGameplayTags Tags = FAuraGameplayTags::Get();
+		FGameplayTag StatusTag = GetStatusFromSpec(*AbilitySpec);
+
+		if (StatusTag.MatchesTagExact(Tags.Abilities_Status_Eligible))
+		{
+			AbilitySpec->DynamicAbilityTags.RemoveTag(Tags.Abilities_Status_Eligible);
+			AbilitySpec->DynamicAbilityTags.AddTag(Tags.Abilities_Status_Unlocked);
+			
+		}
+		else if (StatusTag.MatchesTagExact(Tags.Abilities_Status_Equipped)|| StatusTag.MatchesTagExact(Tags.Abilities_Status_Unlocked))
+		{
+			AbilitySpec->Level += 1;
+		}
+
+		ClintUpdateAbilitiesStatus(GameplayTag, GetStatusFromSpec(*AbilitySpec), AbilitySpec->Level);
+		MarkAbilitySpecDirty(*AbilitySpec);
+	}
+}
+
 void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& GameplayTag)
 {
 	FGameplayEventData Payload;
@@ -193,14 +223,14 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
 			Spec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
 			GiveAbility(Spec);
 			MarkAbilitySpecDirty(Spec);
-			ClintUpdateAbilitiesStatus(AbilityInfo.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible);
+			ClintUpdateAbilitiesStatus(AbilityInfo.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible, 1);
 		}
 	}
 }
 
-void UAuraAbilitySystemComponent::ClintUpdateAbilitiesStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
+void UAuraAbilitySystemComponent::ClintUpdateAbilitiesStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag,  int32 AbilityLevel)
 {
-	AbilitiesStatusChanged.Broadcast(AbilityTag, StatusTag);
+	AbilitiesStatusChanged.Broadcast(AbilityTag, StatusTag, AbilityLevel);
 }
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()

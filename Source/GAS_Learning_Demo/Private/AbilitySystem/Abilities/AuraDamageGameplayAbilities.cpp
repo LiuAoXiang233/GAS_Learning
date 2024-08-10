@@ -8,11 +8,11 @@
 
 void UAuraDamageGameplayAbilities::CauseDamage(AActor* Target)
 {
-	FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1.f);
+	FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 
 	for (TTuple<FGameplayTag, FScalableFloat> Pair : DamageTypes)
 	{
-		const float ScaledDamage = Pair.Value.GetValueAtLevel(AbilityLevel);
+		const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(GameplayEffectSpecHandle, Pair.Key, ScaledDamage);
 	}
 

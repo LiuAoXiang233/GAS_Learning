@@ -18,6 +18,5 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	FGameplayTag StartUpGameplayTag;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-	float AbilityLevel = 1.f;
+	
 };

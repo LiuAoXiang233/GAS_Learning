@@ -288,6 +288,11 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 		FName("Abilities.Attack"),
 		FString("Attack Ability Tag")
 	);
+
+	GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.None"),
+		FString("None Ability")
+	);
 	
 	GameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Fire.FireBolt"),
