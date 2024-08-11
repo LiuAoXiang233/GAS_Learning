@@ -5,10 +5,17 @@
 
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/Data/AttributeInfo.h"
 #include "Player/AuraPlayerState.h"
 
 void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityTag)
 {
+	if (bWaitingForEquipSelection)
+	{
+		FGameplayTag AbilityType = AbilityInfo->FindAbilityInfoForTag(AbilityTag).AbilityType;
+		EndWaitForEquippedDelegate.Broadcast(AbilityType);
+		bWaitingForEquipSelection = false;
+	}
 	const int32 SpellPoints = GetAuraPS()->GetSpellPoints();
 	const bool bTagisValid = AbilityTag.IsValid();
 	const FAuraGameplayTags Tags = FAuraGameplayTags::Get();
@@ -43,6 +50,15 @@ void USpellMenuWidgetController::SpendPointButtonPressed()
 	{
 		GetAuraASC()->ServerSpendSpellPoints(ClickedGlobeData.AbilityTag);
 	}
+	
+}
+
+void USpellMenuWidgetController::EquipButtonPressed()
+{
+	const FGameplayTag AbilityType = AbilityInfo->FindAbilityInfoForTag(ClickedGlobeData.AbilityTag).AbilityType;
+	WaitForEquippedDelegate.Broadcast(AbilityType);
+	
+	bWaitingForEquipSelection = true;
 	
 }
 
@@ -92,6 +108,20 @@ void USpellMenuWidgetController::BindCallBackToDependencies()
 			GetAuraASC()->GetDescriptionByAbilityTag(ClickedGlobeData.AbilityTag, Description, NextLevelDescription);
 			SpellGlobeSelectedDelegate.Broadcast(bSpendPointsButton, bEquippedButton, Description, NextLevelDescription);
 		});
+}
+
+void USpellMenuWidgetController::GlobeDiselect()
+{
+	if (bWaitingForEquipSelection)
+	{
+		FGameplayTag AbilityType = AbilityInfo->FindAbilityInfoForTag(ClickedGlobeData.AbilityTag).AbilityType;
+		EndWaitForEquippedDelegate.Broadcast(AbilityType);
+		bWaitingForEquipSelection = false;
+	}
+	ClickedGlobeData.AbilityTag = FAuraGameplayTags::Get().Abilities_None;
+	ClickedGlobeData.AbilityStatusTag = FAuraGameplayTags::Get().Abilities_Status_Locked;
+	SpellGlobeSelectedDelegate.Broadcast(false, false, FString(), FString());
+
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatusTag, int32 SpellPoints,bool& bSpendPointsButton, bool& bEquippedButton)

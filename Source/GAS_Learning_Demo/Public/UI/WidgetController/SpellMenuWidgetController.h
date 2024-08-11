@@ -21,6 +21,7 @@ struct FCurrentSpellGlobeData
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpellPointsChanged, int32, SpellPoints);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnSpellGlobeSelectedSignature, bool, SpendPointsButton, bool, EquippedButton, FString, Description, FString, NextLevelDescription);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForEquipSelectionSignature, const FGameplayTag&, AbilityType);
 
 
 UCLASS(BlueprintType, Blueprintable)
@@ -36,20 +37,33 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Spell")
 	FOnSpellGlobeSelectedSignature SpellGlobeSelectedDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Spell")
+	FWaitForEquipSelectionSignature WaitForEquippedDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Spell")
+	FWaitForEquipSelectionSignature EndWaitForEquippedDelegate;
+
 	UFUNCTION(BlueprintCallable)
 	void SpellGlobeSelected(const FGameplayTag& AbilityTag);
 
 	UFUNCTION(BlueprintCallable)
 	void SpendPointButtonPressed();
+
+	UFUNCTION(BlueprintCallable)
+	void EquipButtonPressed();
 	
 	virtual void BroadcastInitalValues() override;
 	virtual void BindCallBackToDependencies() override;
 
+	UFUNCTION(BlueprintCallable)
+	void GlobeDiselect();
 	
-
+	FCurrentSpellGlobeData ClickedGlobeData {FAuraGameplayTags::Get().Abilities_None, FAuraGameplayTags::Get().Abilities_Status_Locked};
 private:
 	void ShouldEnableButtons(const FGameplayTag& AbilityStatusTag, int32 SpellPoints, bool& bSpendPointsButton, bool& bEquippedButton);
 
-	FCurrentSpellGlobeData ClickedGlobeData {FAuraGameplayTags::Get().Abilities_None, FAuraGameplayTags::Get().Abilities_Status_Locked};
+	
 	int32 CurrentSpellPoints = 0;
+
+	bool bWaitingForEquipSelection = false;
 };
