@@ -48,6 +48,8 @@ public:
 
 	void UpdateAbilityStatuses(int32 Level);
 
+	bool GetDescriptionByAbilityTag(const FGameplayTag& AbilityTag, FString& Description, FString& NextLevelDescription);
+
 
 protected:
 	UFUNCTION(Client, Reliable)

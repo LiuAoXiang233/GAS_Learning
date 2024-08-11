@@ -228,6 +228,24 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
 	}
 }
 
+bool UAuraAbilitySystemComponent::GetDescriptionByAbilityTag(const FGameplayTag& AbilityTag, FString& Description,FString& NextLevelDescription)
+{
+	if (FGameplayAbilitySpec* AbilitySpec = GetAbilitySpecFromAbilityTag(AbilityTag))
+	{
+		if (UAuraGameplayAbilities* Ability = Cast<UAuraGameplayAbilities>(AbilitySpec->Ability))
+		{
+			Description = Ability->GetDescription(AbilitySpec->Level);
+			NextLevelDescription = Ability->GetNextLevelDescription(AbilitySpec->Level + 1);
+			return true;
+		}
+	}
+	
+	UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+	Description = UAuraGameplayAbilities::GetLockedDescription(AbilityInfo->FindAbilityInfoForTag(AbilityTag).LevelRequirement);
+	NextLevelDescription = FString();
+	return false;
+}
+
 void UAuraAbilitySystemComponent::ClintUpdateAbilitiesStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag,  int32 AbilityLevel)
 {
 	AbilitiesStatusChanged.Broadcast(AbilityTag, StatusTag, AbilityLevel);

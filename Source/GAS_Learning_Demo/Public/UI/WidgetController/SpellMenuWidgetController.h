@@ -20,7 +20,7 @@ struct FCurrentSpellGlobeData
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpellPointsChanged, int32, SpellPoints);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpellGlobeSelectedSignature, bool, SpendPointsButton, bool, EquippedButton);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnSpellGlobeSelectedSignature, bool, SpendPointsButton, bool, EquippedButton, FString, Description, FString, NextLevelDescription);
 
 
 UCLASS(BlueprintType, Blueprintable)

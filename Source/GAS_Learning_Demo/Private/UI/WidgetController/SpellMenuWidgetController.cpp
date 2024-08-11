@@ -30,7 +30,11 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 	bool bSpendPointsButton = false;
 	bool bEquippedButton = false;
 	ShouldEnableButtons(AbilityStatus, SpellPoints, bSpendPointsButton, bEquippedButton);
-	SpellGlobeSelectedDelegate.Broadcast(bSpendPointsButton, bEquippedButton);
+
+	FString Description;
+	FString NextLevelDescription;
+	GetAuraASC()->GetDescriptionByAbilityTag(AbilityTag, Description, NextLevelDescription);
+	SpellGlobeSelectedDelegate.Broadcast(bSpendPointsButton, bEquippedButton, Description, NextLevelDescription);
 }
 
 void USpellMenuWidgetController::SpendPointButtonPressed()
@@ -60,7 +64,11 @@ void USpellMenuWidgetController::BindCallBackToDependencies()
 				bool bSpendPointsButton = false;
 				bool bEquippedButton = false;
 				ShouldEnableButtons(StatusTag, CurrentSpellPoints, bSpendPointsButton, bEquippedButton);
-				SpellGlobeSelectedDelegate.Broadcast(bSpendPointsButton, bEquippedButton);
+
+				FString Description;
+				FString NextLevelDescription;
+				GetAuraASC()->GetDescriptionByAbilityTag(AbilityTag, Description, NextLevelDescription);
+				SpellGlobeSelectedDelegate.Broadcast(bSpendPointsButton, bEquippedButton, Description, NextLevelDescription);
 			}
 			if (AbilityInfo)
 			{
@@ -79,7 +87,10 @@ void USpellMenuWidgetController::BindCallBackToDependencies()
 			bool bSpendPointsButton = false;
 			bool bEquippedButton = false;
 			ShouldEnableButtons(ClickedGlobeData.AbilityStatusTag, CurrentSpellPoints, bSpendPointsButton, bEquippedButton);
-			SpellGlobeSelectedDelegate.Broadcast(bSpendPointsButton, bEquippedButton);
+			FString Description;
+			FString NextLevelDescription;
+			GetAuraASC()->GetDescriptionByAbilityTag(ClickedGlobeData.AbilityTag, Description, NextLevelDescription);
+			SpellGlobeSelectedDelegate.Broadcast(bSpendPointsButton, bEquippedButton, Description, NextLevelDescription);
 		});
 }
 
