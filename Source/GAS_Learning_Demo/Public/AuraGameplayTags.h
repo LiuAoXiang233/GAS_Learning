@@ -127,6 +127,20 @@ public:
 	FGameplayTag Abilities_Type_Offensive;
 	FGameplayTag Abilities_Type_Passive;
 	FGameplayTag Abilities_Type_Other;
+
+	/*
+	 *	Debuff Tags
+	 * 
+	 */
+
+	FGameplayTag Debuff_Burn;
+	FGameplayTag Debuff_Stun;
+
+	FGameplayTag Debuff_Damage;
+	FGameplayTag Debuff_Duration;
+	FGameplayTag Debuff_Frequence;
+	FGameplayTag Debuff_Chance;
+
 	
 	/*
 	 *	Attack Montage
@@ -138,6 +152,8 @@ public:
 
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuffs;
+	
 	FGameplayTag Effect_HitReact;
 
 	

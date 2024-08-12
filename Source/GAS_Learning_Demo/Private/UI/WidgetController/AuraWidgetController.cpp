@@ -40,7 +40,7 @@ void UAuraWidgetController::BroadcastAbilityInfo()
 		AbilityInfoDelegate.Broadcast(Info);
 	});
 
-	// 这个函数的意义在于遍历ASC里所有可以激活的Ability，并让各个AbilitySoec作为参数执行上面的Lambda函数。
+	// 这个函数的意义在于遍历ASC里所有可以激活的Ability，强制让各个AbilitySoec作为参数执行上面的Lambda函数。
 	GetAuraASC()->ForEachAbility(Delegate);
 }
 

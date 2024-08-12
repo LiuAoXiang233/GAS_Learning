@@ -3,14 +3,13 @@
 
 #include "AbilitySystem/Abilities/AuraFireBolt.h"
 
-#include "AuraGameplayTags.h"
 
 FString UAuraFireBolt::GetDescription(int32 Level)
 {
 	const float Cost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = FMath::Abs(GetCooldown(Level));
 	
-	float ScaledDamage = GetDamageByDamageType(Level, FAuraGameplayTags::Get().Damage_Fire);
+	float ScaledDamage = Damage.GetValueAtLevel(Level);
 	
 	if (Level == 1)
 	{
@@ -58,7 +57,7 @@ FString UAuraFireBolt::GetNextLevelDescription(int32 Level)
 	const float Cost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = FMath::Abs(GetCooldown(Level));
 
-	float ScaledDamage = GetDamageByDamageType(Level, FAuraGameplayTags::Get().Damage_Fire);
+	float ScaledDamage = Damage.GetValueAtLevel(Level);
 	
 	if (Level > 5)
 	{

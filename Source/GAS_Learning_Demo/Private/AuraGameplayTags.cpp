@@ -360,4 +360,35 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 		FName("Abilities.Type.Passive"),
 		FString("Passive Abilities type")
 	);
+
+	/*
+	 *	Debuff Tags
+	 * 
+	 */
+	GameplayTags.Debuff_Burn = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Burn"),
+		FString("燃烧效果，给敌人造成持续伤害"));
+
+	GameplayTags.Debuff_Stun = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Stun"),
+		FString("眩晕效果，敌人无法行动"));
+	
+	GameplayTags.Debuff_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Damage"),
+		FString("Debuff造成的伤害"));
+	
+	GameplayTags.Debuff_Duration = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Duration"),
+		FString("Debuff的持续时间"));
+	
+	GameplayTags.Debuff_Frequence = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Frequence"),
+		FString("Debuff的触发频率"));
+
+	GameplayTags.Debuff_Chance = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Chance"),
+		FString("Debuff的触发概率"));
+
+	GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Fire, GameplayTags.Debuff_Burn);
+	GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Electro, GameplayTags.Debuff_Stun);
 }

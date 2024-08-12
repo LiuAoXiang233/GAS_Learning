@@ -59,6 +59,12 @@ void USpellMenuWidgetController::EquipButtonPressed()
 	WaitForEquippedDelegate.Broadcast(AbilityType);
 	
 	bWaitingForEquipSelection = true;
+
+	const FGameplayTag StatusTag = GetAuraASC()->GetStatusFromAbilityTag(ClickedGlobeData.AbilityTag);
+	if (StatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Status_Equipped))
+	{
+		SelectedSlot = GetAuraASC()->GetInputTagFromAbilityTag(ClickedGlobeData.AbilityTag);
+	}
 	
 }
 
@@ -94,6 +100,8 @@ void USpellMenuWidgetController::BindCallBackToDependencies()
 			}
 		});
 
+	GetAuraASC()->AbilityEquip.AddUObject(this, &USpellMenuWidgetController::OnAbilityEquipped);
+	
 	GetAuraPS()->OnSpellPointsChangedDelegate.AddLambda(
 		[this] (int32 SpellPoints)
 		{
@@ -124,6 +132,38 @@ void USpellMenuWidgetController::GlobeDiselect()
 
 }
 
+void USpellMenuWidgetController::SpellRowGlobePressed(const FGameplayTag& SlotTag, const FGameplayTag& AbilityType)
+{
+	if (!bWaitingForEquipSelection) return;
+	const FGameplayTag SelectedAbilityType = AbilityInfo->FindAbilityInfoForTag(ClickedGlobeData.AbilityTag).AbilityType;
+	if (!SelectedAbilityType.MatchesTagExact(AbilityType)) return;
+
+	
+	GetAuraASC()->ServerEquipAbility(ClickedGlobeData.AbilityTag, SlotTag);
+		
+	
+}
+
+void USpellMenuWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& Status,
+	const FGameplayTag& Slot, const FGameplayTag& PreSlot)
+{
+	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	bWaitingForEquipSelection = false;
+
+	FAuraAbilityInfo PreInfo;
+	PreInfo.AbilityTag = GameplayTags.Abilities_None;
+	PreInfo.StatusTag = GameplayTags.Abilities_Status_Unlocked;
+	PreInfo.InputTag = PreSlot;
+	AbilityInfoDelegate.Broadcast(PreInfo);
+
+	FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+	Info.StatusTag = Status;
+	Info.InputTag = Slot;
+	AbilityInfoDelegate.Broadcast(Info);
+
+	EndWaitForEquippedDelegate.Broadcast( AbilityInfo->FindAbilityInfoForTag(ClickedGlobeData.AbilityTag).AbilityType);
+}
+
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatusTag, int32 SpellPoints,bool& bSpendPointsButton, bool& bEquippedButton)
 {
 	FAuraGameplayTags Tags = FAuraGameplayTags::Get();
@@ -141,12 +181,12 @@ void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& Ability
 		bSpendPointsButton = false;
 		bEquippedButton = false;
 	}
-	else if (AbilityStatusTag.MatchesTag(Tags.Abilities_Status_Eligible) || AbilityStatusTag.MatchesTag(Tags.Abilities_Status_Equipped))
+	else if (AbilityStatusTag.MatchesTag(Tags.Abilities_Status_Eligible))
 	{
 		bEquippedButton = false;
 		
 	}
-	else if (AbilityStatusTag.MatchesTag(Tags.Abilities_Status_Unlocked))
+	else if (AbilityStatusTag.MatchesTag(Tags.Abilities_Status_Unlocked)|| AbilityStatusTag.MatchesTag(Tags.Abilities_Status_Equipped))
 	{
 		bEquippedButton = true;
 	}
