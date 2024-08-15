@@ -2,7 +2,7 @@
 
 
 #include "AbilitySystem/AuraAttributeSet.h"
-
+#include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
@@ -208,14 +208,154 @@ void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
 }
 
 
+void UAuraAttributeSet::Debuff(FEffectProperties Props)
+{
+	const float DebuffDamage = UAuraAbilitySystemLibrary::GetDebuffDemage(Props.EffectContextHandle);
+	const float DebuffDuration = UAuraAbilitySystemLibrary::GetDebuffDuration(Props.EffectContextHandle);
+	const float DebuffFrequency = UAuraAbilitySystemLibrary::GetDebuffFrequency(Props.EffectContextHandle);
+
+	FGameplayTag DamageType = UAuraAbilitySystemLibrary::GetDemageType(Props.EffectContextHandle);
+	FString EffectName = FString::Printf(TEXT("DynamicDebuff_%s"), *DamageType.ToString());
+	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(EffectName));
+
+	Effect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
+	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
+	Effect->Period = DebuffFrequency;
+	Effect->StackLimitCount = 1;
+	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
+	Effect->AddComponent<UTargetTagsGameplayEffectComponent>();
+	FInheritedTagContainer InheritedTagContainer;
+	FGameplayTagContainer TagContainer(FAuraGameplayTags::Get().DamageTypesToDebuffs[DamageType]);
+	InheritedTagContainer.Added = TagContainer;
+	Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>().SetAndApplyTargetTagChanges(InheritedTagContainer);
+	
+
+	int32 Index = Effect->Modifiers.Num();
+	Effect->Modifiers.Add(FGameplayModifierInfo());
+	FGameplayModifierInfo& ModifierInfo =Effect->Modifiers[Index];
+	ModifierInfo.Attribute = UAuraAttributeSet::GetIncomingDamageAttribute();
+	ModifierInfo.ModifierMagnitude = FScalableFloat(DebuffDamage);
+	ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+
+
+	FGameplayEffectContextHandle ContextHandle = Props.SourceASC->MakeEffectContext();
+	ContextHandle.AddSourceObject(Props.SourceAvatarActor);
+
+	if (FGameplayEffectSpec* Spec = new FGameplayEffectSpec(Effect, ContextHandle, 1.f))
+	{
+		FAuraGameplayEffectContext* AuraGameplayEffectContext = static_cast<FAuraGameplayEffectContext*>(Spec->GetContext().Get());
+		TSharedPtr<FGameplayTag> DebuffDamageType = MakeShareable(new FGameplayTag(DamageType));
+		AuraGameplayEffectContext->SetDemageType(DebuffDamageType);
+
+		Props.TargetASC->ApplyGameplayEffectSpecToSelf(*Spec);
+	}
+}
+
+void UAuraAttributeSet::HandleIncomingDamage(FEffectProperties Props)
+{
+	// GetIncomingDamage 在蓝图中设置的时候一定 设置为 正数
+	const float LocalIncomingDamage = GetIncomingDamage();
+	SetIncomingDamage(0.f);
+	if (LocalIncomingDamage > 0.f)
+	{
+		const float NewHealth = GetHealth() - LocalIncomingDamage;
+		SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHP()));
+		const bool bFatal = NewHealth <= 0.f;
+
+			
+		if (bFatal)
+		{
+
+			// 如果敌人收到伤害死亡
+			ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+			if(CombatInterface)
+			{
+				CombatInterface->Die();
+			}
+
+			SendXPEvent(Props);
+				
+		}
+		else
+		{
+			// 如果收到伤害没有死亡
+			FGameplayTagContainer TagContainer;
+			TagContainer.AddTag(FAuraGameplayTags::Get().Effect_HitReact);
+                				
+			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+				
+		}
+
+		const bool bIsBolckedHit =UAuraAbilitySystemLibrary::IsBolckedHit(Props.EffectContextHandle);
+		const bool bIsCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
+		ShowDamageText(Props, LocalIncomingDamage, bIsBolckedHit, bIsCriticalHit);
+
+		// 如果受到了 Debuff
+		if (UAuraAbilitySystemLibrary::IsSuccessfulDebuff(Props.EffectContextHandle))
+		{
+			Debuff(Props);
+		}
+	}
+}
+
+void UAuraAttributeSet::HandleIncomingXP(const FGameplayEffectModCallbackData& Data, FEffectProperties Props)
+{
+	// 不知道为什么 GetIncomingXP 获取不到玩家的XP，
+	const float LocalIncomingXP = Data.EffectSpec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Attribute_Meta_IncomingXP);
+	;
+	SetIncomingXP(0.f);
+	//UE_LOG(LogTemp, Warning, TEXT("Get XP [%f]"), LocalIncomingXP);
+
+	if (Props.SourceCharacter->Implements<UPlayerInterface>() && Props.SourceCharacter->Implements<UCombatInterface>())
+	{
+		const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
+		const int32 CurrentLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP);
+
+		const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
+
+		const int32 NumOfLevel = NewLevel - CurrentLevel;
+
+		if (NumOfLevel > 0)
+		{
+			// 如果升级了
+			// TODO: 获取属性点 和 技能点， 并且回复自身血量和蓝量
+			const int32 AttributePoints = IPlayerInterface::Execute_GetRewardAttributePoints(Props.SourceCharacter, CurrentLevel);
+			const int32 SpellPoints = IPlayerInterface::Execute_GetRewardSpellPoints(Props.SourceCharacter, CurrentLevel);
+
+			IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumOfLevel);
+			IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPoints);
+			IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePoints);
+
+			// 升级后恢复血量和蓝量
+			bTopOffHP = true;
+			bTopOffMP = true;
+				
+				
+			IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
+
+		}
+			
+			
+		IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
+	}
+}
+
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
-
+	
 	// 保存信息，利于回滚
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
 
+	if (Props.TargetCharacter->Implements<UCombatInterface>())
+	{
+		if (ICombatInterface::Execute_IsDead(Props.TargetCharacter))
+		{
+			return;
+		}
+	}
+	
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHP()));
@@ -230,86 +370,13 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
 
-		// GetIncomingDamage 在蓝图中设置的时候一定 设置为 正数
-		const float LocalIncomingDamage = GetIncomingDamage();
-		SetIncomingDamage(0.f);
-		if (LocalIncomingDamage > 0.f)
-		{
-			const float NewHealth = GetHealth() - LocalIncomingDamage;
-			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHP()));
-			const bool bFatal = NewHealth <= 0.f;
-
-			
-			if (bFatal)
-			{
-
-				// 如果敌人收到伤害死亡
-				ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
-				if(CombatInterface)
-				{
-					CombatInterface->Die();
-				}
-
-				SendXPEvent(Props);
-				
-			}
-			else
-			{
-				// 如果收到伤害没有死亡
-				FGameplayTagContainer TagContainer;
-				TagContainer.AddTag(FAuraGameplayTags::Get().Effect_HitReact);
-                				
-				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
-				
-			}
-
-			const bool bIsBolckedHit =UAuraAbilitySystemLibrary::IsBolckedHit(Props.EffectContextHandle);
-			const bool bIsCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
-			ShowDamageText(Props, LocalIncomingDamage, bIsBolckedHit, bIsCriticalHit);
-		}
+		HandleIncomingDamage(Props);
 	}
 
 
 	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
 	{
-		// 不知道为什么 GetIncomingXP 获取不到玩家的XP，
-		const float LocalIncomingXP = Data.EffectSpec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Attribute_Meta_IncomingXP);
-;
-		SetIncomingXP(0.f);
-		//UE_LOG(LogTemp, Warning, TEXT("Get XP [%f]"), LocalIncomingXP);
-
-		if (Props.SourceCharacter->Implements<UPlayerInterface>() && Props.SourceCharacter->Implements<UCombatInterface>())
-		{
-			const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
-			const int32 CurrentLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP);
-
-			const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
-
-			const int32 NumOfLevel = NewLevel - CurrentLevel;
-
-			if (NumOfLevel > 0)
-			{
-				// 如果升级了
-				// TODO: 获取属性点 和 技能点， 并且回复自身血量和蓝量
-				const int32 AttributePoints = IPlayerInterface::Execute_GetRewardAttributePoints(Props.SourceCharacter, CurrentLevel);
-				const int32 SpellPoints = IPlayerInterface::Execute_GetRewardSpellPoints(Props.SourceCharacter, CurrentLevel);
-
-				IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumOfLevel);
-				IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPoints);
-				IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePoints);
-
-				// 升级后恢复血量和蓝量
-				bTopOffHP = true;
-				bTopOffMP = true;
-				
-				
-				IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
-
-			}
-			
-			
-			IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
-		}
+		HandleIncomingXP(Data, Props);
 	}
 
 	

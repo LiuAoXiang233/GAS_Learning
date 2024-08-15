@@ -56,10 +56,19 @@ struct FAuraGameplayEffectContext : public FGameplayEffectContext
 public:
 	bool IsCriticalHit() const {return  bIsCriticalHit;}
 	bool IsBlockedHit() const  {return  bIsBlockedHit;}
+	bool IsSuccessfulDebuff() const {return bIsSuccessfulDebuff;}
+	float GetDebuffDemage() const {return DebuffDamage;}
+	float GetDebuffDuration() const {return DebuffDuration;}
+	float GetDebuffFrequence() const {return DebuffFrequence;}
+	TSharedPtr<FGameplayTag> GetDemageType() const {return DemageType;}
 
 	void SetIsCriticalHit(bool bInIsCriticalHit) { bIsCriticalHit = bInIsCriticalHit; }
 	void SetIsBlockedHit(bool bInIsBlockedHit) { bIsBlockedHit = bInIsBlockedHit; }
-
+	void SetIsSuccessfulDebuff(bool bInIsSucessfulDebuff) {bIsSuccessfulDebuff = bInIsSucessfulDebuff;}
+	void SetDebuffDemage(float InDebuffDemage) {DebuffDamage = InDebuffDemage;}
+	void SetDebuffDuration(float InDebuffDuration) {DebuffDuration = InDebuffDuration;}
+	void SetDebuffFrequence(float InDebuffFrequence) {DebuffFrequence = InDebuffFrequence;}
+	void SetDemageType(TSharedPtr<FGameplayTag> InDemageType) {DemageType = InDemageType;}
 	
 	
 	/** Returns the actual struct used for serialization, subclasses must override this! */
@@ -91,6 +100,20 @@ protected:
 	
 	UPROPERTY()
 	bool bIsCriticalHit = false;
+
+	UPROPERTY()
+	bool bIsSuccessfulDebuff = false;
+
+	UPROPERTY()
+	float DebuffDamage = 0.f;
+
+	UPROPERTY()
+	float DebuffDuration = 0.f;
+
+	UPROPERTY()
+	float DebuffFrequence = 0.f;
+
+	TSharedPtr<FGameplayTag> DemageType;
 };
 
 template<>

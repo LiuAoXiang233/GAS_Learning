@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemComponent.h"
 #include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
@@ -31,6 +32,9 @@ class UAnimMontage;
 /**
  * 
  */
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, AActor*, DeadActor);
 class GAS_LEARNING_DEMO_API ICombatInterface
 {
 	GENERATED_BODY()
@@ -65,4 +69,8 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	ECharacterClass GetCharacterClass();
+
+	virtual FOnASCRegistered GetOnAscRegisteredDelegate() = 0;
+	virtual FOnDeath GetOnDeathDelegate() = 0;
+
 };

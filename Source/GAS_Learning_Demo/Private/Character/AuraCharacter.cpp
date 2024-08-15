@@ -156,6 +156,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 	
 	AttributeSet = AuraPlayerState->GetAttributeSet();
 
+	OnAscRegistered.Broadcast(AbilitySystemComponent);
 	// 在多人游戏中，该AuraPlayerController可以为null
 	if(AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController> (GetController()))
 	{

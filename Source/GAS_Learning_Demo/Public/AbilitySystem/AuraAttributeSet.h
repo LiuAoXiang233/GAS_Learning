@@ -322,6 +322,9 @@ private:
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 	void ShowDamageText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit);
 	void SendXPEvent(const FEffectProperties& Props);
+	void Debuff(FEffectProperties Props);
+	void HandleIncomingDamage(FEffectProperties Props);
+	void HandleIncomingXP(const FGameplayEffectModCallbackData& Data, FEffectProperties Props);
 
 	bool bTopOffHP = false;
 	bool bTopOffMP = false;

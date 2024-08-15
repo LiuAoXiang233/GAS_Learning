@@ -16,6 +16,10 @@ AAuraCharacterBase::AAuraCharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	FireDebuffNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("Burn Debuff Niagara");
+	FireDebuffNiagaraComponent->SetupAttachment(GetRootComponent());
+	FireDebuffNiagaraComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Burn;
+
 	// 创建Weapon组件，并把该组件附加到Character的模型组件下，并忽略其碰撞
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
@@ -68,6 +72,8 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
 	bDead = true;
+
+	OnDeath.Broadcast(this);
 	
 }
 
@@ -118,6 +124,16 @@ TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation()
 ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation()
 {
 	return CharacterClass;
+}
+
+FOnASCRegistered AAuraCharacterBase::GetOnAscRegisteredDelegate()
+{
+	return OnAscRegistered;
+}
+
+FOnDeath AAuraCharacterBase::GetOnDeathDelegate()
+{
+	return OnDeath;
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()
