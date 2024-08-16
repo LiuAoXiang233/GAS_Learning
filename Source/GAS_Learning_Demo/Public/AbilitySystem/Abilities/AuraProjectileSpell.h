@@ -25,6 +25,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnProjectile(const FVector& TargetLocation);
 
+
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

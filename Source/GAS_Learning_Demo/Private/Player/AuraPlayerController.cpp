@@ -11,6 +11,7 @@
 #include "Character/EnemyCharacter.h"
 #include "Components/SplineComponent.h"
 #include "Input/AuraInputComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "UI/Widget/DamageTextComponent.h"
 
 
@@ -244,7 +245,7 @@ void AAuraPlayerController::AbilityInputTagReleased(const FGameplayTag InputTag)
 					CachedDestination = Path->PathPoints[Path->PathPoints.Num() - 1];
 					bAutoRunning = true;
 				}
-				
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
 			}
 		}
 		bTargeting = false;

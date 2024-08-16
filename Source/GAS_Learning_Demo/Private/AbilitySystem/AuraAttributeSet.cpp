@@ -265,13 +265,14 @@ void UAuraAttributeSet::HandleIncomingDamage(FEffectProperties Props)
 			
 		if (bFatal)
 		{
-
 			// 如果敌人收到伤害死亡
 			ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
 			if(CombatInterface)
 			{
-				CombatInterface->Die();
+				CombatInterface->Die(UAuraAbilitySystemLibrary::GetDeathImpulse(Props.EffectContextHandle));
 			}
+
+			
 
 			SendXPEvent(Props);
 				
@@ -281,8 +282,11 @@ void UAuraAttributeSet::HandleIncomingDamage(FEffectProperties Props)
 			// 如果收到伤害没有死亡
 			FGameplayTagContainer TagContainer;
 			TagContainer.AddTag(FAuraGameplayTags::Get().Effect_HitReact);
-                				
 			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+
+			// 受击跳起来
+			const FVector Knockback = UAuraAbilitySystemLibrary::GetKnockbackVector(Props.EffectContextHandle);
+			Props.TargetCharacter->LaunchCharacter(Knockback, true, true);
 				
 		}
 

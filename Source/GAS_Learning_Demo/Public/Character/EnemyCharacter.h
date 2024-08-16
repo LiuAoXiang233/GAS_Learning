@@ -61,7 +61,7 @@ public:
 	 *	CombatInterface
 	 */
 	virtual int32 GetCharacterLevel_Implementation() override;
-	virtual void Die() override;
+	virtual void Die(const FVector& DeathImpulse) override;
 	/*
 	 *	End CombatInterface
 	 */
