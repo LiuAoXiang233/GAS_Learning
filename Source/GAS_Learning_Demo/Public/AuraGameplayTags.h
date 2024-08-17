@@ -156,6 +156,16 @@ public:
 	
 	FGameplayTag Effect_HitReact;
 
+	/*
+	 *
+	 *	Ability Block Tag
+	 */
+	FGameplayTag Player_Block_InputPressed;
+	FGameplayTag Player_Block_InputHeld;
+	FGameplayTag Player_Block_InputRealsed;
+	FGameplayTag Player_Block_CurseTrace;
+
+
 	
 private:
 	static  FAuraGameplayTags GameplayTags;

@@ -391,4 +391,21 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 
 	GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Fire, GameplayTags.Debuff_Burn);
 	GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Electro, GameplayTags.Debuff_Stun);
+
+	/*
+	 *	Player Tags
+	 * 
+	 */
+	GameplayTags.Player_Block_CurseTrace = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.CurseTrace"),
+		FString("阻挡Tag，鼠标追踪"));
+	GameplayTags.Player_Block_InputHeld = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.InputHeld"),
+		FString("阻挡Tag，InputHeld"));
+	GameplayTags.Player_Block_InputPressed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.InputPressed"),
+		FString("阻挡Tag，InputPressed"));
+	GameplayTags.Player_Block_InputRealsed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.InputReleased"),
+		FString("阻挡Tag，InputReleased"));
 }
