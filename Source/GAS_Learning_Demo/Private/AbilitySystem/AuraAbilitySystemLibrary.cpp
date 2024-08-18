@@ -9,6 +9,7 @@
 #include "AuraGameplayTags.h"
 #include "Game/AuraGameModeBase.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/EnemyInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -380,6 +381,38 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(const UObject* WorldCo
 			}
 		}
 	}
+}
+
+void UAuraAbilitySystemLibrary::GetClosestTarget(int32 MaxNum, const TArray<AActor*>& Actors, TArray<AActor*>& OutTargetActors, const FVector& Origin)
+{
+	if (Actors.Num() <= MaxNum)
+	{
+		OutTargetActors = Actors;
+		return;
+	}
+	TArray<AActor*> ActorsCheck = Actors;
+	int32 NumFoundTarget = 0;
+
+	while(NumFoundTarget < MaxNum)
+	{
+		if (ActorsCheck.Num() == 0) break;;
+		AActor* ClosestActor;
+		double ClosestDistance = TNumericLimits<double>::Max();
+
+		for (AActor* Actor : ActorsCheck)
+		{
+			double Distance = (Actor->GetActorLocation() - Origin).Length();
+			if (Distance < ClosestDistance)
+			{
+				ClosestDistance = Distance;
+				ClosestActor = Actor;
+			}
+		}
+		ActorsCheck.Remove(ClosestActor);
+		OutTargetActors.AddUnique(ClosestActor);
+		NumFoundTarget += 1;
+	}
+	
 }
 
 TArray<FRotator> UAuraAbilitySystemLibrary::EvenlySpacedRotators(const FVector& Forward, const FVector& Axis, float Spread, int32 NumRotators)

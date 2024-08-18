@@ -26,6 +26,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& Montages);
 
+	float GetAbilityDamage();
+
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

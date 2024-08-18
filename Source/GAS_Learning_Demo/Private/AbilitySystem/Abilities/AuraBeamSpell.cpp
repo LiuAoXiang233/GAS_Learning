@@ -3,7 +3,12 @@
 
 #include "AbilitySystem/Abilities/AuraBeamSpell.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
+#include "GameplayTagContainer.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UAuraBeamSpell::StoreMouseHitInfo(const FHitResult& HitResult)
 {
@@ -25,4 +30,58 @@ void UAuraBeamSpell::StoreOwnerVariables()
 		OwnerPlayerController = CurrentActorInfo->PlayerController.Get();
 		OwnerCharacter = Cast<ACharacter>(CurrentActorInfo->AvatarActor);
 	}
+}
+
+void UAuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
+{
+	check(OwnerCharacter);
+	if(OwnerCharacter->Implements<UCombatInterface>())
+	{
+		if (USkeletalMeshComponent* Weapon = ICombatInterface::Execute_GetWeapon(OwnerCharacter))
+		{
+			TArray<AActor*> IgnoreActors;
+			IgnoreActors.AddUnique(OwnerCharacter);
+			FHitResult HitResult;
+			const FVector Start = Weapon->GetSocketLocation(FName("Tip Socket"));
+			UKismetSystemLibrary::SphereTraceSingle(
+				OwnerCharacter,
+				Start,
+				MouseHitLocation,
+				45.f,
+				TraceTypeQuery1,
+				false,
+				IgnoreActors,
+				EDrawDebugTrace::None,
+				HitResult,
+				true
+				);
+
+			MouseHitLocation = HitResult.ImpactPoint;
+			MouseHitActor = HitResult.GetActor();
+		}
+	}
+}
+
+void UAuraBeamSpell::StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTarget)
+{
+	TArray<AActor*> OverlappingActors;
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetAvatarActorFromActorInfo());
+	ActorsToIgnore.Add(MouseHitActor);
+	UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(GetAvatarActorFromActorInfo(), OverlappingActors, ActorsToIgnore, 245.f, MouseHitLocation);
+
+	const int32 BeamNum = FMath::Min(MaxNumOfBeam, GetAbilityLevel());
+	
+	UAuraAbilitySystemLibrary::GetClosestTarget(5/* BeamNum*/, OverlappingActors, OutAdditionalTarget, MouseHitLocation);
+}
+
+void UAuraBeamSpell::ApplySigleTargetDamage(AActor* Target)
+{
+	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponentFromActorInfo()->MakeEffectContext();
+	ContextHandle.AddSourceObject(GetAvatarActorFromActorInfo()); 
+	FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), ContextHandle);
+
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FAuraGameplayTags::Get().Damage_Electro, GetAbilityDamage());
+
+	UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target)->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }

@@ -12,6 +12,7 @@
 #include "Components/SplineComponent.h"
 #include "Input/AuraInputComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "GAS_Learning_Demo/GAS_Learning_Demo.h"
 #include "UI/Widget/DamageTextComponent.h"
 
 
