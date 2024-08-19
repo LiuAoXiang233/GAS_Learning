@@ -8,6 +8,7 @@
 #include "GameplayTagContainer.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
+#include "Interaction/EnemyInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void UAuraBeamSpell::StoreMouseHitInfo(const FHitResult& HitResult)
@@ -60,6 +61,13 @@ void UAuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 			MouseHitActor = HitResult.GetActor();
 		}
 	}
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(MouseHitActor))
+	{
+		if (!CombatInterface->GetOnDeathDelegate().IsAlreadyBound(this, &UAuraBeamSpell::PrimaryTargetDied))
+		{
+			CombatInterface->GetOnDeathDelegate().AddDynamic(this, &UAuraBeamSpell::PrimaryTargetDied);
+		}
+	}
 }
 
 void UAuraBeamSpell::StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTarget)
@@ -73,13 +81,30 @@ void UAuraBeamSpell::StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTarget)
 	const int32 BeamNum = FMath::Min(MaxNumOfBeam, GetAbilityLevel());
 	
 	UAuraAbilitySystemLibrary::GetClosestTarget(5/* BeamNum*/, OverlappingActors, OutAdditionalTarget, MouseHitLocation);
+
+	for (AActor* Target : OutAdditionalTarget)
+	{
+		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Target))
+		{
+			if (!CombatInterface->GetOnDeathDelegate().IsAlreadyBound(this, &UAuraBeamSpell::AdditionalTargetDied))
+			{
+				CombatInterface->GetOnDeathDelegate().AddDynamic(this, &UAuraBeamSpell::AdditionalTargetDied);
+			}
+		}
+	}
 }
 
 void UAuraBeamSpell::ApplySigleTargetDamage(AActor* Target)
 {
-	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponentFromActorInfo()->MakeEffectContext();
+	if (!Target->Implements<UCombatInterface>()) return;
+
+	UAbilitySystemComponent* SelfASC = GetAbilitySystemComponentFromActorInfo();
+
+	if (!IsValid(SelfASC)) return;
+	
+	FGameplayEffectContextHandle ContextHandle = SelfASC->MakeEffectContext();
 	ContextHandle.AddSourceObject(GetAvatarActorFromActorInfo()); 
-	FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), ContextHandle);
+	FGameplayEffectSpecHandle SpecHandle = SelfASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), ContextHandle);
 
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FAuraGameplayTags::Get().Damage_Electro, GetAbilityDamage());
 

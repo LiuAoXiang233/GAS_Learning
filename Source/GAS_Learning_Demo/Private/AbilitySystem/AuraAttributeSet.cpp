@@ -280,9 +280,14 @@ void UAuraAttributeSet::HandleIncomingDamage(FEffectProperties Props)
 		else
 		{
 			// 如果收到伤害没有死亡
-			FGameplayTagContainer TagContainer;
-			TagContainer.AddTag(FAuraGameplayTags::Get().Effect_HitReact);
-			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			if (Props.TargetCharacter->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsInShockLoop(Props.TargetCharacter))
+			{
+				
+                FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FAuraGameplayTags::Get().Effect_HitReact);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);			
+			}
+			
 
 			// 受击跳起来
 			const FVector Knockback = UAuraAbilitySystemLibrary::GetKnockbackVector(Props.EffectContextHandle);

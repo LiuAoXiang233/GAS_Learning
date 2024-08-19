@@ -27,7 +27,8 @@ class GAS_LEARNING_DEMO_API AAuraCharacterBase : public ACharacter, public IAbil
 public:
 	// Sets default values for this character's properties
 	AAuraCharacterBase();
-
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
@@ -44,6 +45,23 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FTaggedMontage> AttackMontages;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combet")
+	float BaseWalkSpeed = 250.f;
+	/*
+	 *	Debuff 
+	 */
+	virtual void BindEventOnDebuffTagChanged();
+
+	UPROPERTY(ReplicatedUsing=OnRep_Stunned, BlueprintReadOnly)
+	bool bIsStunned = false;
+	
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	bool bIsShockLoop = false;
+
+	UFUNCTION()
+	void OnRep_Stunned();
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 protected:
 	// Called when the game starts or when spawned
@@ -73,8 +91,10 @@ protected:
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 	virtual ECharacterClass GetCharacterClass_Implementation() override;
 	virtual FOnASCRegistered GetOnAscRegisteredDelegate() override;
-	virtual FOnDeath GetOnDeathDelegate() override;
+	virtual FOnDeath& GetOnDeathDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
+	virtual void SetInShockLoop_Implementation(bool bInShock) override;
+	virtual bool IsInShockLoop_Implementation() const override;
 	/*
 	 *	Combat Interface End
 	 */
@@ -130,6 +150,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UDebuffNiagaraComponent> FireDebuffNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent> StunDebuffNiagaraComponent;
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")

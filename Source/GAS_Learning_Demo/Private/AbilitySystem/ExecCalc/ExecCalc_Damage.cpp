@@ -176,6 +176,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	AActor* SourceActor = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
 	AActor* TargetActor = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
 
+	if (!TargetActor)
+	{
+		// 如果目标为空，那么返回。
+		return;
+	}
+	
 	// 获取玩家和敌人的等级
 	int32 SourcePlayerLevel = 1;
 	if (SourceActor->Implements<UCombatInterface>())

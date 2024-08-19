@@ -153,6 +153,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 	
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 	Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
+
+	// 在ASC设置好后，绑定Debuff事件
+	BindEventOnDebuffTagChanged();
 	
 	AttributeSet = AuraPlayerState->GetAttributeSet();
 

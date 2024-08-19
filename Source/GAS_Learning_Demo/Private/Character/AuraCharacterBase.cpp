@@ -3,11 +3,14 @@
 
 #include "Character/AuraCharacterBase.h"
 #include "AuraGameplayTags.h"
-#include "NavigationSystemTypes.h"
+#include "GameplayTagContainer.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbilities.h"
+#include "Character/EnemyCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "GAS_Learning_Demo/GAS_Learning_Demo.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values
@@ -19,6 +22,10 @@ AAuraCharacterBase::AAuraCharacterBase()
 	FireDebuffNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("Burn Debuff Niagara");
 	FireDebuffNiagaraComponent->SetupAttachment(GetRootComponent());
 	FireDebuffNiagaraComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Burn;
+
+	StunDebuffNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("StunDebuffNiagaraComponent");
+	StunDebuffNiagaraComponent->SetupAttachment(GetRootComponent());
+	StunDebuffNiagaraComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Stun;
 
 	// 创建Weapon组件，并把该组件附加到Character的模型组件下，并忽略其碰撞
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
@@ -32,6 +39,15 @@ AAuraCharacterBase::AAuraCharacterBase()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	
+}
+
+void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AAuraCharacterBase, bIsStunned);
+	DOREPLIFETIME(AAuraCharacterBase, bIsShockLoop);
+
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
@@ -77,7 +93,36 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 	Dissolve();
 	bDead = true;
 
+	FireDebuffNiagaraComponent->Deactivate();
+	StunDebuffNiagaraComponent->Deactivate();
 	OnDeath.Broadcast(this);
+	
+}
+
+void AAuraCharacterBase::BindEventOnDebuffTagChanged()
+{
+	// 眩晕Debuff
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AAuraCharacterBase::StunTagChanged);
+}
+
+void AAuraCharacterBase::OnRep_Stunned()
+{
+	if (bIsStunned)
+	{
+		StunDebuffNiagaraComponent->Activate();
+	}
+	else
+	{
+		StunDebuffNiagaraComponent->Deactivate();
+	}
+}
+
+void AAuraCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bIsStunned = NewCount > 0;
+
+	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;
+	
 	
 }
 
@@ -135,7 +180,7 @@ FOnASCRegistered AAuraCharacterBase::GetOnAscRegisteredDelegate()
 	return OnAscRegistered;
 }
 
-FOnDeath AAuraCharacterBase::GetOnDeathDelegate()
+FOnDeath& AAuraCharacterBase::GetOnDeathDelegate()
 {
 	return OnDeath;
 }
@@ -143,6 +188,16 @@ FOnDeath AAuraCharacterBase::GetOnDeathDelegate()
 USkeletalMeshComponent* AAuraCharacterBase::GetWeapon_Implementation()
 {
 	return Weapon;
+}
+
+void AAuraCharacterBase::SetInShockLoop_Implementation(bool bInShock)
+{
+	bIsShockLoop = bInShock;
+}
+
+bool AAuraCharacterBase::IsInShockLoop_Implementation() const
+{
+	return bIsShockLoop;
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()

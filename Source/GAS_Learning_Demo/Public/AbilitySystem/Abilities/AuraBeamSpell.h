@@ -30,6 +30,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ApplySigleTargetDamage(AActor* Target);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void PrimaryTargetDied(AActor* DiedActor);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void AdditionalTargetDied(AActor* DiedActor);
+
 protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")

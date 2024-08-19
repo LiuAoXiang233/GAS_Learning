@@ -30,12 +30,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Combet")
 	bool bHitRecating = false;
 
-	
+	virtual void BindEventOnDebuffTagChanged() override;
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) override;
 	
 	void HitReactTagChanged(const FGameplayTag Tag, int32 NewCount);
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combet")
-	float BaseWalkSpeed = 250.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combet")
 	float LifeSpan = 4.f;

@@ -2,7 +2,7 @@
 
 
 #include "Character/EnemyCharacter.h"
-
+#include "GameFramework/CharacterMovementComponent.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
@@ -11,7 +11,6 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "GAS_Learning_Demo/GAS_Learning_Demo.h"
 #include "UI/Widget/AuraUserWidget.h"
 
@@ -36,6 +35,23 @@ AEnemyCharacter::AEnemyCharacter()
 	
 	ProgressBar = CreateDefaultSubobject<UWidgetComponent>("HP Bar");
 	ProgressBar->SetupAttachment(GetRootComponent());
+	
+}
+
+void AEnemyCharacter::BindEventOnDebuffTagChanged()
+{
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AEnemyCharacter::StunTagChanged);
+
+}
+
+void AEnemyCharacter::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	Super::StunTagChanged(CallbackTag, NewCount);
+	
+	if (AIController && AIController->GetBlackboardComponent())
+	{
+		AIController->GetBlackboardComponent()->SetValueAsBool(FName("Stunned"), bIsStunned);
+	}
 	
 }
 
@@ -161,14 +177,18 @@ void AEnemyCharacter::InitAbilityActorInfo()
 	
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
-
+	
+	
 	if (HasAuthority())
 	{
 		InitializeDefaultAttributes();
 	}
 	
 	OnAscRegistered.Broadcast(AbilitySystemComponent);
+
 	
+	// 在ASC设置好后，绑定Debuff事件
+	BindEventOnDebuffTagChanged();
 }
 
 void AEnemyCharacter::InitializeDefaultAttributes() const
