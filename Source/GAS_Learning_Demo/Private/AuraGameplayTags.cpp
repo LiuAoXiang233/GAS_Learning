@@ -362,6 +362,22 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 	);
 
 	/*
+	 *	Passive Abilities
+	 * 
+	 */
+	GameplayTags.Abilities_Passive_LifeSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+			FName("Abilities.Passive.LifeSiphon"),
+			FString("Passive Abilitiy LifeSiphon")
+		);
+	GameplayTags.Abilities_Passive_ManaSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+			FName("Abilities.Passive.ManaSiphon"),
+			FString("Passive Abilitiy ManaSiphon")
+		);
+	GameplayTags.Abilities_Passive_HaloOfProtection = UGameplayTagsManager::Get().AddNativeGameplayTag(
+			FName("Abilities.Passive.HaloOfPretection"),
+			FString("Passive Abilitiy HaloOfProtection")
+		);
+	/*
 	 *	Debuff Tags
 	 * 
 	 */

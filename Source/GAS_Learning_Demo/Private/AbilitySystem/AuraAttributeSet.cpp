@@ -210,7 +210,7 @@ void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
 
 void UAuraAttributeSet::Debuff(FEffectProperties Props)
 {
-	const float DebuffDamage = UAuraAbilitySystemLibrary::GetDebuffDemage(Props.EffectContextHandle);
+	const float DebuffDamage = UAuraAbilitySystemLibrary::GetDebuffDamage(Props.EffectContextHandle);
 	const float DebuffDuration = UAuraAbilitySystemLibrary::GetDebuffDuration(Props.EffectContextHandle);
 	const float DebuffFrequency = UAuraAbilitySystemLibrary::GetDebuffFrequency(Props.EffectContextHandle);
 
@@ -328,10 +328,16 @@ void UAuraAttributeSet::HandleIncomingXP(const FGameplayEffectModCallbackData& D
 		{
 			// 如果升级了
 			// TODO: 获取属性点 和 技能点， 并且回复自身血量和蓝量
-			const int32 AttributePoints = IPlayerInterface::Execute_GetRewardAttributePoints(Props.SourceCharacter, CurrentLevel);
-			const int32 SpellPoints = IPlayerInterface::Execute_GetRewardSpellPoints(Props.SourceCharacter, CurrentLevel);
-
 			IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumOfLevel);
+
+			int32 AttributePoints = 0;
+			int32 SpellPoints = 0;
+			for (int32 i = 0; i < NumOfLevel; i++)
+			{
+				AttributePoints += IPlayerInterface::Execute_GetRewardAttributePoints(Props.SourceCharacter, CurrentLevel + i);
+				SpellPoints += IPlayerInterface::Execute_GetRewardSpellPoints(Props.SourceCharacter, CurrentLevel + i);
+			}
+			
 			IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPoints);
 			IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePoints);
 

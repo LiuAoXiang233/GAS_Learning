@@ -11,6 +11,7 @@
 #include "AuraCharacterBase.generated.h"
 
 
+class UAuraPassiveNiagaraComponent;
 class UGameplayAbility;
 class UAuraGameplayAbilities;
 class UGameplayEffect;
@@ -66,7 +67,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	virtual void Tick(float DeltaSeconds) override;
+	
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
@@ -153,6 +155,19 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UDebuffNiagaraComponent> StunDebuffNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAuraPassiveNiagaraComponent> HaloOfProtectionNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAuraPassiveNiagaraComponent> LifeSiphonNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAuraPassiveNiagaraComponent> ManaSiphonNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent> EffectAttachComponent;
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")

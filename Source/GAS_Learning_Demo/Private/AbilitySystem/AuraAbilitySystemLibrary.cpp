@@ -201,7 +201,7 @@ bool UAuraAbilitySystemLibrary::IsSuccessfulDebuff(const FGameplayEffectContextH
 	return false;
 }
 
-float UAuraAbilitySystemLibrary::GetDebuffDemage(const FGameplayEffectContextHandle& EffectContextHandle)
+float UAuraAbilitySystemLibrary::GetDebuffDamage(const FGameplayEffectContextHandle& EffectContextHandle)
 {
 	if (const FAuraGameplayEffectContext* AuraGameplayEffectContext = static_cast<const FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
@@ -340,6 +340,8 @@ void UAuraAbilitySystemLibrary::SetKnockbackVector(FGameplayEffectContextHandle&
 
 FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 {
+
+	
 	FAuraGameplayTags Tags = FAuraGameplayTags::Get();
 	FGameplayEffectContextHandle ContextHandle = Params.SourceAbilitySystemComponent->MakeEffectContext();
 	ContextHandle.AddSourceObject(Params.SourceAbilitySystemComponent->GetAvatarActor());
@@ -353,8 +355,11 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const 
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, Tags.Debuff_Duration, Params.DebuffDuration);
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, Tags.Debuff_Frequence, Params.DebuffFrequence);
 
-
-	Params.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
+	if (IsValid(Params.TargetAbilitySystemComponent))
+	{
+		Params.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
+	}
+	
 
 	return ContextHandle;
 }
