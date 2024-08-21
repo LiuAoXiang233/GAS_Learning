@@ -2,12 +2,15 @@
 
 
 #include "Character/AuraCharacter.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/GameSession.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -135,6 +138,25 @@ int32 AAuraCharacter::GetSpellPoints_Implementation()
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	return AuraPlayerState->GetSpellPoints();
+}
+
+void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInstance* DecalMaterial)
+{
+	if (AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		PlayerController->ShowMagicCircle(DecalMaterial);
+		PlayerController->bShowMouseCursor = false;
+	}
+	
+}
+
+void AAuraCharacter::HideMagicCircle_Implementation()
+{
+	if (AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		PlayerController->HideMagicCircle();
+		PlayerController->bShowMouseCursor = true;
+	}
 }
 
 int32 AAuraCharacter::GetCharacterLevel_Implementation()

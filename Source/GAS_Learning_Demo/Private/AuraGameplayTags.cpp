@@ -293,7 +293,10 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 		FName("Abilities.None"),
 		FString("None Ability")
 	);
-	
+
+	/*
+	 *	Offensive Ability Tag
+	 */
 	GameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Fire.FireBolt"),
 		FString("火焰箭")
@@ -312,6 +315,16 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 	GameplayTags.CoolDown_Electro_ElectroBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 			FName("CoolDown.Electro.ElectroBolt"),
 			FString("闪电箭冷却")
+		);
+
+	GameplayTags.Abilities_Arcane_ArcaneSharders = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Arcane.ArcaneSharders"),
+		FString("奥数法阵")
+	);
+
+	GameplayTags.CoolDown_Arcane_ArcaneSharders = UGameplayTagsManager::Get().AddNativeGameplayTag(
+			FName("CoolDown.Arcane.ArcaneSharders"),
+			FString("奥数法阵冷却")
 		);
 	
 	GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(

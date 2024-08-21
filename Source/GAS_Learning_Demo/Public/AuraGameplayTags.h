@@ -111,12 +111,6 @@ public:
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Abilities_None;
 	
-	FGameplayTag Abilities_Fire_FireBolt;
-	FGameplayTag CoolDown_Fire_FireBolt;
-
-	FGameplayTag Abilities_Electro_ElectroBolt;
-	FGameplayTag CoolDown_Electro_ElectroBolt;
-	
 	FGameplayTag Abilities_HitReact;
 
 	FGameplayTag Abilities_Status_Locked;
@@ -132,6 +126,18 @@ public:
 	FGameplayTag Abilities_Passive_LifeSiphon;
 	FGameplayTag Abilities_Passive_ManaSiphon;
 
+	/*
+	 *	Offensive Ability Tag
+	 * 
+	 */
+	FGameplayTag Abilities_Fire_FireBolt;
+	FGameplayTag CoolDown_Fire_FireBolt;
+
+	FGameplayTag Abilities_Electro_ElectroBolt;
+	FGameplayTag CoolDown_Electro_ElectroBolt;
+
+	FGameplayTag Abilities_Arcane_ArcaneSharders;		// 岩属性攻击
+	FGameplayTag CoolDown_Arcane_ArcaneSharders;
 	/*
 	 *	Debuff Tags
 	 * 
@@ -172,5 +178,5 @@ public:
 
 	
 private:
-	static  FAuraGameplayTags GameplayTags;
+	static FAuraGameplayTags GameplayTags;
 };
