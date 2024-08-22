@@ -6,7 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 
-FDamageEffectParams UAuraDamageGameplayAbilities::MakeDamageEffectParamsFromClassDefault(AActor* TargetActor) const
+FDamageEffectParams UAuraDamageGameplayAbilities::MakeDamageEffectParamsFromClassDefault(AActor* TargetActor, FVector InRadialDamageOrigin) const
 {
 	FDamageEffectParams Params;
 	Params.WorldContextObject = GetAvatarActorFromActorInfo();
@@ -31,6 +31,14 @@ FDamageEffectParams UAuraDamageGameplayAbilities::MakeDamageEffectParamsFromClas
 		const FVector ToTarget = Rotation.Vector();
 		Params.DeathImpulse = ToTarget * Params.DeathImpulseMagnitude;
 		Params.KnockbackVector = ToTarget * Params.KnockbackMagnitude;
+	}
+
+	if (bIsRadialDamage)
+	{
+		Params.bIsRadialDamage = bIsRadialDamage;
+		Params.RadialDamageOrigin = InRadialDamageOrigin;
+		Params.DamageInnerRadius = DamageInnerRadius;
+		Params.DamageOuterRadius = DamageOuterRadius;
 	}
 	return Params;
 }

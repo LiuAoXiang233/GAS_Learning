@@ -3,12 +3,14 @@
 
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 
 struct AuraDamageStatics
@@ -198,6 +200,9 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	
 
 	const FGameplayEffectSpec& EffectSpec = ExecutionParams.GetOwningSpec();
+	FGameplayEffectContextHandle EffectContextHandle = EffectSpec.GetContext();
+
+	
 	const FGameplayTagContainer* SourceTags = EffectSpec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = EffectSpec.CapturedTargetTags.GetAggregatedTags();
 	
@@ -219,6 +224,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		checkf(TagsToCaptureDefs.Contains(ResistanceTag), TEXT("TagsToCaptureDefs 没有 [%s] 这个 tag"), *ResistanceTag.ToString());
 		
 		float DamageTypeValue = EffectSpec.GetSetByCallerMagnitude(DamageTypeTag);
+
+		if (DamageTypeValue <= 0) continue;
 		
 		float Resitance = 0.f;
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(TagsToCaptureDefs[ResistanceTag], EvaluateParameters, Resitance);
@@ -226,7 +233,34 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		
 		DamageTypeValue *= (100.f - Resitance) / 100;
 		Damage += DamageTypeValue;
+
+		
 	}
+
+	// 如果是一次范围攻击
+	if (UAuraAbilitySystemLibrary::IsRadialDamage(EffectContextHandle))
+	{
+		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(TargetActor))
+		{
+			CombatInterface->GetOnDamageDelegate().AddLambda([&](float AmountDamage)
+			{
+				Damage = AmountDamage;
+			});
+		}
+		UGameplayStatics::ApplyRadialDamageWithFalloff(
+			TargetActor,
+			Damage,
+			0.f,
+			UAuraAbilitySystemLibrary::GetRadialDamageOrigin(EffectContextHandle),
+			UAuraAbilitySystemLibrary::GetDamageInnerRadius(EffectContextHandle),
+			UAuraAbilitySystemLibrary::GetDamageOuterRadius(EffectContextHandle),
+			1.f,
+			UDamageType::StaticClass(),
+			TArray<AActor*>(),
+			SourceActor,
+			nullptr);
+	}
+	
 	
 	UCharacterClassInfo* CharacterClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(SourceActor);
 
@@ -260,7 +294,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// 获取 context，并设置是否 暴击 或者 该次攻击是否被阻挡 eg：法术护盾 抵挡了一次技能
 	
-	FGameplayEffectContextHandle EffectContextHandle = EffectSpec.GetContext();
 	// TODO: 未来可以在 Secondary Attributes 中添加一个 抵抗值， 用于抵抗敌人的技能
 	UAuraAbilitySystemLibrary::SetBlockedHit( EffectContextHandle, false);
 	

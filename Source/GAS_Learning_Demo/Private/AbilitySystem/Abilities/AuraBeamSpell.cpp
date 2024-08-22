@@ -11,6 +11,87 @@
 #include "Interaction/EnemyInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+FString UAuraBeamSpell::GetDescription(int32 Level)
+{
+	const float Cost = FMath::Abs(GetManaCost(Level));
+	const float Cooldown = FMath::Abs(GetCooldown(Level));
+	
+	float ScaledDamage = Damage.GetValueAtLevel(Level);
+	
+	if (Level == 1)
+	{
+		return FString::Printf(
+			TEXT("<Title>闪电链</>\n\n"
+		"<Default>等级 ： </>"
+		"<Level>%d</>\n"
+		"<Default>消耗法力值: </>"
+		"<Cost>%f</>\n"
+		"<Default>冷却时间: </>"
+		"<CoolDown>%f</>\n"
+		"<Default>给敌人造成  ：</>"
+		"<Damage>%f</>"
+		"<Default>  伤害</>\n\n"
+		"<Default>在远古的时代，雷霆被视为神明的怒火，只有少数人能掌控这自然的力量。"
+		"闪电链是一种极为罕见的奇迹，相传由雷神的忠实祭司所创造。这道闪电会在敌人之间迅速跳跃，仿佛带着神圣的审判，无一人能逃脱它的愤怒。然而，使用此奇迹的代价并不轻——传闻每施展一次，施法者的灵魂将逐渐被雷霆的愤怒所侵蚀。</>\n\n"
+		
+		),
+		Level, Cost, Cooldown, ScaledDamage);
+	}
+	else
+	{
+		// 给不同等级的火焰箭不同的介绍
+		return FString::Printf(
+			TEXT("<Title>闪电链</>\n\n"
+		"<Default>等级 ： </>"
+		"<Level>%d</>\n"
+		"<Default>消耗法力值: </>"
+		"<Cost>%f</>\n"
+		"<Default>冷却时间: </>"
+		"<CoolDown>%f</>\n"
+		"<Default>给敌人造成  ：</>"
+		"<Damage>%f</>"
+		"<Default>  伤害</>\n\n"
+		"<Default>在远古的时代，雷霆被视为神明的怒火，只有少数人能掌控这自然的力量。"
+		"闪电链是一种极为罕见的奇迹，相传由雷神的忠实祭司所创造。这道闪电会在敌人之间迅速跳跃，仿佛带着神圣的审判，无一人能逃脱它的愤怒。然而，使用此奇迹的代价并不轻——传闻每施展一次，施法者的灵魂将逐渐被雷霆的愤怒所侵蚀。</>\n\n"
+		
+		),
+		Level, Cost, Cooldown, ScaledDamage);
+	}
+}
+
+FString UAuraBeamSpell::GetNextLevelDescription(int32 Level)
+{
+	const float Cost = FMath::Abs(GetManaCost(Level));
+	const float Cooldown = FMath::Abs(GetCooldown(Level));
+
+	float ScaledDamage = Damage.GetValueAtLevel(Level);
+	
+	if (Level > 5)
+	{
+		//最大等级是 5
+		return FString::Printf(
+		TEXT("<Title>闪电链</>\n\n"
+		"<Default>以达到最大等级</>")
+		);
+	}
+	else
+	{
+		return FString::Printf(
+			TEXT("<Title>闪电链</>\n\n"
+		"<Default>等级 ： </>"
+		"<Level>%d</>\n\n"
+		"<Default>给敌人造成  ：</>"
+		"<Damage>%f</>"
+		"<Default>  伤害</>\n"
+		"<Default>消耗法力值: </>"
+		"<Cost>%f</>\n"
+		"<Default>冷却时间: </>"
+		"<CoolDown>%f</>\n\n"
+		),
+		Level, ScaledDamage, Cost, Cooldown);
+	}
+}
+
 void UAuraBeamSpell::StoreMouseHitInfo(const FHitResult& HitResult)
 {
 	if (HitResult.bBlockingHit)

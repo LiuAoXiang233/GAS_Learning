@@ -20,6 +20,7 @@ class UAnimMontage;
 class UAbilitySystemComponent;
 
 
+
 UCLASS(Abstract)
 class GAS_LEARNING_DEMO_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
@@ -29,6 +30,7 @@ public:
 	// Sets default values for this character's properties
 	AAuraCharacterBase();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
@@ -97,11 +99,13 @@ protected:
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	virtual void SetInShockLoop_Implementation(bool bInShock) override;
 	virtual bool IsInShockLoop_Implementation() const override;
+	virtual FOnDamageSignature& GetOnDamageDelegate() override;
 	/*
 	 *	Combat Interface End
 	 */
 	FOnASCRegistered OnAscRegistered;
 	FOnDeath OnDeath;
+	FOnDamageSignature OnDamageDelegate;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

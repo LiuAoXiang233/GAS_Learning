@@ -61,6 +61,19 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	FVector KnockbackVector = FVector::ZeroVector;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsRadialDamage = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector RadialDamageOrigin = FVector::ZeroVector;
+
+	UPROPERTY(BlueprintReadWrite)
+	float DamageInnerRadius = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	float DamageOuterRadius = 0.f;
+	
 };
 
 USTRUCT(BlueprintType)
@@ -78,6 +91,10 @@ public:
 	TSharedPtr<FGameplayTag> GetDemageType() const {return DemageType;}
 	FVector GetDeathImpulse() const {return DeathImpulse;}
 	FVector GetKnockbackVector() const {return KnockBackVector;}
+	bool IsRadialDamage() const {return bIsRadialDamage;}
+	FVector GetRadialDamageOrigin() const {return RadialDamageOrigin;}
+	float GetDamageInnerRadius() const {return DamageInnerRadius;}
+	float GetDamageOuterRadius() const {return DamageOuterRadius;}
 
 
 	void SetIsCriticalHit(bool bInIsCriticalHit) { bIsCriticalHit = bInIsCriticalHit; }
@@ -89,6 +106,10 @@ public:
 	void SetDemageType(TSharedPtr<FGameplayTag> InDemageType) {DemageType = InDemageType;}
 	void SetDeathImpulse(const FVector InDeathImpulse) {DeathImpulse = InDeathImpulse;}
 	void SetKnockbackVector(const FVector InKnockbackVector) {KnockBackVector = InKnockbackVector;}
+	void SetIsRadialDamage(const bool InIsRadialDamage) {bIsRadialDamage = InIsRadialDamage;}
+	void SetRadialDamageOrigin(const FVector& InRadialDamageOrigin) {RadialDamageOrigin = InRadialDamageOrigin;}
+	void SetDamageInnerRadial(const float InDamageInnerRadius) {DamageInnerRadius = InDamageInnerRadius;}
+	void SetDamageOuterRadial(const float InDamageOuterRadius) {DamageOuterRadius = InDamageOuterRadius;}
 
 	
 	/** Returns the actual struct used for serialization, subclasses must override this! */
@@ -140,6 +161,18 @@ protected:
 
 	UPROPERTY()
 	FVector KnockBackVector = FVector::ZeroVector;
+
+	UPROPERTY()
+	bool bIsRadialDamage = false;
+
+	UPROPERTY()
+	FVector RadialDamageOrigin = FVector::ZeroVector;
+
+	UPROPERTY()
+	float DamageInnerRadius = 0.f;
+
+	UPROPERTY()
+	float DamageOuterRadius = 0.f;
 };
 
 template<>
