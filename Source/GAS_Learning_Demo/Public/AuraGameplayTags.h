@@ -133,6 +133,9 @@ public:
 	FGameplayTag Abilities_Fire_FireBolt;
 	FGameplayTag CoolDown_Fire_FireBolt;
 
+	FGameplayTag Abilities_Fire_FireBlast;
+	FGameplayTag CoolDown_Fire_FireBlast;
+
 	FGameplayTag Abilities_Electro_ElectroBolt;
 	FGameplayTag CoolDown_Electro_ElectroBolt;
 

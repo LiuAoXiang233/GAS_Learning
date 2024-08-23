@@ -24,23 +24,30 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USphereComponent> Sphere;
+
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FDamageEffectParams DamageEffectParams;
 
 	UPROPERTY()
 	TObjectPtr<USceneComponent> HomingTargetSceneComponent;
+
+	UPROPERTY()
+	AActor* FirstHitActorToIgnore = nullptr;
+
+	bool bHit = false;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void OnHit() const;
 	virtual void Destroyed() override;
-	UFUNCTION()
-	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	
+	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent> Sphere;
+	
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UNiagaraSystem> ImpactEffect;
@@ -53,8 +60,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAudioComponent> AudioComponent;
-	bool bHit = false;
-
+	
+	
+	
 	UPROPERTY(EditAnywhere)
 	float LifeSpan = 6.f;
 };

@@ -307,6 +307,16 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 			FString("火焰箭冷却")
 		);
 
+	GameplayTags.Abilities_Fire_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Fire.FireBlast"),
+		FString("火焰炸弹")
+	);
+
+	GameplayTags.CoolDown_Fire_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+			FName("CoolDown.Fire.FireBlast"),
+			FString("火焰炸弹冷却")
+		);
+
 	GameplayTags.Abilities_Electro_ElectroBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Electro.ElectroBolt"),
 		FString("闪电箭")
