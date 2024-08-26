@@ -23,10 +23,21 @@ public:
 	virtual FString GetDescription(int32 Level) override;
 	virtual FString GetNextLevelDescription(int32 Level) override;
 
-	UFUNCTION()
-	void SpawnExplosionBall(const FVector& SpawnLocation) const;
+	
 
-	UPROPERTY(EditDefaultsOnly)
+	UFUNCTION()
+	static void MakeFireBallDeath(AFireBall* FireBall);
+
+
+	
+	UPROPERTY(EditDefaultsOnly, Category="ExplosionBall")
+	float X_Override = 0.f;
+	UPROPERTY(EditDefaultsOnly, Category="ExplosionBall")
+	float Y_Override = 0.f;
+	UPROPERTY(EditDefaultsOnly, Category="ExplosionBall")
+	float Z_Override = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, Category="ExplosionBall")
 	int32 NumExplosionBall = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

@@ -94,36 +94,12 @@ FString UFireBlast::GetNextLevelDescription(int32 Level)
 	}
 }
 
-void UFireBlast::SpawnExplosionBall(const FVector& SpawnLocation) const
+void UFireBlast::MakeFireBallDeath(AFireBall* FireBall)
 {
 	
-	FRotator Rotator = SpawnLocation.Rotation();
-	Rotator.Pitch = 10.f;
-	
-	const FVector Forward = Rotator.Vector();
-	
-	TArray<FRotator> Rotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, 360.f, NumExplosionBall);
-	
-	for (FRotator Rot : Rotators)
-	{
-		FTransform Transform;
-		Transform.SetLocation(SpawnLocation + FVector(0, 0, 100.f));
-		Transform.SetRotation(Rot.Quaternion());
-
-		AExplosionBall* ExplosionBall = GetWorld()->SpawnActorDeferred<AExplosionBall>(
-			ExplosionBallClass,
-			Transform,
-			GetOwningActorFromActorInfo(),
-			Cast<APawn>(GetOwningActorFromActorInfo()),
-			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-
-		
-		ExplosionBall->DamageEffectParams = MakeDamageEffectParamsFromClassDefault();
-
-		ExplosionBall->FinishSpawning(Transform);
-	}
-	
+	FireBall->Destroy();
 }
+
 
 void UFireBlast::SpawnProjectileAndBindActionToProjectile(const FVector& TargetLocation, const FGameplayTag& SocketTag, bool bOverridePitch,
 	float PitchOverride, AActor* HomingTarget)
@@ -163,7 +139,13 @@ void UFireBlast::SpawnProjectileAndBindActionToProjectile(const FVector& TargetL
 
 	Projectile->ProjectileMovementComponent->HomingAccelerationMagnitude = FMath::FRandRange(HomingAccelerationMin, HomingAccelerationMax);
 	Projectile->ProjectileMovementComponent->bIsHomingProjectile = bLaunchHomingProjectile;
-	Projectile->OnExplosionDelegate.AddUObject(this, &UFireBlast::SpawnExplosionBall);
+	
+	Projectile->FireBallOwner = GetOwningActorFromActorInfo();
+	Projectile->ExplosionBallClass = ExplosionBallClass;
+	Projectile->NumOfExplosion = NumExplosionBall;
+	Projectile->X_Override = X_Override;
+	Projectile->Y_Override = Y_Override;
+	Projectile->Z_Override = Z_Override;
 		
 	Projectile->FinishSpawning(SpawnTransform);
 }

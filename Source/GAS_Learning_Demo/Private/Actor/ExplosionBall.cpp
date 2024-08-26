@@ -21,7 +21,9 @@ void AExplosionBall::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, A
 {
 	AActor* SourceActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
 	if (SourceActor == OtherActor) return;
+	
 	if (FirstHitActorToIgnore == OtherActor) return;
+	
 	if (!bHit) OnHit();
 
 	// FirstHitActorToIgnore = OtherActor;

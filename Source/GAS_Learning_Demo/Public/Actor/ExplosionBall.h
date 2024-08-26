@@ -10,15 +10,17 @@ class AAuraCharacterBase;
 /**
  * 
  */
+
+
+
 UCLASS()
 class GAS_LEARNING_DEMO_API AExplosionBall : public AAuraProjectile
 {
 	GENERATED_BODY()
 	
 public:
-	void SetSourceToIgnore(AAuraCharacterBase* InSourceToIgnore) {SourceToIgnore = InSourceToIgnore;}
-	AAuraCharacterBase* GetSourceToIgnore() const {return SourceToIgnore;}
 	
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -29,6 +31,4 @@ protected:
 
 private:
 	
-	UPROPERTY()
-	AAuraCharacterBase* SourceToIgnore = nullptr;
 };

@@ -9,6 +9,39 @@
 #include "Actor/ExplosionBall.h"
 #include "Components/SphereComponent.h"
 
+void AFireBall::SpawnExplosionBall(const FVector& SpawnLocation, int32 NumExplosionBall, AActor* IgnoreActor, float InX_Override, float InY_Override, float InZ_Override) const
+{
+	
+	FRotator Rotator = SpawnLocation.Rotation();
+	Rotator.Pitch = 10.f;
+	
+	const FVector Forward = Rotator.Vector();
+	
+	TArray<FRotator> Rotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, 360.f, NumExplosionBall);
+	
+	for (FRotator Rot : Rotators)
+	{
+		FTransform Transform;
+		Transform.SetLocation(SpawnLocation + FVector(InX_Override, InY_Override, InZ_Override));
+		Transform.SetRotation(Rot.Quaternion());
+
+		AExplosionBall* ExplosionBall = GetWorld()->SpawnActorDeferred<AExplosionBall>(
+			ExplosionBallClass,
+			Transform,
+			FireBallOwner,
+			Cast<APawn>(FireBallOwner),
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+		
+		ExplosionBall->DamageEffectParams = DamageEffectParams;
+		ExplosionBall->FirstHitActorToIgnore = IgnoreActor;
+		
+
+		ExplosionBall->FinishSpawning(Transform);
+		
+	}
+}
+
 void AFireBall::BeginPlay()
 {
 	Super::BeginPlay();
@@ -26,11 +59,10 @@ void AFireBall::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	if (!bHit) OnHit();
 	FirstHitActorToIgnore = OtherActor;
 
-	OnExplosionDelegate.Broadcast(HomingTargetSceneComponent->GetComponentLocation());
+	SpawnExplosionBall(OtherActor->GetActorLocation(), NumOfExplosion, OtherActor, X_Override, Y_Override, Z_Override);
 	
 	if (HasAuthority())
 	{
-		
 		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
 			FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
@@ -49,7 +81,10 @@ void AFireBall::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 			UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
 		}
 
-		//Destroy();
+		
+		
+		
+		Destroy();
 	}
 	else bHit = true;
 	
@@ -57,6 +92,7 @@ void AFireBall::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 
 void AFireBall::Destroyed()
 {
+	
 	Super::Destroyed();
 }
 
