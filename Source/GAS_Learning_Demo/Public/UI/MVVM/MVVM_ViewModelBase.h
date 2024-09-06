@@ -13,5 +13,29 @@ UCLASS()
 class GAS_LEARNING_DEMO_API UMVVM_ViewModelBase : public UMVVMViewModelBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	/*
+		 *	Setter
+		 */
+	void SetWidgetName(FString InWidgetName);
+
+	/*
+	 *	Setter End
+	 */
+
+	/*
+	 *	Getter
+	 */
+	FString GetWidgetName() const {return WidgetName;}
+
+	/*
+	 *	Getter End
+	 */
+
+private:
+
+	UPROPERTY(EditAnywhere ,BlueprintReadWrite, FieldNotify, Setter,Getter,meta=(AllowPrivateAccess = "true"))
+	FString WidgetName;
+
 };

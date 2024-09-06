@@ -24,6 +24,11 @@ void ALoadScreenHud::BeginPlay()
 		MVVM_MenuViewModel = NewObject<UMVVM_LoadScreenModel>(this, MVVM_MenuViewModelClass);
 		MenuWidget = CreateWidget<ULoadMenuWidget>(PlayerOwner, MenuWidgetClass);
 	}
+
+	FInputModeUIOnly InputModeUIOnly;
+	InputModeUIOnly.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	GetOwningPlayerController()->SetInputMode(InputModeUIOnly);
+	GetOwningPlayerController()->SetShowMouseCursor(true);
 	
 	MenuWidget->AddToViewport();
 	SetMenuWidgetViewModel();

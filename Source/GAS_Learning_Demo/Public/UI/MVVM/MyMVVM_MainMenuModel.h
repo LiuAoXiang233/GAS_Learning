@@ -19,24 +19,7 @@ class GAS_LEARNING_DEMO_API UMyMVVM_MainMenuModel : public UMVVM_ViewModelBase
 	GENERATED_BODY()
 public:
 
-	/*
-	 *	Setter
-	 */
-	void SetWidgetName(FString InWidgetName);
-
-	/*
-	 *	Setter End
-	 */
-
-	/*
-	 *	Getter
-	 */
-	FString GetWidgetName() const {return WidgetName;}
-
-	/*
-	 *	Getter End
-	 */
-
+	
 	/*
 	 *	Delegate
 	 */
@@ -55,10 +38,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ExitButtonPressed();
 
-private:
-
-	UPROPERTY(EditAnywhere ,BlueprintReadWrite, FieldNotify, Setter,Getter,meta=(AllowPrivateAccess = "true"))
-	FString WidgetName;
 
 
 	

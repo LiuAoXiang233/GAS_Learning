@@ -4,11 +4,6 @@
 #include "UI/MVVM/MyMVVM_MainMenuModel.h"
 
 
-void UMyMVVM_MainMenuModel::SetWidgetName(FString InWidgetName)
-{
-	UE_MVVM_SET_PROPERTY_VALUE(WidgetName, InWidgetName);
-}
-
 void UMyMVVM_MainMenuModel::StartButtonPressed()
 {
 
