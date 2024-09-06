@@ -6,6 +6,10 @@
 #include "GameFramework/HUD.h"
 #include "LoadScreenHud.generated.h"
 
+class UMainMenuWidget;
+class UMyMVVM_MainMenuModel;
+class UMVVM_ViewModelBase;
+class UMVVM_LoadScreenModel;
 class ULoadScreenMenuBase;
 /**
  * 
@@ -17,14 +21,28 @@ class GAS_LEARNING_DEMO_API ALoadScreenHud : public AHUD
 
 public:
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> LoadScreenMenuWidgetClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UUserWidget> MenuWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr<ULoadScreenMenuBase> LoadScreenMenuWidget;
+	TObjectPtr<UUserWidget> MenuWidget;
+
+	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UMVVM_ViewModelBase> MVVM_MenuViewModelClass;
+
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<UMVVM_ViewModelBase> MVVM_MenuViewModel;
 	
 protected:
 
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetMenuWidgetViewModel();
+
+	UPROPERTY(EditDefaultsOnly)
+	bool bIsMainMenu = true;
 	
 };
