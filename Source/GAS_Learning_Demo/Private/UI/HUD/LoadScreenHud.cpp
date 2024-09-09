@@ -23,6 +23,7 @@ void ALoadScreenHud::BeginPlay()
 	{
 		MVVM_MenuViewModel = NewObject<UMVVM_LoadScreenModel>(this, MVVM_MenuViewModelClass);
 		MenuWidget = CreateWidget<ULoadMenuWidget>(PlayerOwner, MenuWidgetClass);
+		
 	}
 
 	FInputModeUIOnly InputModeUIOnly;

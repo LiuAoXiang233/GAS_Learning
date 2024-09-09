@@ -4,15 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "UI/Widget/LoadScreenMenuBase.h"
-#include "LoadMenuWidget.generated.h"
+#include "LoadSlotWidgetBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GAS_LEARNING_DEMO_API ULoadMenuWidget : public ULoadScreenMenuBase
+class GAS_LEARNING_DEMO_API ULoadSlotWidgetBase : public ULoadScreenMenuBase
 {
 	GENERATED_BODY()
 
-
+	
+	
 };
