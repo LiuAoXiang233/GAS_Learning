@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LoadScreenSaveGame.h"
 #include "GameFramework/GameModeBase.h"
 #include "AuraGameModeBase.generated.h"
 
@@ -29,7 +30,11 @@ public:
 
 	void SaveSlotData(UMVVM_LoadMenuSoltModel* LoadSlotModel, const int32 SlotIndex);
 
+	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const;
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USaveGame> LoadScreenSaveGameClass;
+
+	
 	
 };

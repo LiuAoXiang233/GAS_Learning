@@ -26,6 +26,7 @@ public:
 		 *	Setter
 		 */
 	void SetSelectSlotIndex(int32 InSelectSlotIndex);
+	
 
 	/*
 	 *	Setter End
@@ -55,14 +56,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SaveGameButtonPressed();
 
+	UFUNCTION(BlueprintCallable)
+	void LoadData();
+
+	UFUNCTION(BlueprintCallable)
+    void DeleteButtonPressed(); 
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UMVVM_ViewModelBase> SlotWidgetMenuViewModelClass;
 
-private:
-
 	UPROPERTY()
 	TMap<int32, UMVVM_LoadMenuSoltModel*> LoadSlots;
-	
+
 	UPROPERTY()
 	TObjectPtr<UMVVM_LoadMenuSoltModel> LoadMenuSoltModel_Default;
 
@@ -77,6 +82,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UMVVM_LoadMenuSoltModel> LoadMenuSoltModel_4;
+
+private:
 
 	UPROPERTY(EditAnywhere ,BlueprintReadWrite, FieldNotify, Setter,Getter,meta=(AllowPrivateAccess = "true"))
 	int32 SelectSlotIndex = 0;

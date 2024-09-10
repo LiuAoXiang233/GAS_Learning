@@ -8,7 +8,8 @@ void UMVVM_LoadMenuSoltModel::SetPlayerName(FString InPlayerName)
 	UE_MVVM_SET_PROPERTY_VALUE(PlayerName, InPlayerName);
 }
 
-void UMVVM_LoadMenuSoltModel::InitializaSlot()
+void UMVVM_LoadMenuSoltModel::InitializaSlot() const
 {
-	SetWidgetSwitcherIndex.Broadcast(1);
+	const int32 WidgetSwitcherIndex = SlotStatus.GetValue();
+	SetWidgetSwitcherIndex.Broadcast(WidgetSwitcherIndex);
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Game/LoadScreenSaveGame.h"
 #include "UI/MVVM/MVVM_ViewModelBase.h"
 #include "MVVM_LoadMenuSoltModel.generated.h"
 
@@ -31,8 +32,10 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FSetWidgetSwitcherIndex SetWidgetSwitcherIndex;
 
-	void InitializaSlot();
+	void InitializaSlot() const;
 
+	UPROPERTY()
+	TEnumAsByte<ESaveSlotStatus> SlotStatus;
 	
 
 	UPROPERTY()
@@ -43,7 +46,8 @@ public:
 
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Setter, Getter, meta=(AllowPrivateAccess = true))
+	
+	UPROPERTY(EditAnywhere ,BlueprintReadWrite, FieldNotify, Setter,Getter,meta=(AllowPrivateAccess = "true"))
 	FString PlayerName;
 
 	

@@ -16,8 +16,29 @@ void AAuraGameModeBase::SaveSlotData(UMVVM_LoadMenuSoltModel* LoadSlotModel, con
 
 	USaveGame* SaveGameObject = UGameplayStatics::CreateSaveGameObject(LoadScreenSaveGameClass);
 	ULoadScreenSaveGame* LoadScreenSaveGame = Cast<ULoadScreenSaveGame>(SaveGameObject);
-	LoadScreenSaveGame->PlayerName = LoadSlotModel->PlayerName;
+	
+	LoadScreenSaveGame->PlayerName = LoadSlotModel->GetPlayerName();
+	LoadScreenSaveGame->SaveSlotStatus = ESaveSlotStatus::Taken;
 
 	UGameplayStatics::SaveGameToSlot(LoadScreenSaveGame, LoadSlotModel->LoadSlotName, SlotIndex);
+	
+}
+
+ULoadScreenSaveGame* AAuraGameModeBase::GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const
+{
+	USaveGame* SaveGameObject = nullptr;
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, SlotIndex))
+	{
+		SaveGameObject = UGameplayStatics::LoadGameFromSlot(SlotName, SlotIndex);
+	}
+	
+	else
+	{
+		SaveGameObject = UGameplayStatics::CreateSaveGameObject(LoadScreenSaveGameClass);
+	}
+
+	ULoadScreenSaveGame* LoadSaveGame = Cast<ULoadScreenSaveGame>(SaveGameObject);
+	
+	return LoadSaveGame;
 	
 }

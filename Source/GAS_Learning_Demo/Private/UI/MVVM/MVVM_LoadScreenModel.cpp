@@ -16,8 +16,8 @@ void UMVVM_LoadScreenModel::SelectSlot(int32 Index)
 {
 	SetSelectSlotIndex(Index);
 	SelectSlotDelegate.Broadcast(Index);
-	
 }
+
 
 void UMVVM_LoadScreenModel::InitializeSlotWidgetViewModel()
 {
@@ -50,8 +50,54 @@ void UMVVM_LoadScreenModel::SaveGameButtonPressed()
 	AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
 	// TODO: 设置存档的 玩家姓名 游玩时间 地图所在位置
 
+	LoadSlots[SelectSlotIndex]->SlotStatus = ESaveSlotStatus::Taken;
+	LoadSlots[SelectSlotIndex]->SetPlayerName(FString(TEXT("灰姑娘")));
 	
 	GameMode->SaveSlotData(LoadSlots[SelectSlotIndex], SelectSlotIndex);
 	LoadSlots[SelectSlotIndex]->InitializaSlot();
 	
+}
+
+void UMVVM_LoadScreenModel::LoadData()
+{
+	const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
+	
+	
+	for (const TTuple<int32, UMVVM_LoadMenuSoltModel*>& LoadSlot : LoadSlots)
+	{
+		
+		UMVVM_LoadMenuSoltModel* LoadMenuSoltModel = LoadSlot.Value;
+		int32 LoadSlotIndex = LoadSlot.Key;
+
+
+		if (const ULoadScreenSaveGame* GameData = AuraGameMode->GetSaveSlotData(LoadMenuSoltModel->LoadSlotName, LoadSlotIndex))
+		{
+			const FString PlayerName = GameData->PlayerName;
+			const TEnumAsByte<ESaveSlotStatus> SlotStatus = GameData->SaveSlotStatus;
+	
+		
+			LoadMenuSoltModel->SetPlayerName(PlayerName);
+			LoadMenuSoltModel->SlotStatus = SlotStatus;
+	
+			LoadMenuSoltModel->InitializaSlot();
+		}
+		
+	}
+	
+	
+}
+
+void UMVVM_LoadScreenModel::DeleteButtonPressed()
+{
+	if (SelectSlotIndex >= 0 && SelectSlotIndex <= 4)
+	{
+		UMVVM_LoadMenuSoltModel* LoadMenuSoltModel = LoadSlots[SelectSlotIndex];
+		if (UGameplayStatics::DoesSaveGameExist(LoadMenuSoltModel->LoadSlotName, LoadMenuSoltModel->SlotIndex))
+		{
+			UGameplayStatics::DeleteGameInSlot(LoadMenuSoltModel->LoadSlotName, LoadMenuSoltModel->SlotIndex);
+			LoadMenuSoltModel->SetPlayerName(FString("Default Name"));
+			LoadMenuSoltModel->SlotStatus = ESaveSlotStatus::Vacant;
+			LoadMenuSoltModel->InitializaSlot();
+		}
+	}
 }
