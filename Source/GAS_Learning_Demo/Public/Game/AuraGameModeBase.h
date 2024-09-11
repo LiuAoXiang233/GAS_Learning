@@ -32,11 +32,17 @@ public:
 
 	void TravelToMap(UMVVM_LoadMenuSoltModel* LoadSlotModel);
 
+	ULoadScreenSaveGame* RetrieveInGameSaveData();
+	void SaveInGameSaveData(ULoadScreenSaveGame* SaveGameData);
+	
 	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USaveGame> LoadScreenSaveGameClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	FName DefaultPlayerStartTag;
+	
 	UPROPERTY(EditDefaultsOnly)
 	FString DefaultMapName;
 
@@ -45,6 +51,10 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FString, TSoftObjectPtr<UWorld>> Maps;
+
+	/*Public Override */
+	AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	/*Publie Override End*/
 
 	
 protected:

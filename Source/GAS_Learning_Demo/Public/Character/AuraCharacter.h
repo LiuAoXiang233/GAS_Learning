@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/PlayerInterface.h"
+#include "Interaction/SaveAndLoadGameInterface.h"
 #include "AuraCharacter.generated.h"
 
 
@@ -14,7 +15,7 @@ class UCameraComponent;
  * 
  */
 UCLASS()
-class GAS_LEARNING_DEMO_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface
+class GAS_LEARNING_DEMO_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface, public ISaveAndLoadGameInterface
 {
 	GENERATED_BODY()
 public:
@@ -51,6 +52,10 @@ public:
 	/*
 	 *	End CombatInterface
 	 */
+
+	/*Save And Load Game Interface*/
+	virtual void SaveProgress_Implementation() override;
+	/*Save And Load Game Interface End*/
 private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArm;

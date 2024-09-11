@@ -10,8 +10,10 @@
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Game/AuraGameModeBase.h"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
@@ -164,6 +166,19 @@ int32 AAuraCharacter::GetCharacterLevel_Implementation()
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	return AuraPlayerState->GetPlayerLevel();
+}
+
+void AAuraCharacter::SaveProgress_Implementation()
+{
+	if (AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		ULoadScreenSaveGame* SaveGame = GameMode->RetrieveInGameSaveData();
+		if (SaveGame == nullptr) return;
+		
+		SaveGame->PlayerInformation.PlayerTransform = GetTransform();
+
+		GameMode->SaveInGameSaveData(SaveGame);
+	}
 }
 
 void AAuraCharacter::InitAbilityActorInfo()

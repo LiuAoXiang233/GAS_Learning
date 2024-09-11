@@ -17,6 +17,39 @@ enum ESaveSlotStatus
 	Taken
 };
 
+USTRUCT(BlueprintType)
+struct FPlayerInformation
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FTransform PlayerTransform = FTransform();
+	
+	UPROPERTY()
+	int32 PlayerLevel = 0;
+
+	UPROPERTY()
+	int32 PlayerXP = 0;
+
+	UPROPERTY()
+	int32 SpellPoints = 0;
+
+	UPROPERTY()
+	int32 AttributePoints = 0;
+
+	UPROPERTY()
+	float Strength = 0;
+
+	UPROPERTY()
+	float Intelligence = 0;
+
+	UPROPERTY()
+	float Resilience = 0;
+
+	UPROPERTY()
+	float Viger = 0;
+};
+
 UCLASS()
 class GAS_LEARNING_DEMO_API ULoadScreenSaveGame : public USaveGame
 {
@@ -39,5 +72,13 @@ public:
 
 	UPROPERTY()
 	TEnumAsByte<ESaveSlotStatus> SaveSlotStatus = Vacant;
+
+
+	/*Player*/
+	
+	UPROPERTY()
+	FPlayerInformation PlayerInformation;
+
+	/*Player End*/
 	
 };

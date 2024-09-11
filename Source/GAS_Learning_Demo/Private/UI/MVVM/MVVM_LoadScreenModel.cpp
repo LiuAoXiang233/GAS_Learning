@@ -3,6 +3,7 @@
 
 #include "UI/MVVM/MVVM_LoadScreenModel.h"
 
+#include "Game/AuraGameInstance.h"
 #include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/MVVM/MVVM_LoadMenuSoltModel.h"
@@ -56,6 +57,12 @@ void UMVVM_LoadScreenModel::SaveGameButtonPressed()
 	
 	GameMode->SaveSlotData(LoadSlots[SelectSlotIndex], SelectSlotIndex);
 	LoadSlots[SelectSlotIndex]->InitializaSlot();
+
+
+	UAuraGameInstance* GameInstance = Cast<UAuraGameInstance>(GameMode->GetGameInstance());
+	GameInstance->LoadSlotName = LoadSlots[SelectSlotIndex]->LoadSlotName;
+	GameInstance->LoadSlotIndex = LoadSlots[SelectSlotIndex]->SlotIndex;
+	GameInstance->PlayerStartTag = GameMode->DefaultPlayerStartTag;
 	
 }
 
@@ -108,5 +115,12 @@ void UMVVM_LoadScreenModel::DeleteButtonPressed()
 void UMVVM_LoadScreenModel::PlayGameButtonPressed()
 {
 	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
+	UAuraGameInstance* GameInstance = Cast<UAuraGameInstance>(AuraGameMode->GetGameInstance());
+
+	GameInstance->LoadSlotName = LoadSlots[SelectSlotIndex]->LoadSlotName;
+	GameInstance->LoadSlotIndex = LoadSlots[SelectSlotIndex]->SlotIndex;
+	GameInstance->PlayerStartTag = AuraGameMode->DefaultPlayerStartTag;
+	
+	
 	AuraGameMode->TravelToMap(LoadSlots[SelectSlotIndex]);
 }
