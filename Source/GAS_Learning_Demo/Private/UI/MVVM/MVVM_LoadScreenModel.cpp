@@ -52,6 +52,7 @@ void UMVVM_LoadScreenModel::SaveGameButtonPressed()
 
 	LoadSlots[SelectSlotIndex]->SlotStatus = ESaveSlotStatus::Taken;
 	LoadSlots[SelectSlotIndex]->SetPlayerName(FString(TEXT("灰姑娘")));
+	LoadSlots[SelectSlotIndex]->SetMapName(GameMode->DefaultMapName);
 	
 	GameMode->SaveSlotData(LoadSlots[SelectSlotIndex], SelectSlotIndex);
 	LoadSlots[SelectSlotIndex]->InitializaSlot();
@@ -78,7 +79,8 @@ void UMVVM_LoadScreenModel::LoadData()
 		
 			LoadMenuSoltModel->SetPlayerName(PlayerName);
 			LoadMenuSoltModel->SlotStatus = SlotStatus;
-	
+			LoadMenuSoltModel->SetMapName(GameData->MapName);
+			
 			LoadMenuSoltModel->InitializaSlot();
 		}
 		
@@ -96,8 +98,15 @@ void UMVVM_LoadScreenModel::DeleteButtonPressed()
 		{
 			UGameplayStatics::DeleteGameInSlot(LoadMenuSoltModel->LoadSlotName, LoadMenuSoltModel->SlotIndex);
 			LoadMenuSoltModel->SetPlayerName(FString("Default Name"));
+			LoadMenuSoltModel->SetMapName(FString("Default Map"));
 			LoadMenuSoltModel->SlotStatus = ESaveSlotStatus::Vacant;
 			LoadMenuSoltModel->InitializaSlot();
 		}
 	}
+}
+
+void UMVVM_LoadScreenModel::PlayGameButtonPressed()
+{
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
+	AuraGameMode->TravelToMap(LoadSlots[SelectSlotIndex]);
 }

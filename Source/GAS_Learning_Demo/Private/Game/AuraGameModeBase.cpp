@@ -19,9 +19,17 @@ void AAuraGameModeBase::SaveSlotData(UMVVM_LoadMenuSoltModel* LoadSlotModel, con
 	
 	LoadScreenSaveGame->PlayerName = LoadSlotModel->GetPlayerName();
 	LoadScreenSaveGame->SaveSlotStatus = ESaveSlotStatus::Taken;
+	LoadScreenSaveGame->MapName = LoadSlotModel->GetMapName();
 
 	UGameplayStatics::SaveGameToSlot(LoadScreenSaveGame, LoadSlotModel->LoadSlotName, SlotIndex);
 	
+}
+
+void AAuraGameModeBase::TravelToMap(UMVVM_LoadMenuSoltModel* LoadSlotModel)
+{
+	const FString MapName = LoadSlotModel->GetMapName();
+	TSoftObjectPtr<UWorld> Level = Maps.FindChecked(MapName);
+	UGameplayStatics::OpenLevelBySoftObjectPtr(LoadSlotModel, Level);
 }
 
 ULoadScreenSaveGame* AAuraGameModeBase::GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const
@@ -41,4 +49,10 @@ ULoadScreenSaveGame* AAuraGameModeBase::GetSaveSlotData(const FString& SlotName,
 	
 	return LoadSaveGame;
 	
+}
+
+void AAuraGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+	Maps.Add(DefaultMapName, DefaultMap);
 }

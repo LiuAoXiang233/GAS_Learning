@@ -24,7 +24,10 @@ public:
 	 */
 
 	void SetPlayerName(FString InPlayerName);
-	FString GetPlayerName() const {return PlayerName;}; 
+	FString GetPlayerName() const {return PlayerName;};
+
+	void SetMapName(FString InMapName);
+	FString GetMapName() const {return MapName;}
 	/*
 	 * Setter and Getter End
 	 */
@@ -49,6 +52,9 @@ private:
 	
 	UPROPERTY(EditAnywhere ,BlueprintReadWrite, FieldNotify, Setter,Getter,meta=(AllowPrivateAccess = "true"))
 	FString PlayerName;
+
+	UPROPERTY(EditAnywhere ,BlueprintReadWrite, FieldNotify, Setter,Getter,meta=(AllowPrivateAccess = "true"))
+	FString MapName;
 
 	
 };
