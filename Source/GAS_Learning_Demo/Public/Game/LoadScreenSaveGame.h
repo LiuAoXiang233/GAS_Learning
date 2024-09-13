@@ -78,6 +78,7 @@ public:
 	
 	UPROPERTY()
 	FPlayerInformation PlayerInformation;
+	
 
 	/*Player End*/
 	

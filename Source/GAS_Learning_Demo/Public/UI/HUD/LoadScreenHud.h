@@ -42,7 +42,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetMenuWidgetViewModel();
 
-	UPROPERTY(EditDefaultsOnly)
-	bool bIsMainMenu = true;
+	virtual void InitializeWidgetAndViewModel();
+	
 	
 };

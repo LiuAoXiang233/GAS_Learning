@@ -31,6 +31,30 @@ void FAuraGameplayTags::InitialNativeGameplayTags()
 		FName("Attribute.Primary.Viger"),
 		FString("生命力"));
 
+	/*
+	 *
+	 *	Player Class 
+	 * 
+	 */
+	GameplayTags.Player_Class_Knight = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Class.Knight"),
+		FString("骑士")
+	);
+
+	GameplayTags.Player_Class_Assassin = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Class.Assassin"),
+		FString("刺客")
+	);
+
+	GameplayTags.Player_Class_Berserker = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Class.Berserker"),
+		FString("狂战士")
+	);
+
+	GameplayTags.Player_Class_Caster = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Class.Caster"),
+		FString("魔法师")
+	);
 	
 	/*
 	 *	Secondary Attributes

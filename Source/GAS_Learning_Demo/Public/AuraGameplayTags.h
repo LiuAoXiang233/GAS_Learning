@@ -178,7 +178,15 @@ public:
 	FGameplayTag Player_Block_InputRealsed;
 	FGameplayTag Player_Block_CurseTrace;
 
+	/*
+	 *
+	 *	Player Class Tag
+	 */
 
+	FGameplayTag Player_Class_Knight;
+	FGameplayTag Player_Class_Berserker;
+	FGameplayTag Player_Class_Caster;
+	FGameplayTag Player_Class_Assassin;
 	
 private:
 	static FAuraGameplayTags GameplayTags;
