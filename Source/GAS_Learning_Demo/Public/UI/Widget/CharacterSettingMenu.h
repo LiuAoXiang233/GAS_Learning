@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/Data/PlayerClassDataAsset.h"
 #include "UI/Widget/LoadScreenMenuBase.h"
 #include "CharacterSettingMenu.generated.h"
 
@@ -17,7 +16,6 @@ class GAS_LEARNING_DEMO_API UCharacterSettingMenu : public ULoadScreenMenuBase
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, Category="Player Class Data")
-	TObjectPtr<UPlayerClassDataAsset> PlayerClassDataAsset;
+	
 	
 };
