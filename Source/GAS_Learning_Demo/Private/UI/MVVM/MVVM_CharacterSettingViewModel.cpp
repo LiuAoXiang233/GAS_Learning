@@ -12,3 +12,9 @@ void UMVVM_CharacterSettingViewModel::SetCharacterName(FString InCharacterName)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(CharacterName, InCharacterName);
 }
+
+void UMVVM_CharacterSettingViewModel::EnterNameAndChooseClass(const FString InCharacterName, const FString InCharacterClass)
+{
+	SetCharacterName(InCharacterName);
+	SetCharacterClass(InCharacterClass);
+}

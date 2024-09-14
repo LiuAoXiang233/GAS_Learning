@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UI/MVVM/MVVM_ViewModelBase.h"
 #include "MVVM_CharacterSettingViewModel.generated.h"
 
@@ -10,6 +11,8 @@ class UPlayerClassDataAsset;
 /**
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterClassSelectSignature, FGameplayTag, TheCharacterClass);
 UCLASS()
 class GAS_LEARNING_DEMO_API UMVVM_CharacterSettingViewModel : public UMVVM_ViewModelBase
 {
@@ -26,6 +29,13 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Player Class Data")
 	TObjectPtr<UPlayerClassDataAsset> PlayerClassDataAsset;
+
+	UFUNCTION(BlueprintCallable)
+	void EnterNameAndChooseClass(const FString InCharacterName, const FString InCharacterClass);
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnCharacterClassSelectSignature OnCharacterClassSelectDelegate;
+	
 private:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Setter, Getter, FieldNotify, meta=(AllowPrivateAccess="true"))
