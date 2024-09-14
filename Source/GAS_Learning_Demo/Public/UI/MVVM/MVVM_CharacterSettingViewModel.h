@@ -31,6 +31,9 @@ public:
 	TObjectPtr<UPlayerClassDataAsset> PlayerClassDataAsset;
 
 	UFUNCTION(BlueprintCallable)
+	void ShowAttribute(const FGameplayTag CharacterClassTag, FString& Strength, FString& Intelligence, FString& Resilience, FString& Viger);
+	
+	UFUNCTION(BlueprintCallable)
 	void EnterNameAndChooseClass(const FString InCharacterName, const FString InCharacterClass);
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
