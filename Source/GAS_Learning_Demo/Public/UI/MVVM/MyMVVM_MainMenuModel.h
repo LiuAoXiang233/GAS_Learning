@@ -38,8 +38,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ExitButtonPressed();
 
-	UFUNCTION(BlueprintCallable)
-	void EnterNameButtonPressed(FText InName);
+	
 
 	
 

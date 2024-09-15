@@ -34,7 +34,7 @@ public:
 	void ShowAttribute(const FGameplayTag CharacterClassTag, FString& Strength, FString& Intelligence, FString& Resilience, FString& Viger);
 	
 	UFUNCTION(BlueprintCallable)
-	void EnterNameAndChooseClass(const FString InCharacterName, const FString InCharacterClass);
+	void EnterNameAndChooseClass(const FString InCharacterName, const FString InCharacterClass, const FGameplayTag InCharacterClassTag);
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnCharacterClassSelectSignature OnCharacterClassSelectDelegate;

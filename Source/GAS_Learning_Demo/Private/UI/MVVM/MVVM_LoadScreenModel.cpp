@@ -52,14 +52,19 @@ void UMVVM_LoadScreenModel::SaveGameButtonPressed()
 	// TODO: 设置存档的 玩家姓名 游玩时间 地图所在位置
 
 	LoadSlots[SelectSlotIndex]->SlotStatus = ESaveSlotStatus::Taken;
-	LoadSlots[SelectSlotIndex]->SetPlayerName(FString(TEXT("灰姑娘")));
-	LoadSlots[SelectSlotIndex]->SetMapName(GameMode->DefaultMapName);
+	// LoadSlots[SelectSlotIndex]->SetPlayerName(FString(TEXT("灰姑娘")));		姓名不需要再次设置
+	// LoadSlots[SelectSlotIndex]->SetMapName(GameMode->DefaultMapName);		Map也不应该在这里设置
 	
 	GameMode->SaveSlotData(LoadSlots[SelectSlotIndex], SelectSlotIndex);
 	LoadSlots[SelectSlotIndex]->InitializaSlot();
 
 
+
+
+	
 	UAuraGameInstance* GameInstance = Cast<UAuraGameInstance>(GameMode->GetGameInstance());
+
+	// 存档后 自身的loadslotname 和 index就变成了选择的那个
 	GameInstance->LoadSlotName = LoadSlots[SelectSlotIndex]->LoadSlotName;
 	GameInstance->LoadSlotIndex = LoadSlots[SelectSlotIndex]->SlotIndex;
 	GameInstance->PlayerStartTag = GameMode->DefaultPlayerStartTag;
@@ -87,6 +92,7 @@ void UMVVM_LoadScreenModel::LoadData()
 			LoadMenuSoltModel->SetPlayerName(PlayerName);
 			LoadMenuSoltModel->SlotStatus = SlotStatus;
 			LoadMenuSoltModel->SetMapName(GameData->MapName);
+			LoadMenuSoltModel->SetCharacterClass(GameData->PlayerClass);
 			
 			LoadMenuSoltModel->InitializaSlot();
 		}

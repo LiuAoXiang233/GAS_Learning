@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/SaveGame.h"
 #include "LoadScreenSaveGame.generated.h"
 
@@ -22,6 +23,9 @@ struct FPlayerInformation
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
+	FGameplayTag PlayerClassTag = FGameplayTag();
+	
 	UPROPERTY()
 	FTransform PlayerTransform = FTransform();
 	
@@ -63,10 +67,6 @@ public:
 	UPROPERTY()
 	int32 SlotIndex;
 
-
-	UPROPERTY()
-	FString PlayerName = FString("Default Name");
-
 	UPROPERTY()
 	FString MapName = FString("Default Map");
 
@@ -79,7 +79,12 @@ public:
 	UPROPERTY()
 	FPlayerInformation PlayerInformation;
 	
+	UPROPERTY()
+	FString PlayerName = FString("Default Name");
 
+	UPROPERTY()
+	FString PlayerClass = FString("Default Class");
+	
 	/*Player End*/
 	
 };

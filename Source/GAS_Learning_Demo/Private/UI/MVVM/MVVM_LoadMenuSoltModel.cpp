@@ -13,6 +13,11 @@ void UMVVM_LoadMenuSoltModel::SetMapName(FString InMapName)
 	UE_MVVM_SET_PROPERTY_VALUE(MapName, InMapName);
 }
 
+void UMVVM_LoadMenuSoltModel::SetCharacterClass(FString InCharacterClass)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CharacterClass, InCharacterClass);
+}
+
 void UMVVM_LoadMenuSoltModel::InitializaSlot() const
 {
 	const int32 WidgetSwitcherIndex = SlotStatus.GetValue();

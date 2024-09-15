@@ -19,7 +19,7 @@ void AAuraGameModeBase::SaveSlotData(UMVVM_LoadMenuSoltModel* LoadSlotModel, con
 	USaveGame* SaveGameObject = UGameplayStatics::CreateSaveGameObject(LoadScreenSaveGameClass);
 	ULoadScreenSaveGame* LoadScreenSaveGame = Cast<ULoadScreenSaveGame>(SaveGameObject);
 	
-	LoadScreenSaveGame->PlayerName = LoadSlotModel->GetPlayerName();
+	// LoadScreenSaveGame->PlayerName = LoadSlotModel->GetPlayerName(); 存档中的玩家名字不从此处设置
 	LoadScreenSaveGame->SaveSlotStatus = ESaveSlotStatus::Taken;
 	LoadScreenSaveGame->MapName = LoadSlotModel->GetMapName();
 
@@ -54,13 +54,17 @@ void AAuraGameModeBase::SaveInGameSaveData(ULoadScreenSaveGame* SaveGameData)
 	{
 		FString InLoadSlotName = GameInstance->LoadSlotName;
 		int32 InLoadSlotIndex = GameInstance->LoadSlotIndex;
-
+		SaveGameData->SaveSlotStatus = ESaveSlotStatus::Taken;
 		UGameplayStatics::SaveGameToSlot(SaveGameData, InLoadSlotName, InLoadSlotIndex);
 	}
 }
 
+
+
+// MainMenuViewMode 和 CharacterSettingViewModel 不要使用
 ULoadScreenSaveGame* AAuraGameModeBase::GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const
 {
+	// 这是从当前选择的存档中获取 Save Game Data
 	USaveGame* SaveGameObject = nullptr;
 	if (UGameplayStatics::DoesSaveGameExist(SlotName, SlotIndex))
 	{

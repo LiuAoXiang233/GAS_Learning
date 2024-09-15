@@ -28,6 +28,9 @@ public:
 
 	void SetMapName(FString InMapName);
 	FString GetMapName() const {return MapName;}
+
+	void SetCharacterClass(FString InCharacterClass);
+	FString GetCharacterClass() const {return CharacterClass;}
 	/*
 	 * Setter and Getter End
 	 */
@@ -55,6 +58,9 @@ private:
 
 	UPROPERTY(EditAnywhere ,BlueprintReadWrite, FieldNotify, Setter,Getter,meta=(AllowPrivateAccess = "true"))
 	FString MapName;
+
+	UPROPERTY(EditAnywhere ,BlueprintReadWrite, FieldNotify, Setter,Getter,meta=(AllowPrivateAccess = "true"))
+	FString CharacterClass;
 
 	
 };

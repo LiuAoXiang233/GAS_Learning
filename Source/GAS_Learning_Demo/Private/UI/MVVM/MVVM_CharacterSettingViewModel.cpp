@@ -4,6 +4,9 @@
 #include "UI/MVVM/MVVM_CharacterSettingViewModel.h"
 
 #include "AbilitySystem/Data/PlayerClassDataAsset.h"
+#include "Game/AuraGameInstance.h"
+#include "Game/AuraGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 
 void UMVVM_CharacterSettingViewModel::SetCharacterClass(FString InCharacterClass)
 {
@@ -25,8 +28,37 @@ void UMVVM_CharacterSettingViewModel::ShowAttribute(const FGameplayTag Character
 	
 }
 
-void UMVVM_CharacterSettingViewModel::EnterNameAndChooseClass(const FString InCharacterName, const FString InCharacterClass)
+void UMVVM_CharacterSettingViewModel::EnterNameAndChooseClass(const FString InCharacterName, const FString InCharacterClass, const FGameplayTag InCharacterClassTag)
 {
+
+	// 原本这段代码放在MainMenuViewModel中，作为开始游戏（即 新的游戏开头的) 用于指定GameInstance中默认存档的名字和index
+	// 但是在蓝图操作中无法起作用
+	// 所以将其放在开始游戏之前，人物设定完成的时候
+	FString DefaultLoadSlotName = FString("LoadMenuSoltModel_Default");
+	int32 DefaultLoadSlotIndex = 0;
+	if (AAuraGameModeBase* AuraGameMode  = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		UAuraGameInstance* GameInstance = Cast<UAuraGameInstance>(AuraGameMode->GetGameInstance());
+		GameInstance->LoadSlotIndex = DefaultLoadSlotIndex;
+		GameInstance->LoadSlotName = DefaultLoadSlotName;
+		
+	}
+
+	
+	// 设置 玩家名称和出身
 	SetCharacterName(InCharacterName);
 	SetCharacterClass(InCharacterClass);
+
+	// 将 其 保存在默认存档中
+	if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		ULoadScreenSaveGame* SaveData = AuraGameMode->RetrieveInGameSaveData();
+		SaveData->PlayerName = InCharacterName;
+		SaveData->PlayerClass = InCharacterClass;
+		SaveData->PlayerInformation.PlayerClassTag = InCharacterClassTag;
+		
+		AuraGameMode->SaveInGameSaveData(SaveData);
+		
+	}
+	
 }
