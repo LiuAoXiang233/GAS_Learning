@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraAbilityTypes.h"
 #include "Data/CharacterClassInfo.h"
+#include "GameFramework/SaveGame.h"
 #include "AuraAbilitySystemLibrary.generated.h"
 
 class UAbilityInfo;
@@ -47,6 +48,9 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|CharacterClassInfo")
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|CharacterClassInfo")
+	static void InitializeDefaultAttributes_SetByCaller(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, USaveGame* SaveGame);
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|CharacterClassInfo")
 	static void GiveStartUpAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass);

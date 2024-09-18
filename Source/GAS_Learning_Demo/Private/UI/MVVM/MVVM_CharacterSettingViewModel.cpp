@@ -53,9 +53,20 @@ void UMVVM_CharacterSettingViewModel::EnterNameAndChooseClass(const FString InCh
 	if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
 	{
 		ULoadScreenSaveGame* SaveData = AuraGameMode->RetrieveInGameSaveData();
+
+		// 对存档中的属性先进行初始化
+		SaveData->InitializeSaveData();
+		
 		SaveData->PlayerName = InCharacterName;
 		SaveData->PlayerClass = InCharacterClass;
 		SaveData->PlayerInformation.PlayerClassTag = InCharacterClassTag;
+
+		FPlayerClassData PlayerClassData = PlayerClassDataAsset->FindPlayerClassDataForTag(InCharacterClassTag);
+		SaveData->PlayerInformation.Strength = PlayerClassData.Strength;
+		SaveData->PlayerInformation.Intelligence = PlayerClassData.Intelligence;
+		SaveData->PlayerInformation.Resilience = PlayerClassData.Resilience;
+		SaveData->PlayerInformation.Viger = PlayerClassData.Viger;
+
 		
 		AuraGameMode->SaveInGameSaveData(SaveData);
 		

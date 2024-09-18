@@ -86,5 +86,9 @@ public:
 	FString PlayerClass = FString("Default Class");
 	
 	/*Player End*/
+
+
+	// 初始化
+	void InitializeSaveData();
 	
 };

@@ -31,6 +31,7 @@ void AAuraGameModeBase::TravelToMap(UMVVM_LoadMenuSoltModel* LoadSlotModel)
 {
 	const FString MapName = LoadSlotModel->GetMapName();
 	TSoftObjectPtr<UWorld> Level = Maps.FindChecked(MapName);
+	
 	UGameplayStatics::OpenLevelBySoftObjectPtr(LoadSlotModel, Level);
 }
 

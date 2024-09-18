@@ -54,12 +54,13 @@ void UMVVM_LoadScreenModel::SaveGameButtonPressed()
 	LoadSlots[SelectSlotIndex]->SlotStatus = ESaveSlotStatus::Taken;
 	// LoadSlots[SelectSlotIndex]->SetPlayerName(FString(TEXT("灰姑娘")));		姓名不需要再次设置
 	// LoadSlots[SelectSlotIndex]->SetMapName(GameMode->DefaultMapName);		Map也不应该在这里设置
+	// TODO: 保存玩家的状态
+	
+
+
 	
 	GameMode->SaveSlotData(LoadSlots[SelectSlotIndex], SelectSlotIndex);
 	LoadSlots[SelectSlotIndex]->InitializaSlot();
-
-
-
 
 	
 	UAuraGameInstance* GameInstance = Cast<UAuraGameInstance>(GameMode->GetGameInstance());
@@ -93,7 +94,6 @@ void UMVVM_LoadScreenModel::LoadData()
 			LoadMenuSoltModel->SlotStatus = SlotStatus;
 			LoadMenuSoltModel->SetMapName(GameData->MapName);
 			LoadMenuSoltModel->SetCharacterClass(GameData->PlayerClass);
-			
 			LoadMenuSoltModel->InitializaSlot();
 		}
 		

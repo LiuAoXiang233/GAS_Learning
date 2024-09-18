@@ -25,4 +25,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SaveProgress();
+
+	
 };

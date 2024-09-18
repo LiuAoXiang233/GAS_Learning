@@ -41,6 +41,8 @@ public:
 	void SetLevel(int32 InLevel);
 	void AddToAttributePoints(int32 InAttributePoints);
 	void AddToSpellPoints(int32 InSpellPoints);
+	void SetAttributePoints(int32 InAttributePoints);
+	void SetSpellPoints(int32 InSpellPoints);
 
 	FOnPlayerStateChanged OnXPChangedDelegate;
 	FOnPlayerStateChanged OnLevelChangedDelegate;

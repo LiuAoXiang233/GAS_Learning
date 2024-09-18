@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -47,6 +48,10 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// for service
 	InitAbilityActorInfo();
+
+	LoadProgress();
+	
+	// 
 	GiveChararcterAbilities();
 }
 
@@ -56,6 +61,29 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	// for client
 	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::LoadProgress()
+{
+	if (AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		ULoadScreenSaveGame* SaveGame = GameMode->RetrieveInGameSaveData();
+		if (SaveGame == nullptr) return;
+		
+		if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
+		{
+			AuraPlayerState->SetLevel(SaveGame->PlayerInformation.PlayerLevel);
+			AuraPlayerState->SetXP(SaveGame->PlayerInformation.PlayerXP);
+			AuraPlayerState->SetAttributePoints(SaveGame->PlayerInformation.AttributePoints);
+			AuraPlayerState->SetSpellPoints(SaveGame->PlayerInformation.SpellPoints);
+		}
+
+		// 应用PrimaryAttribute GE 都是从SaveGameData中获取
+		UAuraAbilitySystemLibrary::InitializeDefaultAttributes_SetByCaller(this, AbilitySystemComponent, SaveGame);
+
+
+		// TODO: 设置玩家的所在的地图和位置
+	}
 }
 
 void AAuraCharacter::AddToXP_Implementation(int32 InXP)
@@ -174,12 +202,34 @@ void AAuraCharacter::SaveProgress_Implementation()
 	{
 		ULoadScreenSaveGame* SaveGame = GameMode->RetrieveInGameSaveData();
 		if (SaveGame == nullptr) return;
-		
+
+		// 保存游戏中的信息
 		SaveGame->PlayerInformation.PlayerTransform = GetTransform();
 
+		if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
+		{
+			SaveGame->PlayerInformation.AttributePoints = AuraPlayerState->GetAttributePoints();
+			SaveGame->PlayerInformation.PlayerLevel = AuraPlayerState->GetPlayerLevel();
+			SaveGame->PlayerInformation.SpellPoints = AuraPlayerState->GetSpellPoints();
+			SaveGame->PlayerInformation.PlayerXP = AuraPlayerState->GetPlayerXP();
+		}
+
+		if (UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(GetAttributeSet()) )
+		{
+			SaveGame->PlayerInformation.Strength = AuraAttributeSet->GetStrength();
+			SaveGame->PlayerInformation.Intelligence = AuraAttributeSet->GetIntelligence();
+			SaveGame->PlayerInformation.Resilience = AuraAttributeSet->GetResilience();
+			SaveGame->PlayerInformation.Viger = AuraAttributeSet->GetViger();
+		}
+		
+		
+
+		
 		GameMode->SaveInGameSaveData(SaveGame);
 	}
 }
+
+
 
 void AAuraCharacter::InitAbilityActorInfo()
 {
@@ -206,5 +256,5 @@ void AAuraCharacter::InitAbilityActorInfo()
 	}
 	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 
-	InitializeDefaultAttributes();
+	
 }
