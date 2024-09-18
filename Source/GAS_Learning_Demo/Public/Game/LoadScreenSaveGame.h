@@ -11,6 +11,8 @@
  * 
  */
 
+class UGameplayAbility;
+
 UENUM(BlueprintType)
 enum ESaveSlotStatus
 {
@@ -54,6 +56,35 @@ struct FPlayerInformation
 	float Viger = 0;
 };
 
+USTRUCT(BlueprintType)
+struct FSaveAbilities
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Default Ability")
+	TSubclassOf<UGameplayAbility> GameplayAbility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FGameplayTag AbilityTag = FGameplayTag();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FGameplayTag AbilityType = FGameplayTag();
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FGameplayTag AbilityStatus = FGameplayTag();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FGameplayTag AbilitySlot = FGameplayTag();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	int32 AbilityLevel;
+};
+
+inline bool operator== (const FSaveAbilities& Left, const FSaveAbilities& Right)
+{
+	return Left.AbilityTag.MatchesTagExact(Right.AbilityTag);
+}
+
 UCLASS()
 class GAS_LEARNING_DEMO_API ULoadScreenSaveGame : public USaveGame
 {
@@ -73,7 +104,12 @@ public:
 	UPROPERTY()
 	TEnumAsByte<ESaveSlotStatus> SaveSlotStatus = Vacant;
 
+	UPROPERTY()
+	bool bIsFirstSave = true;
 
+	UPROPERTY()
+	TArray<FSaveAbilities> SaveAbility;
+	
 	/*Player*/
 	
 	UPROPERTY()

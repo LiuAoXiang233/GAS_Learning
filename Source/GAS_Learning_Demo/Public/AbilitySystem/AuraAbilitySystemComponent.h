@@ -4,6 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraAbilitySystemComponent.generated.h"
 
+class ULoadScreenSaveGame;
 class UAuraAbilitySystemComponent;
 /**
  * 
@@ -25,6 +26,7 @@ class GAS_LEARNING_DEMO_API UAuraAbilitySystemComponent : public UAbilitySystemC
 
 public:
 	void AbilityActorInfoSet();
+	void AddCharacterAbilitiesFromSaveData(ULoadScreenSaveGame* SaveData);
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities);
 	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& PassiveAbilities);
 	void AbilityInputTagPressed(const FGameplayTag& GameplayTag);

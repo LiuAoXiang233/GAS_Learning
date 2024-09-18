@@ -8,6 +8,7 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
+#include "Game/LoadScreenSaveGame.h"
 #include "Interaction/PlayerInterface.h"
 
 
@@ -19,6 +20,35 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 	
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Tag : %s"), *GameplayTags.Attribute_Secondary_Armor.ToString()));
 	
+}
+
+void UAuraAbilitySystemComponent::AddCharacterAbilitiesFromSaveData(ULoadScreenSaveGame* SaveData)
+{
+	for (FSaveAbilities LoadedAbility : SaveData->SaveAbility)
+	{
+		FGameplayAbilitySpec LoadedAbilitySpec = FGameplayAbilitySpec(LoadedAbility.GameplayAbility, LoadedAbility.AbilityLevel);
+		LoadedAbilitySpec.DynamicAbilityTags.AddTag(LoadedAbility.AbilitySlot);
+		LoadedAbilitySpec.DynamicAbilityTags.AddTag(LoadedAbility.AbilityStatus);
+
+		if (LoadedAbility.AbilityType == FAuraGameplayTags::Get().Abilities_Type_Offensive)
+		{
+			GiveAbility(LoadedAbilitySpec);
+		}
+		else if (LoadedAbility.AbilityType == FAuraGameplayTags::Get().Abilities_Type_Passive)
+		{
+			if (LoadedAbility.AbilityStatus == FAuraGameplayTags::Get().Abilities_Status_Equipped)
+			{
+				GiveAbilityAndActivateOnce(LoadedAbilitySpec);
+			}
+			else
+			{
+				GiveAbility(LoadedAbilitySpec);
+			}
+			
+		}
+	}
+	bStartUpAbilitiesGiven = true;
+	AbilitiesGivenDelegate.Broadcast();
 }
 
 void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities)
@@ -45,6 +75,7 @@ void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(
 	for (const TSubclassOf<UGameplayAbility> AbilityClass : PassiveAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+		AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Equipped);
 		GiveAbilityAndActivateOnce(AbilitySpec);
 	}
 }
@@ -310,6 +341,8 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 					MulticastActivatePassiveSpell(GetGameplayTagFormAbilitySpec(*Spec), true);
 
 				}
+				Spec->DynamicAbilityTags.RemoveTag(GetStatusFromSpec(*Spec));
+				Spec->DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Equipped);
 			}
 			AssignSlotToAbility(*Spec, Slot);
 			

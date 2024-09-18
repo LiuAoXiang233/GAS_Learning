@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "NiagaraComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AuraPassiveNiagaraComponent.generated.h"
 
 /**
@@ -17,6 +18,7 @@ class GAS_LEARNING_DEMO_API UAuraPassiveNiagaraComponent : public UNiagaraCompon
 
 public:
 	UAuraPassiveNiagaraComponent();
+	void ActivateIfEquipped(UAuraAbilitySystemComponent* AuraASC);
 
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag PassiveSpellTag;

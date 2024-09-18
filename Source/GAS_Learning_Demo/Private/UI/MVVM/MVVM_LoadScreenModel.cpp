@@ -52,6 +52,7 @@ void UMVVM_LoadScreenModel::SaveGameButtonPressed()
 	// TODO: 设置存档的 玩家姓名 游玩时间 地图所在位置
 
 	LoadSlots[SelectSlotIndex]->SlotStatus = ESaveSlotStatus::Taken;
+	
 	// LoadSlots[SelectSlotIndex]->SetPlayerName(FString(TEXT("灰姑娘")));		姓名不需要再次设置
 	// LoadSlots[SelectSlotIndex]->SetMapName(GameMode->DefaultMapName);		Map也不应该在这里设置
 	// TODO: 保存玩家的状态
@@ -128,5 +129,5 @@ void UMVVM_LoadScreenModel::PlayGameButtonPressed()
 	GameInstance->PlayerStartTag = AuraGameMode->DefaultPlayerStartTag;
 	
 	
-	AuraGameMode->TravelToMap(LoadSlots[SelectSlotIndex]);
+	//AuraGameMode->TravelToMap(LoadSlots[SelectSlotIndex]);
 }

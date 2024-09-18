@@ -11,6 +11,7 @@ void UMyBTService_FindNearisetPlayer::TickNode(UBehaviorTreeComponent& OwnerComp
 {
 	
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+	
 	APawn* OwningPawn = AIOwner->GetPawn();
 
 	FName TargetTag = OwningPawn->ActorHasTag(FName("Player")) ? FName("Enemy") : FName("Player");

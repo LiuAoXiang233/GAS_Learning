@@ -52,7 +52,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	LoadProgress();
 	
 	// 
-	GiveChararcterAbilities();
+	
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -83,6 +83,25 @@ void AAuraCharacter::LoadProgress()
 
 
 		// TODO: 设置玩家的所在的地图和位置
+		SetActorTransform(SaveGame->PlayerInformation.PlayerTransform);
+
+
+		// TODO: 给角色赋予技能, 如果是第一次，存档里并没有保存技能， 应该直接赋予初始技能， 如果是保存后，应该从存档中导入角色技能
+		if (SaveGame->bIsFirstSave)
+		{
+			// 第一次
+			GiveChararcterAbilities();
+		}
+		else
+		{
+			// 从存档中导入
+			if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+			{	
+				AuraASC->AddCharacterAbilitiesFromSaveData(SaveGame);	
+			}
+		}
+
+		
 	}
 }
 
@@ -222,8 +241,31 @@ void AAuraCharacter::SaveProgress_Implementation()
 			SaveGame->PlayerInformation.Viger = AuraAttributeSet->GetViger();
 		}
 		
-		
+		// 保存玩家的技能
+		if (!HasAuthority()) return;
 
+		UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+		FForEachAbility SaveAbilityDelegate;
+		SaveGame->SaveAbility.Empty();
+		SaveAbilityDelegate.BindLambda([this, AuraASC, SaveGame] (const FGameplayAbilitySpec& AbilitySpec)
+		{
+			const FGameplayTag AbilityTag = AuraASC->GetGameplayTagFormAbilitySpec(AbilitySpec);
+			UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(this);
+			FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+			
+			FSaveAbilities SaveAbilities;
+			SaveAbilities.GameplayAbility = Info.Ability;
+			SaveAbilities.AbilityLevel = AbilitySpec.Level;
+			SaveAbilities.AbilitySlot = AuraASC->GetSlotFromAbilityTag(AbilityTag);
+			SaveAbilities.AbilityStatus = AuraASC->GetStatusFromAbilityTag(AbilityTag);
+			SaveAbilities.AbilityTag = AbilityTag;
+			SaveAbilities.AbilityType = Info.AbilityType;
+
+			SaveGame->SaveAbility.AddUnique(SaveAbilities);
+		});
+		AuraASC->ForEachAbility(SaveAbilityDelegate);
+
+		SaveGame->bIsFirstSave = false;
 		
 		GameMode->SaveInGameSaveData(SaveGame);
 	}
