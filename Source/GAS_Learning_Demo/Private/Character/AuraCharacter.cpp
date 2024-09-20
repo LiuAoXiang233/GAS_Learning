@@ -52,7 +52,10 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	LoadProgress();
 	
 	// 
-	
+	if (AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		GameMode->LoadWorldState(GetWorld());
+	}
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -268,6 +271,8 @@ void AAuraCharacter::SaveProgress_Implementation()
 		SaveGame->bIsFirstSave = false;
 		
 		GameMode->SaveInGameSaveData(SaveGame);
+
+		GameMode->SaveWorldState(GetWorld());
 	}
 }
 

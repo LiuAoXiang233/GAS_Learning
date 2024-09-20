@@ -109,6 +109,23 @@ AActor* AEnemyCharacter::GetCombatTarget_Implementation() const
 	return CombatTarget;
 }
 
+void AEnemyCharacter::BeLoaded_Implementation()
+{
+	if (bDie)
+	{
+		Dissolve();
+	}
+}
+
+bool AEnemyCharacter::IsDestroy_Implementation()
+{
+	if (bDead)
+	{
+		return true;
+	}
+	return false;
+}
+
 
 int32 AEnemyCharacter::GetCharacterLevel_Implementation()
 {
@@ -121,6 +138,7 @@ void AEnemyCharacter::Die(const FVector& DeathImpulse)
 	if (AIController)
 	{
 		AIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
+		bDie = true;
 	}
 	Super::Die(DeathImpulse);
 }

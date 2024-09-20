@@ -135,6 +135,7 @@ protected:
 	 * 
 	 */
 
+	
 	bool bDead = false;
 	
 	void Dissolve();

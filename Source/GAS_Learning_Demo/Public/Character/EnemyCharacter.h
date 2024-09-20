@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "Interaction/BeSavedInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "Interaction/EnemyInterface.h"
 #include "EnemyCharacter.generated.h"
@@ -15,7 +16,7 @@ class AAuraAIController;
  * 
  */
 UCLASS()
-class GAS_LEARNING_DEMO_API AEnemyCharacter : public AAuraCharacterBase, public IEnemyInterface
+class GAS_LEARNING_DEMO_API AEnemyCharacter : public AAuraCharacterBase, public IEnemyInterface, public IBeSavedInterface
 {
 	GENERATED_BODY()
 public:
@@ -29,6 +30,10 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly, Category="Combet")
 	bool bHitRecating = false;
+
+	UPROPERTY(SaveGame)
+	bool bDie = false;
+	
 
 	virtual void BindEventOnDebuffTagChanged() override;
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) override;
@@ -54,6 +59,14 @@ public:
 	 *	End EnemyInterface
 	 */
 
+	/*
+	 *  BeSavedInterface
+	 */
+	virtual void BeLoaded_Implementation() override;
+	virtual bool IsDestroy_Implementation() override;
+	/*
+	 *  End BeSaveInterface
+	 */
 
 	/*
 	 *	CombatInterface

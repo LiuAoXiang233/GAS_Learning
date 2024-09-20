@@ -37,6 +37,9 @@ public:
 	
 	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const;
 
+	void SaveWorldState(UWorld* World) const;
+	void LoadWorldState(UWorld* World) const;
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USaveGame> LoadScreenSaveGameClass;
 

@@ -20,6 +20,42 @@ enum ESaveSlotStatus
 	Taken
 };
 
+USTRUCT()
+struct FSavedActor
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FName ActorName = FName();
+
+	UPROPERTY()
+	FTransform Transform = FTransform();
+
+	// 负责序列化我们要保存的Actor
+	UPROPERTY()
+	TArray<uint8> Bytes;
+};
+
+inline bool operator== (const FSavedActor& Left, const FSavedActor& Right)
+{
+	return Left.ActorName == Right.ActorName;
+}
+
+
+USTRUCT()
+struct FSavedMap
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString MapAssetName = FString();
+
+	UPROPERTY()
+	TArray<FSavedActor> SavedActors;
+};
+
+
+
 USTRUCT(BlueprintType)
 struct FPlayerInformation
 {
@@ -109,6 +145,9 @@ public:
 
 	UPROPERTY()
 	TArray<FSaveAbilities> SaveAbility;
+
+	UPROPERTY()
+	TArray<FSavedMap> SavedMaps;
 	
 	/*Player*/
 	
@@ -126,5 +165,8 @@ public:
 
 	// 初始化
 	void InitializeSaveData();
+
+	FSavedMap GetSaveMapWithMapName(const FString& InMapName);
+	bool HasMap(const FString& InMapName);
 	
 };

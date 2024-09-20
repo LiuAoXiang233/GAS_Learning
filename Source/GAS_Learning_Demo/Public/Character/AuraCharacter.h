@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "Interaction/InteractionInterface.h"
 #include "Interaction/PlayerInterface.h"
 #include "Interaction/SaveAndLoadGameInterface.h"
 #include "AuraCharacter.generated.h"
@@ -15,7 +16,7 @@ class UCameraComponent;
  * 
  */
 UCLASS()
-class GAS_LEARNING_DEMO_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface, public ISaveAndLoadGameInterface
+class GAS_LEARNING_DEMO_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface, public ISaveAndLoadGameInterface, public IInteractionInterface
 {
 	GENERATED_BODY()
 public:
