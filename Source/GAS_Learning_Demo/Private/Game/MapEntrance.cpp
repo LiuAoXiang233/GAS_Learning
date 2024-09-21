@@ -2,8 +2,10 @@
 
 
 #include "Game/MapEntrance.h"
-
-#include "Interaction/InteractionInterface.h"
+#include "Game/AuraGameModeBase.h"
+#include "Interaction/PlayerInterface.h"
+#include "Interaction/SaveAndLoadGameInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 AMapEntrance::AMapEntrance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -30,8 +32,15 @@ void AMapEntrance::BeginPlay()
 
 void AMapEntrance::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	if (OtherActor->Implements<IInteractionInterface>())
+	if (OtherActor->Implements<UPlayerInterface>())
 	{
+		if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(GetWorld()))
+		{
+			AuraGameMode->SaveWorldState(GetWorld(), DestinationMap.ToSoftObjectPath().GetAssetName());
+		}
+
+		ISaveAndLoadGameInterface::Execute_SaveProgress(OtherActor);
 		
+		UGameplayStatics::OpenLevelBySoftObjectPtr(this, DestinationMap);
 	}
 }

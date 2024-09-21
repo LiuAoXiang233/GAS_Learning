@@ -27,7 +27,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 
 private:
@@ -37,6 +37,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="传送石属性")
 	TObjectPtr<USphereComponent> Sphere;
 
+	UPROPERTY(EditDefaultsOnly, Category="传送石属性")
+	TSoftObjectPtr<UWorld> DestinationMap;
 	
 	
 };

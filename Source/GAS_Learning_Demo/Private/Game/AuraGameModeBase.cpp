@@ -33,9 +33,8 @@ void AAuraGameModeBase::SaveSlotData(UMVVM_LoadMenuSoltModel* LoadSlotModel, con
 void AAuraGameModeBase::TravelToMap(UMVVM_LoadMenuSoltModel* LoadSlotModel)
 {
 	const FString MapName = LoadSlotModel->GetMapName();
-	TSoftObjectPtr<UWorld> Level = Maps.FindChecked(MapName);
 	
-	UGameplayStatics::OpenLevelBySoftObjectPtr(LoadSlotModel, Level);
+	UGameplayStatics::OpenLevel(GetWorld(), FName(Maps.FindChecked(MapName).ToSoftObjectPath().GetAssetName()));
 }
 
 ULoadScreenSaveGame* AAuraGameModeBase::RetrieveInGameSaveData()
@@ -86,7 +85,7 @@ ULoadScreenSaveGame* AAuraGameModeBase::GetSaveSlotData(const FString& SlotName,
 	
 }
 
-void AAuraGameModeBase::SaveWorldState(UWorld* World) const
+void AAuraGameModeBase::SaveWorldState(UWorld* World, const FString& InMapAssetName) const
 {
 	FString MapName = World->GetMapName();
 	MapName.RemoveFromStart(World->StreamingLevelsPrefix);
@@ -96,6 +95,12 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World) const
 
 	if (ULoadScreenSaveGame* SaveGame = GetSaveSlotData(AuraGameInstance->LoadSlotName, AuraGameInstance->LoadSlotIndex))
 	{
+		if (InMapAssetName != FString(""))
+		{
+			SaveGame->MapAssetName = InMapAssetName;
+			SaveGame->MapName = GetMapNameFromMapAssetName(InMapAssetName);
+		}
+		
 		if (!SaveGame->HasMap(MapName))
 		{
 			FSavedMap Map = FSavedMap();
@@ -184,6 +189,18 @@ void AAuraGameModeBase::LoadWorldState(UWorld* World) const
 	}
 }
 
+FString AAuraGameModeBase::GetMapNameFromMapAssetName(const FString& InMapAssetName) const
+{
+	for (auto Map : Maps)
+	{
+		if (Map.Value.ToSoftObjectPath().GetAssetName() == InMapAssetName)
+		{
+			return Map.Key;
+		}
+	}
+	return FString();
+}
+
 AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 {
 
@@ -214,5 +231,5 @@ AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 void AAuraGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-	Maps.Add(DefaultMapName, DefaultMap);
+	
 }

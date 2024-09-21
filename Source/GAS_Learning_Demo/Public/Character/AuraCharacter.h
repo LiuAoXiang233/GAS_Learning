@@ -16,7 +16,7 @@ class UCameraComponent;
  * 
  */
 UCLASS()
-class GAS_LEARNING_DEMO_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface, public ISaveAndLoadGameInterface, public IInteractionInterface
+class GAS_LEARNING_DEMO_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface, public ISaveAndLoadGameInterface
 {
 	GENERATED_BODY()
 public:

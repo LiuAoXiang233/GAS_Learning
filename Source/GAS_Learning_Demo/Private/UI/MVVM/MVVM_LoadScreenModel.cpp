@@ -112,7 +112,7 @@ void UMVVM_LoadScreenModel::DeleteButtonPressed()
 		{
 			UGameplayStatics::DeleteGameInSlot(LoadMenuSoltModel->LoadSlotName, LoadMenuSoltModel->SlotIndex);
 			LoadMenuSoltModel->SetPlayerName(FString("Default Name"));
-			LoadMenuSoltModel->SetMapName(FString("Default Map"));
+			LoadMenuSoltModel->SetMapName(FString("StartMap"));
 			LoadMenuSoltModel->SlotStatus = ESaveSlotStatus::Vacant;
 			LoadMenuSoltModel->InitializaSlot();
 		}
@@ -129,5 +129,5 @@ void UMVVM_LoadScreenModel::PlayGameButtonPressed()
 	GameInstance->PlayerStartTag = AuraGameMode->DefaultPlayerStartTag;
 	
 	
-	//AuraGameMode->TravelToMap(LoadSlots[SelectSlotIndex]);
+	AuraGameMode->TravelToMap(LoadSlots[SelectSlotIndex]);
 }

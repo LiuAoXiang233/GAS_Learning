@@ -37,7 +37,7 @@ public:
 	
 	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const;
 
-	void SaveWorldState(UWorld* World) const;
+	void SaveWorldState(UWorld* World, const FString& InMapAssetName = FString("")) const;
 	void LoadWorldState(UWorld* World) const;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -46,14 +46,11 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	FName DefaultPlayerStartTag;
 	
-	UPROPERTY(EditDefaultsOnly)
-	FString DefaultMapName;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSoftObjectPtr<UWorld> DefaultMap;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FString, TSoftObjectPtr<UWorld>> Maps;
+
+	FString GetMapNameFromMapAssetName(const FString& InMapAssetName) const;
 
 	/*Public Override */
 	AActor* ChoosePlayerStart_Implementation(AController* Player) override;

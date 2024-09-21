@@ -227,6 +227,7 @@ void AAuraCharacter::SaveProgress_Implementation()
 
 		// 保存游戏中的信息
 		SaveGame->PlayerInformation.PlayerTransform = GetTransform();
+		SaveGame->MapName = UGameplayStatics::GetCurrentLevelName(GetWorld());
 
 		if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
 		{

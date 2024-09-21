@@ -135,7 +135,10 @@ public:
 	int32 SlotIndex;
 
 	UPROPERTY()
-	FString MapName = FString("Default Map");
+	FString MapName = FString("StartMap");
+
+	UPROPERTY()
+	FString MapAssetName = FString("Default Map Asset Name");
 
 	UPROPERTY()
 	TEnumAsByte<ESaveSlotStatus> SaveSlotStatus = Vacant;
