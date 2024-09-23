@@ -7,6 +7,8 @@
 #include "InventoryComponent.generated.h"
 
 
+class UUInventory;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GAS_LEARNING_DEMO_API UInventoryComponent : public UActorComponent
 {
@@ -14,7 +16,15 @@ class GAS_LEARNING_DEMO_API UInventoryComponent : public UActorComponent
 
 public:	
 	// Sets default values for this component's properties
+	/**
+	 * 
+	 */
 	UInventoryComponent();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	UUInventory* Inventory;
+
+
 
 protected:
 	// Called when the game starts

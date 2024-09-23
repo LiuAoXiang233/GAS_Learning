@@ -10,6 +10,7 @@
 #include "AuraCharacter.generated.h"
 
 
+class UInventoryComponent;
 class USpringArmComponent;
 class UCameraComponent;
 /**
@@ -64,6 +65,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UCameraComponent> Camera;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UInventoryComponent> InventoryComponent;
 
 	virtual  void InitAbilityActorInfo() override;
 };

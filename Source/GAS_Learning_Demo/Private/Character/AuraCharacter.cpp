@@ -14,6 +14,7 @@
 #include "Game/AuraGameModeBase.h"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Inventory/InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -30,6 +31,8 @@ AAuraCharacter::AAuraCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	Camera->SetupAttachment(SpringArm, FName("Camera"));
 
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("Inventory");
+	
 	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
