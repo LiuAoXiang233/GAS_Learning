@@ -12,6 +12,16 @@ UUItem::UUItem()
 	MaxStackSize = 64;
 }
 
+UUItem::UUItem(FName InItemID, FString InName, FString InDescription, int32 InQuantity, int32 InMaxStackSize)
+{
+	ItemID = InItemID;
+	Name = InName;
+	Description = InDescription;
+	Quantity = InQuantity;
+	MaxStackSize = InMaxStackSize;
+}
+
+
 bool UUItem::bSizeIsMaxStack() const
 {
 	if (Quantity >= MaxStackSize)

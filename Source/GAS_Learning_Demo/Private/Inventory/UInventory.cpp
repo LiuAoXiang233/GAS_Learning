@@ -13,6 +13,8 @@ UUInventory::UUInventory()
 bool UUInventory::AddItem(UUItem* NewItem)
 {
 	if (!NewItem) return false;
+
+	
 	UUItem* Item = FindItem_NotFull(NewItem->ItemID);
 	// 添加进背包中: 判断背包中原先是否有该物品，如果有则堆叠，如果没有直接添加
 	if (Item && !Item->bSizeIsMaxStack())
@@ -71,4 +73,9 @@ UUItem* UUInventory::FindItem_NotFull(FName ItemID)
 		}
 	}
 	return nullptr;
+}
+
+TArray<UUItem*> UUInventory::GetItems() const
+{
+	return Items;
 }

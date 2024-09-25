@@ -34,4 +34,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	UUItem* FindItem_NotFull(FName ItemID);
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	TArray<UUItem*> GetItems() const;
 };

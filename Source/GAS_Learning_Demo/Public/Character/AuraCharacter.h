@@ -10,6 +10,7 @@
 #include "AuraCharacter.generated.h"
 
 
+class UUInventory;
 class UInventoryComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -25,6 +26,9 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	void LoadProgress();
+
+	UFUNCTION(BlueprintCallable)
+	UUInventory* GetInventory() const;
 
 	/*
 	 *	PlayerInterface

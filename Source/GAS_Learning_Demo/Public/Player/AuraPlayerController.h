@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "InputActionValue.h"
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
@@ -38,6 +39,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void HideMagicCircle();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OpenInventory(const FInputActionValue& InputActionValue);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -49,12 +53,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> MoveAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> OpenInventoryAction;
+
 	IEnemyInterface* LastActor;
 	IEnemyInterface* ThisActor;
 	FHitResult CursorHit;
 	
 	
 	void Move(const FInputActionValue& InputActionValue);
+
+	
 	void AbilityInputTagPressed(const FGameplayTag InputTag);
 	void AbilityInputTagReleased(const FGameplayTag InputTag);
 	void AbilityInputTagHeld(const FGameplayTag InputTag);

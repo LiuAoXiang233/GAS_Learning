@@ -111,6 +111,11 @@ void AAuraCharacter::LoadProgress()
 	}
 }
 
+UUInventory* AAuraCharacter::GetInventory() const
+{
+	return InventoryComponent->Inventory;
+}
+
 void AAuraCharacter::AddToXP_Implementation(int32 InXP)
 {
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();

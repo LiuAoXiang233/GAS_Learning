@@ -220,6 +220,7 @@ void AAuraPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 	UAuraInputComponent* AuraEnhancedInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
 	AuraEnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+	AuraEnhancedInputComponent->BindAction(OpenInventoryAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::OpenInventory);
 	AuraEnhancedInputComponent->BindAbilityFunc(InputConfig, this, &AAuraPlayerController::AbilityInputTagPressed, &AAuraPlayerController::AbilityInputTagReleased, &AAuraPlayerController::AbilityInputTagHeld);
 
 }
@@ -249,6 +250,12 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
 	}
 }
+
+void AAuraPlayerController::OpenInventory_Implementation(const FInputActionValue& InputActionValue)
+{
+	
+}
+
 
 void AAuraPlayerController::AbilityInputTagPressed(const FGameplayTag InputTag)
 {
