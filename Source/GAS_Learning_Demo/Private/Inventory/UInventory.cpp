@@ -63,6 +63,18 @@ UUItem* UUInventory::FindItem(FName ItemID)
 	return nullptr;
 }
 
+UUItem* UUInventory::FindItemFromName(FString ItemName)
+{
+	for (UUItem* Item : Items)
+	{
+		if (Item->Name == ItemName)
+		{
+			return Item;
+		}
+	}
+	return nullptr;
+}
+
 UUItem* UUInventory::FindItem_NotFull(FName ItemID)
 {
 	for (UUItem* Item : Items)

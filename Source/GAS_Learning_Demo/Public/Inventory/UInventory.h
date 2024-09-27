@@ -33,6 +33,9 @@ public:
 	UUItem* FindItem(FName ItemID);
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UUItem* FindItemFromName(FString ItemName);
+	
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	UUItem* FindItem_NotFull(FName ItemID);
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")

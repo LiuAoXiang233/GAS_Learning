@@ -61,6 +61,7 @@ public:
 	FAbilityInfoSignature AbilityInfoDelegate;
 
 	
+	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
 	TObjectPtr<APlayerController> PlayerController;

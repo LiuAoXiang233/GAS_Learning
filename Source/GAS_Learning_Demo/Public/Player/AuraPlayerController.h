@@ -9,6 +9,7 @@
 #include "AuraPlayerController.generated.h"
 
 
+class UInventoryWidgetControllerBase;
 class AMagicCircle;
 class UNiagaraSystem;
 class UDamageTextComponent;
@@ -31,6 +32,9 @@ public:
 	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	UInventoryWidgetControllerBase* GetInventoryWidgetController();
+	
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float DamagePower, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
 
@@ -105,6 +109,12 @@ private:
 	TObjectPtr<AMagicCircle> MagicCircle;
 
 	void UpdateMagicCircle();
+
+	UPROPERTY()
+	TObjectPtr<UInventoryWidgetControllerBase> InventoryWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UInventoryWidgetControllerBase> InventoryWidgetControllerClass;
 };
 
 

@@ -16,6 +16,7 @@
 #include "Components/DecalComponent.h"
 #include "GAS_Learning_Demo/GAS_Learning_Demo.h"
 #include "UI/Widget/DamageTextComponent.h"
+#include "UI/WidgetController/InventoryWidgetControllerBase.h"
 
 
 AAuraPlayerController::AAuraPlayerController()
@@ -31,6 +32,7 @@ AAuraPlayerController::AAuraPlayerController()
 	bReplicates = true;
 
 	Spline = CreateDefaultSubobject<USplineComponent>("Spline");
+
 	
 }
 
@@ -41,6 +43,20 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	AutoRun();
 	UpdateMagicCircle();
 	
+}
+
+UInventoryWidgetControllerBase* AAuraPlayerController::GetInventoryWidgetController()
+{
+	if (InventoryWidgetController)
+	{
+		return InventoryWidgetController;
+	}
+	checkf(InventoryWidgetControllerClass, TEXT("Overlay Widget Class uninitialized, please fill out BP_AuraHUD"));
+
+	UInventoryWidgetControllerBase* Controller = NewObject<UInventoryWidgetControllerBase>(this, InventoryWidgetControllerClass);
+	InventoryWidgetController = Controller;
+	return InventoryWidgetController;
+
 }
 
 void AAuraPlayerController::ShowMagicCircle(UMaterialInstance* DecalMaterial)
@@ -211,7 +227,12 @@ void AAuraPlayerController::BeginPlay()
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputModeData.SetHideCursorDuringCapture(false);
 	SetInputMode(InputModeData);
-	
+
+
+	checkf(InventoryWidgetControllerClass, TEXT("Overlay Widget Class uninitialized, please fill out BP_AuraHUD"));
+
+	UInventoryWidgetControllerBase* Controller = NewObject<UInventoryWidgetControllerBase>(this, InventoryWidgetControllerClass);
+	InventoryWidgetController = Controller;
 	
 }
 
