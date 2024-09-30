@@ -3,11 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/Data/InventoryItem.h"
 #include "Inventory/InventoryWidgetBase.h"
 #include "InventoryMenuWidget.generated.h"
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCreateSubWidget, const UUItem*, Item);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FClearSubWidget);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemQuantityAddedSignature, const int32, AddedQuantity);
 
 /**
  * 
@@ -26,18 +29,40 @@ public:
 	// 检查是否可以加载更多物品
 	bool CanLoadMoreItems() const;
 
+	UFUNCTION()
+	void CreateNewSubWidget(const UUItem* Item);
+
+	UFUNCTION()
+	void AddItemQuantity(const int32 ItemQuantity);
 
 	UFUNCTION(BlueprintCallable)
 	FString GetDescriptionFromItem(const FString& ItemName) const;
 
+	UFUNCTION(BlueprintCallable)
+	int32 GetValueFromItem(const FString& ItemName) const;
+	
+	UFUNCTION(BlueprintCallable)
+	bool UseItem(const FString& ItemName);
+
 	UPROPERTY(BlueprintAssignable)
 	FCreateSubWidget CreateSubWidget;
+	UPROPERTY(BlueprintAssignable)
+	FClearSubWidget ClearSubWidgetDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnItemQuantityAddedSignature OnItemQuantityAddedDelegate;
 	// 滚动事件
 	UFUNCTION(BlueprintCallable)
 	void OnScroll(float ScrollOffset);
 	
 	UFUNCTION(BlueprintCallable)
 	UUInventory* GetInventory();
+
+	UFUNCTION(BlueprintCallable)
+	void refreshInventory();
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UInventoryItem> InventoryItemInfo; 
 
 private:
 	// 当前已经加载的物品数量

@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnOverlap(AActor* TargetActor);
 
+	virtual FString GetDescription();
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -31,6 +34,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	
+	UPROPERTY(BlueprintReadOnly)
+	FString Description;
 private:
 
 	UPROPERTY(EditDefaultsOnly , Category = "Item")
@@ -39,8 +45,7 @@ private:
 	UPROPERTY(EditDefaultsOnly , Category = "Item")
 	FString Name;
 
-	UPROPERTY(EditDefaultsOnly , Category = "Item")
-	FString Description;
+	
 
 	UPROPERTY(EditDefaultsOnly , Category = "Item")
 	int32 Quantity;

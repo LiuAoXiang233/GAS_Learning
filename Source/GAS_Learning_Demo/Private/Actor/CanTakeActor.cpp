@@ -29,6 +29,12 @@ void ACanTakeActor::OnOverlap(AActor* TargetActor)
 	}
 }
 
+FString ACanTakeActor::GetDescription()
+{
+	return FString("");
+}
+
+
 // Called when the game starts or when spawned
 void ACanTakeActor::BeginPlay()
 {
@@ -39,7 +45,8 @@ void ACanTakeActor::BeginPlay()
 		Item = NewObject<UUItem>();
 
 	}
-	Item->Description = Description;
+	Description = GetDescription();
+	Item->Description = GetDescription();
 	Item->Quantity = Quantity;
 	Item->Name = Name;
 	Item->ItemID = ItemID;

@@ -7,6 +7,11 @@
 #include "UInventory.generated.h"
 
 class UUItem;
+
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryUpdate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemQuantityAdded, const int32, AddedQuantity);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemAdded,  const UUItem*, Item);
 /**
  * 
  */
@@ -18,6 +23,11 @@ class GAS_LEARNING_DEMO_API UUInventory : public UObject
 public:
 
 	UUInventory();
+
+	FOnInventoryUpdate OnInventoryUpdateDelegate;
+	FOnItemQuantityAdded OnItemQuantityAddedDelegate;
+	FOnItemAdded OnItemAddedDelegate;
+
 	
 	UPROPERTY()
 	TArray<UUItem*> Items;
@@ -25,6 +35,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	bool AddItem(UUItem* NewItem);
 	
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	bool UseItem(FString ItemName);
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	bool RemoveItem(FName ItemID);

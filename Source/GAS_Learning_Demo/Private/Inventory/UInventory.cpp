@@ -30,15 +30,36 @@ bool UUInventory::AddItem(UUItem* NewItem)
 		Item->Quantity += AddNumber;
 		NewItem->Quantity -= AddNumber;
 
-		return true;
+		OnItemQuantityAddedDelegate.Broadcast(AddNumber);
+		
 	}
 	else
 	{
+		
 		Items.Add(NewItem);
+		OnItemAddedDelegate.Broadcast(NewItem);
+	}
+
+	
+	return true;
+}
+
+bool UUInventory::UseItem(FString ItemName)
+{
+	if (UUItem* Item = FindItemFromName(ItemName))
+	{
+		// 减少数量
+		Item->Quantity--;
+
+		// 检查数量
+		if (Item->Quantity <= 0)
+		{
+			Items.Remove(Item); 
+			OnInventoryUpdateDelegate.Broadcast(); 
+		}
 		return true;
 	}
-	
-	
+	return false;
 }
 
 bool UUInventory::RemoveItem(FName ItemID)
