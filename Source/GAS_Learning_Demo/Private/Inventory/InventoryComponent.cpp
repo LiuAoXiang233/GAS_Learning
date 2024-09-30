@@ -12,7 +12,8 @@ UInventoryComponent::UInventoryComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	Inventory = NewObject<UUInventory>();
+	Inventory = CreateDefaultSubobject<UUInventory>(FName("Inventory"));
+
 }
 
 

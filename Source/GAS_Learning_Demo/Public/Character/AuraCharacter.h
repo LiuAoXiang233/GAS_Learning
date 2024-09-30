@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
-#include "Interaction/InteractionInterface.h"
 #include "Interaction/PlayerInterface.h"
 #include "Interaction/SaveAndLoadGameInterface.h"
 #include "AuraCharacter.generated.h"
@@ -23,6 +22,8 @@ class GAS_LEARNING_DEMO_API AAuraCharacter : public AAuraCharacterBase, public I
 	GENERATED_BODY()
 public:
 	AAuraCharacter();
+	void LoadInventoryAsync();
+	void LoadInventory();
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	void LoadProgress();
@@ -74,4 +75,6 @@ private:
 	TObjectPtr<UInventoryComponent> InventoryComponent;
 
 	virtual  void InitAbilityActorInfo() override;
+
+	
 };

@@ -5,12 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/SaveGame.h"
+#include "Inventory/UInventory.h"
 #include "LoadScreenSaveGame.generated.h"
 
 /**
  * 
  */
 
+class UUInventory;
 class UGameplayAbility;
 
 UENUM(BlueprintType)
@@ -121,6 +123,27 @@ inline bool operator== (const FSaveAbilities& Left, const FSaveAbilities& Right)
 	return Left.AbilityTag.MatchesTagExact(Right.AbilityTag);
 }
 
+
+USTRUCT()
+struct FItemDataToSaveAndLoad
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FName ItemID;
+
+	UPROPERTY()
+	FString Name;
+
+	UPROPERTY()
+	int32 Quantity;
+
+	UPROPERTY()
+	FString Description;
+	
+};
+
+
 UCLASS()
 class GAS_LEARNING_DEMO_API ULoadScreenSaveGame : public USaveGame
 {
@@ -151,6 +174,9 @@ public:
 
 	UPROPERTY()
 	TArray<FSavedMap> SavedMaps;
+
+	UPROPERTY()
+	TArray<FItemDataToSaveAndLoad> SavedItems;
 	
 	/*Player*/
 	

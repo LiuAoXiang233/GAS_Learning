@@ -32,6 +32,8 @@ public:
 	UPROPERTY()
 	TArray<UUItem*> Items;
 
+	bool ReplaceItems(TArray<UUItem*> InItems);
+
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	bool AddItem(UUItem* NewItem);
 	

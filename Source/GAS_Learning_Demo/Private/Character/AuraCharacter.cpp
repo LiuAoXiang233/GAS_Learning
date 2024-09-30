@@ -15,6 +15,7 @@
 #include "GameFramework/GameSession.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Inventory/InventoryComponent.h"
+#include "Inventory/UItem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -45,6 +46,44 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationYaw = false;
 }
 
+void AAuraCharacter::LoadInventoryAsync()
+{
+	if (AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		if (ULoadScreenSaveGame* SaveGame = Cast<ULoadScreenSaveGame>(GameMode->RetrieveInGameSaveData()))
+		{
+			TArray<UUItem*> Items;
+			for (const FItemDataToSaveAndLoad& SavedItem : SaveGame->SavedItems)
+			{
+				UUItem* Item = NewObject<UUItem>();
+
+				Item->Name = SavedItem.Name;
+				Item->Quantity = SavedItem.Quantity;
+				Item->ItemID = SavedItem.ItemID;
+				Item->Description = SavedItem.Description;
+				Item->MaxStackSize = 64;	
+
+				Items.Add(Item);
+			}
+
+			InventoryComponent->Inventory->ReplaceItems(Items);
+		}
+	}
+}
+
+void AAuraCharacter::LoadInventory()
+{
+	if (!IsValid(InventoryComponent))
+	{
+		InventoryComponent = NewObject<UInventoryComponent>(this, UInventoryComponent::StaticClass());
+		InventoryComponent->RegisterComponent();
+	}
+	
+	FTimerHandle LoadInventoryTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(LoadInventoryTimerHandle, this, &AAuraCharacter::LoadInventoryAsync, 0.1f, false);
+	
+}
+
 void AAuraCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -53,12 +92,16 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	InitAbilityActorInfo();
 
 	LoadProgress();
+
+	LoadInventory();
 	
 	// 
 	if (AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
 	{
 		GameMode->LoadWorldState(GetWorld());
 	}
+
+	
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -106,7 +149,6 @@ void AAuraCharacter::LoadProgress()
 				AuraASC->AddCharacterAbilitiesFromSaveData(SaveGame);	
 			}
 		}
-
 		
 	}
 }
@@ -251,6 +293,20 @@ void AAuraCharacter::SaveProgress_Implementation()
 			SaveGame->PlayerInformation.Intelligence = AuraAttributeSet->GetIntelligence();
 			SaveGame->PlayerInformation.Resilience = AuraAttributeSet->GetResilience();
 			SaveGame->PlayerInformation.Viger = AuraAttributeSet->GetViger();
+		}
+
+		// 保存玩家背包中的物品
+		SaveGame->SavedItems.Empty();
+		for (UUItem* Item : GetInventory()->Items)
+		{
+			FItemDataToSaveAndLoad SavedItem;
+			SavedItem.Name = Item->Name;
+			SavedItem.Quantity = Item->Quantity;
+			SavedItem.ItemID = Item->ItemID;
+			SavedItem.Description = Item->Description;
+			
+			SaveGame->SavedItems.Add(SavedItem);
+			
 		}
 		
 		// 保存玩家的技能

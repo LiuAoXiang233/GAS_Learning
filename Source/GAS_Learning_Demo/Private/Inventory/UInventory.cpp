@@ -10,6 +10,17 @@ UUInventory::UUInventory()
 	
 }
 
+bool UUInventory::ReplaceItems(TArray<UUItem*> InItems)
+{
+	Items.Empty();
+	for (UUItem* Item : InItems)
+	{
+		Items.Add(Item);
+	}
+
+	return true;
+}
+
 bool UUInventory::AddItem(UUItem* NewItem)
 {
 	if (!NewItem) return false;

@@ -21,6 +21,7 @@ void ULoadScreenSaveGame::InitializeSaveData()
 	PlayerInformation.PlayerTransform = FTransform();
 	PlayerInformation.PlayerClassTag = FGameplayTag();
 	
+	
 	PlayerName = FString("Default Name");
 
 	PlayerClass = FString("Default Class");
