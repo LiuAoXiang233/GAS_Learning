@@ -9,7 +9,7 @@
 #include "AuraCharacter.generated.h"
 
 
-class UUInventory;
+class AInventory;
 class UInventoryComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -29,7 +29,7 @@ public:
 	void LoadProgress();
 
 	UFUNCTION(BlueprintCallable)
-	UUInventory* GetInventory() const;
+	AInventory* GetInventory() const;
 
 	/*
 	 *	PlayerInterface

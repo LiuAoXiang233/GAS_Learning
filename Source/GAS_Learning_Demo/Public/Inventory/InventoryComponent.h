@@ -7,7 +7,7 @@
 #include "InventoryComponent.generated.h"
 
 
-class UUInventory;
+class AInventory;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GAS_LEARNING_DEMO_API UInventoryComponent : public UActorComponent
@@ -22,7 +22,7 @@ public:
 	UInventoryComponent();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	UUInventory* Inventory;
+	AInventory* Inventory;
 
 
 

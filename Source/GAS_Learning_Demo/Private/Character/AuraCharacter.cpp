@@ -153,7 +153,7 @@ void AAuraCharacter::LoadProgress()
 	}
 }
 
-UUInventory* AAuraCharacter::GetInventory() const
+AInventory* AAuraCharacter::GetInventory() const
 {
 	return InventoryComponent->Inventory;
 }

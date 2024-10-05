@@ -4,7 +4,7 @@
 #include "Actor/CanTakeActor.h"
 
 #include "Character/AuraCharacter.h"
-#include "Inventory/UInventory.h"
+#include "Inventory/Inventory.h"
 #include "Inventory/UItem.h"
 
 // Sets default values

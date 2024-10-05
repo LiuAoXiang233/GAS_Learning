@@ -5,14 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/SaveGame.h"
-#include "Inventory/UInventory.h"
+#include "Inventory/Inventory.h"
 #include "LoadScreenSaveGame.generated.h"
 
 /**
  * 
  */
 
-class UUInventory;
+class AInventory;
 class UGameplayAbility;
 
 UENUM(BlueprintType)

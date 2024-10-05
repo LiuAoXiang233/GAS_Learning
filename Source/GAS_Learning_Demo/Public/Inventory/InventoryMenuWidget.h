@@ -22,12 +22,16 @@ class GAS_LEARNING_DEMO_API UInventoryMenuWidget : public UInventoryWidgetBase
 public:
 	
 	virtual void NativeConstruct() override;
+	
+	bool bIsChest = false;
 
 	// 用于加载并显示一批物品
 	void LoadMoreItems();
 
 	// 检查是否可以加载更多物品
 	bool CanLoadMoreItems() const;
+
+	void SetInventory(AInventory* InInventory);
 
 	UFUNCTION()
 	void CreateNewSubWidget(const UUItem* Item);
@@ -56,7 +60,7 @@ public:
 	void OnScroll(float ScrollOffset);
 	
 	UFUNCTION(BlueprintCallable)
-	UUInventory* GetInventory();
+	AInventory* GetInventory();
 
 	UFUNCTION(BlueprintCallable)
 	void refreshInventory();
@@ -64,6 +68,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UInventoryItem> InventoryItemInfo; 
 
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<UUItem> TheClickedItem;
+	
 private:
 	// 当前已经加载的物品数量
 	int32 CurrentLoadedItems = 0;
@@ -75,5 +82,6 @@ private:
 	int32 TotalItems;
 	
 	UPROPERTY()
-	TObjectPtr<UUInventory> Inventory;
+	TObjectPtr<AInventory> Inventory;
+
 };

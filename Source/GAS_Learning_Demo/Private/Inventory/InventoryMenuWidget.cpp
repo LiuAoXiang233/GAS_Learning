@@ -4,28 +4,37 @@
 #include "Inventory/InventoryMenuWidget.h"
 
 #include "Character/AuraCharacter.h"
-#include "Inventory/UInventory.h"
+#include "Inventory/Inventory.h"
 #include "Inventory/UItem.h"
 
 void UInventoryMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	AAuraCharacter* Character = Cast<AAuraCharacter>(GetOwningPlayerPawn());
-	if (Character && Character->GetInventory())
+	if (!bIsChest)
 	{
-		Inventory = Character->GetInventory();
+		AAuraCharacter* Character = Cast<AAuraCharacter>(GetOwningPlayerPawn());
+		if (Character && Character->GetInventory())
+		{
+			Inventory = Character->GetInventory();
+        	TotalItems = Inventory->Items.Num();
+			
+		}
+        
+        	
+		// 初始加载物品
+		LoadMoreItems();
+	}
+	else
+	{
+		// 这是个箱子
 		TotalItems = Inventory->Items.Num();
-
-		Inventory->OnInventoryUpdateDelegate.AddDynamic(this, &UInventoryMenuWidget::refreshInventory);
-		Inventory->OnItemAddedDelegate.AddDynamic(this, &UInventoryMenuWidget::CreateNewSubWidget);
-		Inventory->OnItemQuantityAddedDelegate.AddDynamic(this, &UInventoryMenuWidget::AddItemQuantity);
+		
 	}
 
-	
-	
-	// 初始加载物品
-	LoadMoreItems();
+	Inventory->OnInventoryUpdateDelegate.AddDynamic(this, &UInventoryMenuWidget::refreshInventory);
+	Inventory->OnItemAddedDelegate.AddDynamic(this, &UInventoryMenuWidget::CreateNewSubWidget);
+	Inventory->OnItemQuantityAddedDelegate.AddDynamic(this, &UInventoryMenuWidget::AddItemQuantity);
 }
 
 void UInventoryMenuWidget::LoadMoreItems()
@@ -54,6 +63,11 @@ void UInventoryMenuWidget::LoadMoreItems()
 bool UInventoryMenuWidget::CanLoadMoreItems() const
 {
 	return CurrentLoadedItems < TotalItems;
+}
+
+void UInventoryMenuWidget::SetInventory(AInventory* InInventory)
+{
+	Inventory = InInventory;
 }
 
 void UInventoryMenuWidget::CreateNewSubWidget(const UUItem* Item) 
@@ -100,7 +114,7 @@ void UInventoryMenuWidget::OnScroll(float ScrollOffset)
 	}
 }
 
-UUInventory* UInventoryMenuWidget::GetInventory()
+AInventory* UInventoryMenuWidget::GetInventory()
 {
 	if (Inventory)
 	{
