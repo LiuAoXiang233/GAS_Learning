@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Player/AuraPlayerController.h"
 #include "InteractionComponent.generated.h"
 
 
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInteractSignature);
+class AAuraPlayerController;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractSignature, AAuraPlayerController*, PlayerController);
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -21,13 +22,13 @@ public:
 	UInteractionComponent();
 
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
-	void ShowInteractionUI();
+	void ShowInteractionUI(AActor* TargetPlayer);
 	
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void HideInteractionUI();
 
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
-	void Interact(AActor* InstigatorActor);
+	void Interact(AActor* InstigatorActor, AAuraPlayerController* PlayerController);
 
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnInteractSignature OnInteractDelegate;
@@ -40,5 +41,11 @@ public:
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+private:
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> InteractionWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> InteractionWidgetClass;
 };

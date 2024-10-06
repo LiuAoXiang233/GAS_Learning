@@ -3,6 +3,10 @@
 
 #include "Component/InteractionComponent/InteractionComponent.h"
 
+#include "Blueprint/UserWidget.h"
+#include "Character/AuraCharacter.h"
+#include "Player/AuraPlayerController.h"
+
 // Sets default values for this component's properties
 UInteractionComponent::UInteractionComponent()
 {
@@ -13,16 +17,34 @@ UInteractionComponent::UInteractionComponent()
 	// ...
 }
 
-void UInteractionComponent::ShowInteractionUI()
+void UInteractionComponent::ShowInteractionUI(AActor* TargetPlayer)
 {
+	if (!TargetPlayer) return;
+	if (InteractionWidgetClass )
+	{
+		AAuraCharacter* Player = Cast<AAuraCharacter>(TargetPlayer);
+		AAuraPlayerController* TargetPlayerController = Cast<AAuraPlayerController>(Player->GetController());
+		InteractionWidget = CreateWidget(TargetPlayerController, InteractionWidgetClass);
+		InteractionWidget->AddToViewport();
+	}
 }
 
 void UInteractionComponent::HideInteractionUI()
 {
+	if (InteractionWidget)
+	{
+		InteractionWidget->RemoveFromParent();
+	}
 }
 
-void UInteractionComponent::Interact(AActor* InstigatorActor)
+void UInteractionComponent::Interact(AActor* InstigatorActor, AAuraPlayerController* PlayerController)
 {
+	if (InstigatorActor)
+	{
+		HideInteractionUI();
+		OnInteractDelegate.Broadcast(PlayerController);
+		//UE_LOG(LogTemp, Warning, TEXT("%s interacted with %s"), *InstigatorActor->GetName(), *GetOwner()->GetName());
+	}
 }
 
 

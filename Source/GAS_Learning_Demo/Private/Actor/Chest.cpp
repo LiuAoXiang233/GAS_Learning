@@ -5,6 +5,7 @@
 #include "Inventory/UItem.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/AuraCharacter.h"
+#include "Component/InteractionComponent/InteractionComponent.h"
 #include "Inventory/InventoryMenuWidget.h"
 
 // Sets default values
@@ -12,8 +13,7 @@
 
 AChest::AChest()
 {
-	
-	
+	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>(TEXT("InteractionComponent"));
 }
 
 bool AChest::AddItem(UUItem* NewItem)
@@ -51,15 +51,15 @@ bool AChest::RetrieveItem(const FString& ItemName, const int32 ItemNum)
 	return false; 
 }
 
-void AChest::OpenChest()
+void AChest::OpenChest(AAuraPlayerController* PlayerController)
 {
-	if (AAuraCharacter* Player = Cast<AAuraCharacter>(TheplayerWhoOpenedTheBox))
+	if (PlayerController)
 	{
 		// 打开箱子；
 		// TODO: 播放箱子打开动画
         
 		// 打开箱子UI
-		InventoryWidget = CreateWidget(Cast<APlayerController>(Player->GetController()), InventoryWidgetClass);
+		InventoryWidget = CreateWidget(PlayerController, InventoryWidgetClass);
         	
 		UInventoryMenuWidget* InventoryMenuWidget = Cast<UInventoryMenuWidget>(InventoryWidget);
 		InventoryMenuWidget->bIsChest = true;
@@ -86,8 +86,12 @@ void AChest::SetTheplayerWhoOpenedTheBox(AActor* Player)
 	}
 }
 
-
-void AChest::BeginDestroy()
+void AChest::BeginPlay()
 {
-	Super::BeginDestroy();
+	Super::BeginPlay();
+	if (InteractionComponent)
+	{
+		InteractionComponent->OnInteractDelegate.AddDynamic(this, &AChest::OpenChest);
+	}
 }
+

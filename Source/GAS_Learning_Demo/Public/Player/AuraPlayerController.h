@@ -12,6 +12,7 @@
 class UInventoryWidgetControllerBase;
 class AMagicCircle;
 class UNiagaraSystem;
+class AAuraCharacter;
 class UDamageTextComponent;
 class USplineComponent;
 class UAuraAbilitySystemComponent;
@@ -46,6 +47,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void OpenInventory(const FInputActionValue& InputActionValue);
+
+	UFUNCTION()
+	void InteractionWithOtherActor();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -59,6 +63,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> OpenInventoryAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> InteractionAction;
 
 	IEnemyInterface* LastActor;
 	IEnemyInterface* ThisActor;

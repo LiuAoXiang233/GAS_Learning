@@ -13,8 +13,9 @@
 #include "Input/AuraInputComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Actor/MagicCircle.h"
+#include "Character/AuraCharacter.h"
+#include "Component/InteractionComponent/InteractionComponent.h"
 #include "Components/DecalComponent.h"
-#include "GAS_Learning_Demo/GAS_Learning_Demo.h"
 #include "UI/Widget/DamageTextComponent.h"
 #include "UI/WidgetController/InventoryWidgetControllerBase.h"
 
@@ -206,6 +207,26 @@ void AAuraPlayerController::AutoRun()
 }
 
 
+void AAuraPlayerController::InteractionWithOtherActor()
+{
+	UWorld* World = GetWorld();
+	AAuraCharacter* PlayerCharacter = Cast<AAuraCharacter>(GetPawn());
+	FHitResult HitResult;
+	const FVector Start = PlayerCharacter->GetActorLocation();
+	const FVector End = Start + PlayerCharacter->GetActorForwardVector() * 75.f;
+	FCollisionQueryParams TraceParams(FName(TEXT("Raycast")), true);
+	TraceParams.AddIgnoredActor(PlayerCharacter);
+	
+	World->LineTraceSingleByChannel(HitResult, Start, End, ECC_WorldStatic, TraceParams);
+
+	AActor* Actor = HitResult.GetActor();
+	if (!Actor) return;
+	if (UInteractionComponent* InteractionComponent = Actor->FindComponentByClass<UInteractionComponent>())
+	{
+		InteractionComponent->Interact(Actor, this);
+	}
+}
+
 void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -242,6 +263,7 @@ void AAuraPlayerController::SetupInputComponent()
 	UAuraInputComponent* AuraEnhancedInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
 	AuraEnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
 	AuraEnhancedInputComponent->BindAction(OpenInventoryAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::OpenInventory);
+	AuraEnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::InteractionWithOtherActor);
 	AuraEnhancedInputComponent->BindAbilityFunc(InputConfig, this, &AAuraPlayerController::AbilityInputTagPressed, &AAuraPlayerController::AbilityInputTagReleased, &AAuraPlayerController::AbilityInputTagHeld);
 
 }

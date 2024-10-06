@@ -27,6 +27,8 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	void LoadProgress();
+	
+	
 
 	UFUNCTION(BlueprintCallable)
 	AInventory* GetInventory() const;

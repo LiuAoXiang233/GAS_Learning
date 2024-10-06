@@ -11,6 +11,7 @@
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Component/InteractionComponent/InteractionComponent.h"
 #include "Game/AuraGameModeBase.h"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -152,6 +153,7 @@ void AAuraCharacter::LoadProgress()
 		
 	}
 }
+
 
 AInventory* AAuraCharacter::GetInventory() const
 {

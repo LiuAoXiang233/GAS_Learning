@@ -10,6 +10,7 @@
 #include "Chest.generated.h"
 
 
+class UInteractionComponent;
 class AAuraCharacter;
 class UInventoryMenuWidget;
 class UUItem;
@@ -29,7 +30,7 @@ public:
 	bool RetrieveItem(const FString& ItemName, const int32 ItemNum);
 
 	UFUNCTION(BlueprintCallable)
-	void OpenChest();
+	void OpenChest(AAuraPlayerController* PlayerController);
 
 	UFUNCTION(BlueprintCallable)
 	void CloseChestMenu();
@@ -39,7 +40,7 @@ public:
 
 protected:
 
-	virtual void BeginDestroy() override;
+	virtual void BeginPlay() override;
 private:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Chest Property")
@@ -58,5 +59,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> InventoryWidgetClass;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UInteractionComponent> InteractionComponent;
 	
 };
