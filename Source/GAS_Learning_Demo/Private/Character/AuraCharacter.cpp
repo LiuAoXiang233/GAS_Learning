@@ -58,11 +58,11 @@ void AAuraCharacter::LoadInventoryAsync()
 			{
 				UUItem* Item = NewObject<UUItem>();
 
-				Item->Name = SavedItem.Name;
+				Item->ItemInfo.Name = SavedItem.Name;
 				Item->Quantity = SavedItem.Quantity;
-				Item->ItemID = SavedItem.ItemID;
-				Item->Description = SavedItem.Description;
-				Item->MaxStackSize = 64;	
+				Item->ItemInfo.ItemID = SavedItem.ItemID;
+				Item->ItemInfo.Description = SavedItem.Description;
+				Item->ItemInfo.MaxStackSize = 64;	
 
 				Items.Add(Item);
 			}
@@ -302,10 +302,10 @@ void AAuraCharacter::SaveProgress_Implementation()
 		for (UUItem* Item : GetInventory()->Items)
 		{
 			FItemDataToSaveAndLoad SavedItem;
-			SavedItem.Name = Item->Name;
+			SavedItem.Name = Item->ItemInfo.Name;
 			SavedItem.Quantity = Item->Quantity;
-			SavedItem.ItemID = Item->ItemID;
-			SavedItem.Description = Item->Description;
+			SavedItem.ItemID = Item->ItemInfo.ItemID;
+			SavedItem.Description = Item->ItemInfo.Description;
 			
 			SaveGame->SavedItems.Add(SavedItem);
 			

@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "InputActionValue.h"
+#include "AbilitySystem/Data/InventoryItem.h"
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
 
+class UInventoryWidget;
 class UInventoryWidgetControllerBase;
 class AMagicCircle;
 class UNiagaraSystem;
@@ -32,9 +34,6 @@ class GAS_LEARNING_DEMO_API AAuraPlayerController : public APlayerController
 public:
 	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
-
-	UFUNCTION(BlueprintCallable)
-	UInventoryWidgetControllerBase* GetInventoryWidgetController();
 	
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float DamagePower, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
@@ -112,16 +111,21 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AMagicCircle> MagicCircleClass;
 
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UInventoryWidget> InventoryWidgetClass;
+	UPROPERTY()
+	TObjectPtr<UInventoryWidget> InventoryWidget;
+	UPROPERTY(EditDefaultsOnly, Category="Item")
+	TObjectPtr<UInventoryItem> InventoryItemsInfo;
+	
 	UPROPERTY()
 	TObjectPtr<AMagicCircle> MagicCircle;
 
 	void UpdateMagicCircle();
 
-	UPROPERTY()
-	TObjectPtr<UInventoryWidgetControllerBase> InventoryWidgetController;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UInventoryWidgetControllerBase> InventoryWidgetControllerClass;
+	
+	
 };
 
 

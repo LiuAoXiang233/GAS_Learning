@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/Data/InventoryItem.h"
 #include "UItem.generated.h"
 
 
@@ -30,19 +31,10 @@ public:
 	 */
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FName ItemID;
+	FInventoryItemInfo ItemInfo;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FString Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FString Description;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int32 Quantity;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int32 MaxStackSize;
+	int32 Quantity = 0;
 	
 	
 };

@@ -26,7 +26,7 @@ bool AInventory::AddItem(UUItem* NewItem)
 	if (!NewItem) return false;
 
 	
-	UUItem* Item = FindItem_NotFull(NewItem->ItemID);
+	UUItem* Item = FindItem_NotFull(NewItem->ItemInfo.ItemID);
 	// 添加进背包中: 判断背包中原先是否有该物品，如果有则堆叠，如果没有直接添加
 	if (Item && !Item->bSizeIsMaxStack())
 	{
@@ -34,7 +34,7 @@ bool AInventory::AddItem(UUItem* NewItem)
 		// 计算堆栈
 		const int32 CurrentItemNumber = Item->Quantity;
 		const int32 AddedItemNumber = NewItem->Quantity;
-		const int32 MaxStackNumber = Item->MaxStackSize;
+		const int32 MaxStackNumber = Item->ItemInfo.MaxStackSize;
 
 		const int32 AddNumber = FMath::Min(AddedItemNumber, MaxStackNumber - CurrentItemNumber);
 
@@ -105,7 +105,7 @@ UUItem* AInventory::FindItem(FName ItemID)
 {
 	for (UUItem* Item : Items)
 	{
-		if (Item->ItemID == ItemID)
+		if (Item->ItemInfo.ItemID == ItemID)
 		{
 			return Item;
 		}
@@ -117,7 +117,7 @@ UUItem* AInventory::FindItemFromName(FString ItemName)
 {
 	for (UUItem* Item : Items)
 	{
-		if (Item->Name == ItemName)
+		if (Item->ItemInfo.Name == ItemName)
 		{
 			return Item;
 		}
@@ -129,7 +129,7 @@ UUItem* AInventory::FindItem_NotFull(FName ItemID)
 {
 	for (UUItem* Item : Items)
 	{
-		if (Item->ItemID == ItemID && !Item->bSizeIsMaxStack())
+		if (Item->ItemInfo.ItemID == ItemID && !Item->bSizeIsMaxStack())
 		{
 			return Item;
 		}
@@ -141,7 +141,7 @@ UUItem* AInventory::FindItem_Unique(FString ItemName, int32 ItemNum)
 {
 	for (UUItem* Item : Items)
 	{
-		if (Item->Name == ItemName && Item->Quantity == ItemNum)
+		if (Item->ItemInfo.Name == ItemName && Item->Quantity == ItemNum)
 		{
 			return Item;
 		}

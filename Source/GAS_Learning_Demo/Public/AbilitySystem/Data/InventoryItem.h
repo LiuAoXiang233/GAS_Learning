@@ -13,17 +13,19 @@ struct FInventoryItemInfo
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FName ItemID;
+	FName ItemID = FName("DefaultItem");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FString Name;
+	FString Name = FString("Default Item");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FString Description;
+	FString Description = FString("This is a default item.");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int32 Value;
+	int32 Value = 1;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	int32 MaxStackSize = 64;
 	
 };
 

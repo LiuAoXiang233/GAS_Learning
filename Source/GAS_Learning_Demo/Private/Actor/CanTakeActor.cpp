@@ -46,11 +46,11 @@ void ACanTakeActor::BeginPlay()
 
 	}
 	Description = GetDescription();
-	Item->Description = GetDescription();
+	Item->ItemInfo.Description = GetDescription();
 	Item->Quantity = Quantity;
-	Item->Name = Name;
-	Item->ItemID = ItemID;
-	Item->MaxStackSize = MaxStackSize;
+	Item->ItemInfo.Name = Name;
+	Item->ItemInfo.ItemID = ItemID;
+	Item->ItemInfo.MaxStackSize = MaxStackSize;
 }
 
 // Called every frame

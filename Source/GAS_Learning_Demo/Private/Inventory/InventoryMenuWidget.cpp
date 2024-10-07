@@ -84,7 +84,7 @@ FString UInventoryMenuWidget::GetDescriptionFromItem(const FString& ItemName) co
 {
 	if (UUItem* TheItem = Inventory->FindItemFromName(ItemName))
 	{
-		return TheItem->Description;
+		return TheItem->ItemInfo.Description;
 	}
 
 	return FString();

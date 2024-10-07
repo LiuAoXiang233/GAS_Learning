@@ -16,6 +16,7 @@
 #include "Character/AuraCharacter.h"
 #include "Component/InteractionComponent/InteractionComponent.h"
 #include "Components/DecalComponent.h"
+#include "Inventory/Widget2/InventoryWidget.h"
 #include "UI/Widget/DamageTextComponent.h"
 #include "UI/WidgetController/InventoryWidgetControllerBase.h"
 
@@ -46,19 +47,7 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	
 }
 
-UInventoryWidgetControllerBase* AAuraPlayerController::GetInventoryWidgetController()
-{
-	if (InventoryWidgetController)
-	{
-		return InventoryWidgetController;
-	}
-	checkf(InventoryWidgetControllerClass, TEXT("Overlay Widget Class uninitialized, please fill out BP_AuraHUD"));
 
-	UInventoryWidgetControllerBase* Controller = NewObject<UInventoryWidgetControllerBase>(this, InventoryWidgetControllerClass);
-	InventoryWidgetController = Controller;
-	return InventoryWidgetController;
-
-}
 
 void AAuraPlayerController::ShowMagicCircle(UMaterialInstance* DecalMaterial)
 {
@@ -250,10 +239,7 @@ void AAuraPlayerController::BeginPlay()
 	SetInputMode(InputModeData);
 
 
-	checkf(InventoryWidgetControllerClass, TEXT("Overlay Widget Class uninitialized, please fill out BP_AuraHUD"));
-
-	UInventoryWidgetControllerBase* Controller = NewObject<UInventoryWidgetControllerBase>(this, InventoryWidgetControllerClass);
-	InventoryWidgetController = Controller;
+	
 	
 }
 
@@ -296,7 +282,26 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::OpenInventory_Implementation(const FInputActionValue& InputActionValue)
 {
-	
+	if (InventoryWidget == nullptr)
+	{
+		if (InventoryWidgetClass)
+		{
+			InventoryWidget = CreateWidget<UInventoryWidget>(this, InventoryWidgetClass);
+			// TODO: 为该InventoryWidget初始化
+			AInventory* PlayerInventory = Cast<AAuraCharacter>(GetPawn())->GetInventory();
+			InventoryWidget->Init(PlayerInventory, InventoryItemsInfo);
+			
+			if (InventoryWidget)
+			{
+				InventoryWidget->AddToViewport();
+			}
+		}
+	}
+	else
+	{
+		InventoryWidget->RemoveFromParent();
+		InventoryWidget = nullptr;
+	}
 }
 
 

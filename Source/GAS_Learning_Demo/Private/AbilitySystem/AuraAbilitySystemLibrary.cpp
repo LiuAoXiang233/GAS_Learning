@@ -54,16 +54,6 @@ UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(
 	return nullptr;
 }
 
-UInventoryWidgetControllerBase* UAuraAbilitySystemLibrary::GetInventoryWidgetController(const UObject* WorldContextObject)
-{
-	
-	if (AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0)))
-	{
-		return PlayerController->GetInventoryWidgetController();
-	}
-
-	return nullptr;
-}
 
 UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidgetController(
 	const UObject* WorldContextObject)

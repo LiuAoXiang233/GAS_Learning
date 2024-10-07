@@ -29,16 +29,16 @@ bool AChest::RetrieveItem(const FString& ItemName, const int32 ItemNum)
 		if (UInventoryMenuWidget* InventoryMenuWidget = Cast<UInventoryMenuWidget>(InventoryWidget))
 		{
 			// 减少仓库里的数量
-			InventoryMenuWidget->GetInventory()->ReduceItem(InventoryMenuWidget->TheClickedItem->Name, InventoryMenuWidget->TheClickedItem->Quantity, ItemNum);
+			InventoryMenuWidget->GetInventory()->ReduceItem(InventoryMenuWidget->TheClickedItem->ItemInfo.Name, InventoryMenuWidget->TheClickedItem->Quantity, ItemNum);
 
 
 			// 为背包中添加数量
 			UUItem* NewItem = NewObject<UUItem>();
-			NewItem->ItemID = InventoryMenuWidget->TheClickedItem->ItemID;
-			NewItem->Name = InventoryMenuWidget->TheClickedItem->Name;
-			NewItem->Description = InventoryMenuWidget->TheClickedItem->Description;
+			NewItem->ItemInfo.ItemID = InventoryMenuWidget->TheClickedItem->ItemInfo.ItemID;
+			NewItem->ItemInfo.Name = InventoryMenuWidget->TheClickedItem->ItemInfo.Name;
+			NewItem->ItemInfo.Description = InventoryMenuWidget->TheClickedItem->ItemInfo.Description;
 			NewItem->Quantity = ItemNum;
-			NewItem->MaxStackSize = InventoryMenuWidget->TheClickedItem->MaxStackSize;
+			NewItem->ItemInfo.MaxStackSize = InventoryMenuWidget->TheClickedItem->ItemInfo.MaxStackSize;
 			
 
 			AAuraCharacter* Player = Cast<AAuraCharacter>(TheplayerWhoOpenedTheBox);
