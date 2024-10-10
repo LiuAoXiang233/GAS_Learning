@@ -4,26 +4,33 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Data/InventoryItem.h"
-#include "UItem.generated.h"
+#include "Item.generated.h"
 
 
 /**
  * 
  */
+
+
+
 UCLASS(BlueprintType, Blueprintable)
-class GAS_LEARNING_DEMO_API UUItem : public UObject
+class GAS_LEARNING_DEMO_API UItem : public UObject
 {
 	GENERATED_BODY()
 
 public:
 
-	UUItem();
-	UUItem(FName InItemID, FString InName, FString InDescription, int32 InQuantity, int32 InMaxStackSize);
+	UItem();
+	UItem(FName InItemID, FString InName, FString InDescription, int32 InQuantity, int32 InMaxStackSize);
 
+	void ChangeItemQuantity(int32 NewQuantity);
 
-	void AddToQuantity(int32 AddedNumber);
+	void AddToQuantity(int32 AddedNumber, bool bIsAdd = true);
 	bool bSizeIsMaxStack() const;
 	
+	
+	
+	int32 GetQuantity() const {return Quantity;}
 
 	/*
 	 *
@@ -33,7 +40,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	FInventoryItemInfo ItemInfo;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+private:
+	UPROPERTY(EditAnywhere, Category = "Item")
 	int32 Quantity = 0;
 	
 	

@@ -13,7 +13,7 @@ class AAuraPlayerController;
 class UInteractionComponent;
 class AAuraCharacter;
 class UInventoryMenuWidget;
-class UUItem;
+class UItem;
 
 UCLASS(BlueprintType, Blueprintable)
 class GAS_LEARNING_DEMO_API AChest : public AInventory
@@ -24,7 +24,7 @@ public:
 
 	AChest();
 
-	virtual bool AddItem(UUItem* NewItem) override;
+	virtual bool AddItem(UItem* NewItem) override;
 
 	UFUNCTION()
 	bool RetrieveItem(const FString& ItemName, const int32 ItemNum);

@@ -288,8 +288,8 @@ void AAuraPlayerController::OpenInventory_Implementation(const FInputActionValue
 		{
 			InventoryWidget = CreateWidget<UInventoryWidget>(this, InventoryWidgetClass);
 			// TODO: 为该InventoryWidget初始化
-			AInventory* PlayerInventory = Cast<AAuraCharacter>(GetPawn())->GetInventory();
-			InventoryWidget->Init(PlayerInventory, InventoryItemsInfo);
+			UInventoryComponent* InventoryComponent = Cast<AAuraCharacter>(GetPawn())->GetInventoryComponent();
+			InventoryWidget->Init(InventoryItemsInfo, InventoryComponent);
 			
 			if (InventoryWidget)
 			{

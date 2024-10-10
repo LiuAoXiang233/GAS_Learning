@@ -6,7 +6,9 @@
 #include "InventoryWidgetControllerBase.generated.h"
 
 
-class UUItem;
+class UInventoryComponent;
+class UItemWidget;
+class UItem;
 class AInventory;
 class UInventoryItem;
 class UInventoryWidget;
@@ -22,12 +24,18 @@ public:
 	void Init(UInventoryWidget* InWidget);
 	
 	UFUNCTION(BlueprintCallable)
-	void AddWidgetToScrollBox(UUItem* NewItem);
+	void AddWidgetToScrollBox(UItem* NewItem);
 
 	AInventory* GetInventory() const;
 
+	UInventoryComponent* GetInventoryComponent();
+
 	void SetInventory(AInventory* NewInventory);
 
+	void SetInventoryComponent(UInventoryComponent* InInventoryComponent);
+
+	
+	
 	// 用于加载并显示一批物品
 	void LoadMoreItems();
 
@@ -41,10 +49,16 @@ public:
 	int32 GetValueFromItem(const FString& ItemName) const;
 	
 	UFUNCTION(BlueprintCallable)
-	bool UseItem(const FString& ItemName);
+	bool UseItem(UItem* TheUsedItem);
 
 	UFUNCTION(BlueprintCallable)
 	void OnScroll(float ScrollOffset);
+
+	UFUNCTION()
+	void OnItemClicked(UItem* TheItem);
+
+	UFUNCTION()
+	void OnItemUsed(UItem* TheItem, int32 UsedQuantity, UItemWidget* TheUsedItemWidget);
 	
 private:
 
@@ -54,6 +68,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<AInventory> Inventory;
 
+	UPROPERTY()
+	TObjectPtr<UInventoryComponent> InventoryComponent;
+
 	// 当前已经加载的物品数量
 	int32 CurrentLoadedItems = 0;
 
@@ -62,10 +79,16 @@ private:
 
 	// 最大物品数量
 	int32 TotalItems;
+
+	UPROPERTY()
+	TObjectPtr<UItem> TheClickedItem;
 	
 public:
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Category="Item")
 	TObjectPtr<UInventoryItem> AllItemInfo;
+
+	UPROPERTY(EditDefaultsOnly, Category="Item")
+	TSubclassOf<UItemWidget> ItemWidgetClass;
 };
 
 

@@ -5,7 +5,7 @@
 
 #include "Character/AuraCharacter.h"
 #include "Inventory/Inventory.h"
-#include "Inventory/UItem.h"
+#include "Inventory/Item.h"
 
 // Sets default values
 ACanTakeActor::ACanTakeActor()
@@ -13,7 +13,7 @@ ACanTakeActor::ACanTakeActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	Item = CreateDefaultSubobject<UUItem>(TEXT("Item"));
+	Item = CreateDefaultSubobject<UItem>(TEXT("Item"));
 
 
 }
@@ -42,12 +42,12 @@ void ACanTakeActor::BeginPlay()
 
 	if (!Item)
 	{
-		Item = NewObject<UUItem>();
+		Item = NewObject<UItem>();
 
 	}
 	Description = GetDescription();
 	Item->ItemInfo.Description = GetDescription();
-	Item->Quantity = Quantity;
+	Item->ChangeItemQuantity(Quantity);
 	Item->ItemInfo.Name = Name;
 	Item->ItemInfo.ItemID = ItemID;
 	Item->ItemInfo.MaxStackSize = MaxStackSize;

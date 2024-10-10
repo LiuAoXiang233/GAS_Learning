@@ -7,7 +7,10 @@
 #include "InventoryComponent.generated.h"
 
 
+class UItem;
 class AInventory;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemDestroy, UItem*, TheItem);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GAS_LEARNING_DEMO_API UInventoryComponent : public UActorComponent
@@ -24,7 +27,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	AInventory* Inventory;
 
-
+	FOnItemDestroy OnItemDestroyDelegate;
 
 protected:
 	// Called when the game starts
@@ -34,5 +37,15 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	// 增删查改
+	UFUNCTION()
+	void AddItemToInventory(UItem* NewItem);
+	
+
+	UFUNCTION()
+	void ReplaceInventory(AInventory* NewInventory);
+
+	UFUNCTION()
+	void UseItem(UItem* TheItem, int32 UsedQuantity);
 		
 };

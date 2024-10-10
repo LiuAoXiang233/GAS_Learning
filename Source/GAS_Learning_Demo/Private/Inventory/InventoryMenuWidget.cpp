@@ -5,7 +5,7 @@
 
 #include "Character/AuraCharacter.h"
 #include "Inventory/Inventory.h"
-#include "Inventory/UItem.h"
+#include "Inventory/Item.h"
 
 void UInventoryMenuWidget::NativeConstruct()
 {
@@ -34,7 +34,7 @@ void UInventoryMenuWidget::NativeConstruct()
 
 	Inventory->OnInventoryUpdateDelegate.AddDynamic(this, &UInventoryMenuWidget::refreshInventory);
 	Inventory->OnItemAddedDelegate.AddDynamic(this, &UInventoryMenuWidget::CreateNewSubWidget);
-	Inventory->OnItemQuantityAddedDelegate.AddDynamic(this, &UInventoryMenuWidget::AddItemQuantity);
+	
 }
 
 void UInventoryMenuWidget::LoadMoreItems()
@@ -47,7 +47,7 @@ void UInventoryMenuWidget::LoadMoreItems()
 	// 加载当前批次的物品
 	for (int32 i = CurrentLoadedItems; i < EndIndex; ++i)
 	{
-		UUItem* Item = Inventory->Items[i];
+		UItem* Item = Inventory->Items[i];
 		
 		CreateSubWidget.Broadcast(Item);
 		
@@ -70,7 +70,7 @@ void UInventoryMenuWidget::SetInventory(AInventory* InInventory)
 	Inventory = InInventory;
 }
 
-void UInventoryMenuWidget::CreateNewSubWidget(const UUItem* Item) 
+void UInventoryMenuWidget::CreateNewSubWidget(const UItem* Item) 
 {
 	CreateSubWidget.Broadcast(Item);
 }
@@ -82,7 +82,7 @@ void UInventoryMenuWidget::AddItemQuantity(const int32 ItemQuantity)
 
 FString UInventoryMenuWidget::GetDescriptionFromItem(const FString& ItemName) const
 {
-	if (UUItem* TheItem = Inventory->FindItemFromName(ItemName))
+	if (UItem* TheItem = Inventory->FindItemFromName(ItemName))
 	{
 		return TheItem->ItemInfo.Description;
 	}
@@ -103,7 +103,7 @@ int32 UInventoryMenuWidget::GetValueFromItem(const FString& ItemName) const
 
 bool UInventoryMenuWidget::UseItem(const FString& ItemName)
 {
-	return Inventory->UseItem(ItemName);
+	return true;
 }
 
 void UInventoryMenuWidget::OnScroll(float ScrollOffset)
@@ -132,9 +132,9 @@ void UInventoryMenuWidget::refreshInventory()
 		ClearSubWidgetDelegate.Broadcast();
 		
 		// 遍历 Inventory 中的物品并创建显示项
-		for (const UUItem* Item : Inventory->GetItems()) // 假设 GetItems() 返回当前物品列表
+		for (const UItem* Item : Inventory->GetItems()) // 假设 GetItems() 返回当前物品列表
 		{
-			if (Item && Item->Quantity > 0) // 只显示数量大于0的物品
+			if (Item && Item->GetQuantity() > 0) // 只显示数量大于0的物品
 			{
 				CreateSubWidget.Broadcast(Item);		
 			}

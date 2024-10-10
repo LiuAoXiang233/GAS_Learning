@@ -2,7 +2,7 @@
 
 
 #include "Actor/Chest.h"
-#include "Inventory/UItem.h"
+#include "Inventory/Item.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/AuraCharacter.h"
 #include "Component/InteractionComponent/InteractionComponent.h"
@@ -16,7 +16,7 @@ AChest::AChest()
 	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>(TEXT("InteractionComponent"));
 }
 
-bool AChest::AddItem(UUItem* NewItem)
+bool AChest::AddItem(UItem* NewItem)
 {
 	if (Items.Num() >= StackSize) return false;
 	return Super::AddItem(NewItem);
@@ -24,30 +24,30 @@ bool AChest::AddItem(UUItem* NewItem)
 
 bool AChest::RetrieveItem(const FString& ItemName, const int32 ItemNum)
 {
-	if (InventoryWidget)
-	{
-		if (UInventoryMenuWidget* InventoryMenuWidget = Cast<UInventoryMenuWidget>(InventoryWidget))
-		{
-			// 减少仓库里的数量
-			InventoryMenuWidget->GetInventory()->ReduceItem(InventoryMenuWidget->TheClickedItem->ItemInfo.Name, InventoryMenuWidget->TheClickedItem->Quantity, ItemNum);
-
-
-			// 为背包中添加数量
-			UUItem* NewItem = NewObject<UUItem>();
-			NewItem->ItemInfo.ItemID = InventoryMenuWidget->TheClickedItem->ItemInfo.ItemID;
-			NewItem->ItemInfo.Name = InventoryMenuWidget->TheClickedItem->ItemInfo.Name;
-			NewItem->ItemInfo.Description = InventoryMenuWidget->TheClickedItem->ItemInfo.Description;
-			NewItem->Quantity = ItemNum;
-			NewItem->ItemInfo.MaxStackSize = InventoryMenuWidget->TheClickedItem->ItemInfo.MaxStackSize;
-			
-
-			AAuraCharacter* Player = Cast<AAuraCharacter>(TheplayerWhoOpenedTheBox);
-			Player->GetInventory()->AddItem(NewItem);
-
-			return true;
-		}
-		
-	}
+	// if (InventoryWidget)
+	// {
+	// 	if (UInventoryMenuWidget* InventoryMenuWidget = Cast<UInventoryMenuWidget>(InventoryWidget))
+	// 	{
+	// 		// 减少仓库里的数量
+	// 		InventoryMenuWidget->GetInventory()->ReduceItem();
+	//
+	//
+	// 		// 为背包中添加数量
+	// 		UUItem* NewItem = NewObject<UUItem>();
+	// 		NewItem->ItemInfo.ItemID = InventoryMenuWidget->TheClickedItem->ItemInfo.ItemID;
+	// 		NewItem->ItemInfo.Name = InventoryMenuWidget->TheClickedItem->ItemInfo.Name;
+	// 		NewItem->ItemInfo.Description = InventoryMenuWidget->TheClickedItem->ItemInfo.Description;
+	// 		NewItem->ChangeItemQuantity(ItemNum);
+	// 		NewItem->ItemInfo.MaxStackSize = InventoryMenuWidget->TheClickedItem->ItemInfo.MaxStackSize;
+	// 		
+	//
+	// 		AAuraCharacter* Player = Cast<AAuraCharacter>(TheplayerWhoOpenedTheBox);
+	// 		Player->GetInventory()->AddItem(NewItem);
+	//
+	// 		return true;
+	// 	}
+	// 	
+	// }
 	return false; 
 }
 

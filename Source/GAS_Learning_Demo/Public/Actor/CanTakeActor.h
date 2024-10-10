@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "CanTakeActor.generated.h"
 
-class UUItem;
+class UItem;
 
 UCLASS()
 class GAS_LEARNING_DEMO_API ACanTakeActor : public AActor
@@ -18,7 +18,7 @@ public:
 	ACanTakeActor();
 
 	UPROPERTY()
-	TObjectPtr<UUItem> Item;
+	TObjectPtr<UItem> Item;
 
 	UFUNCTION(BlueprintCallable)
 	void OnOverlap(AActor* TargetActor);

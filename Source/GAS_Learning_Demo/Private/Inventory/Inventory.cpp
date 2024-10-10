@@ -3,50 +3,51 @@
 
 #include "Inventory/Inventory.h"
 
-#include "Inventory/UItem.h"
+#include "Inventory/Item.h"
 
 AInventory::AInventory()
 {
 	
 }
 
-bool AInventory::ReplaceItems(TArray<UUItem*> InItems)
+bool AInventory::ReplaceItems(TArray<UItem*> InItems)
 {
 	Items.Empty();
-	for (UUItem* Item : InItems)
+	for (UItem* Item : InItems)
 	{
+		// GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString("DestroyDelegate is Bind"));
 		Items.Add(Item);
+		
 	}
 
 	return true;
 }
 
-bool AInventory::AddItem(UUItem* NewItem)
+bool AInventory::AddItem(UItem* NewItem)
 {
 	if (!NewItem) return false;
 
 	
-	UUItem* Item = FindItem_NotFull(NewItem->ItemInfo.ItemID);
+	UItem* Item = FindItem_NotFull(NewItem->ItemInfo.ItemID);
 	// 添加进背包中: 判断背包中原先是否有该物品，如果有则堆叠，如果没有直接添加
 	if (Item && !Item->bSizeIsMaxStack())
 	{
 		
 		// 计算堆栈
-		const int32 CurrentItemNumber = Item->Quantity;
-		const int32 AddedItemNumber = NewItem->Quantity;
+		const int32 CurrentItemNumber = Item->GetQuantity();
+		const int32 AddedItemNumber = NewItem->GetQuantity();
 		const int32 MaxStackNumber = Item->ItemInfo.MaxStackSize;
 
 		const int32 AddNumber = FMath::Min(AddedItemNumber, MaxStackNumber - CurrentItemNumber);
 
-		Item->Quantity += AddNumber;
-		NewItem->Quantity -= AddNumber;
-
-		OnItemQuantityAddedDelegate.Broadcast(AddNumber);
+		Item->AddToQuantity(AddNumber);
+		NewItem->AddToQuantity(AddNumber, false);
 		
 	}
 	else
 	{
-		
+	
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString("DestroyDelegate is Bind"));
 		Items.Add(NewItem);
 		OnItemAddedDelegate.Broadcast(NewItem);
 	}
@@ -55,55 +56,36 @@ bool AInventory::AddItem(UUItem* NewItem)
 	return true;
 }
 
-bool AInventory::UseItem(FString ItemName)
+bool AInventory::UseItem(UItem* TheUsedItem)
 {
-	if (UUItem* Item = FindItemFromName(ItemName))
-	{
-		// 减少数量
-		Item->Quantity--;
-
-		// 检查数量
-		if (Item->Quantity <= 0)
-		{
-			Items.Remove(Item); 
-			OnInventoryUpdateDelegate.Broadcast(); 
-		}
-		return true;
-	}
-	return false;
+	TheUsedItem->AddToQuantity(1, false);
+	return true;
 }
 
-bool AInventory::RemoveItem(FName ItemID)
+void AInventory::RemoveItem(UItem* TheItem)
 {
-	if (UUItem* Item = FindItem(ItemID))
+	GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, FString("Item is Begin Removed"));
+	if (TheItem)
 	{
-		Items.Remove(Item);
-		return true;
+		Items.Remove(TheItem);
+
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString("Item Is Removed"));
+		
 	}
-	return false;
+	
+	
 }
 
-bool AInventory::ReduceItem(FString ItemName, int32 ItemNum, int32 ReduceNum)
+bool AInventory::ReduceItem(UItem* TheItem, int32 ReduceNum)
 {
-	if (UUItem* Item = FindItem_Unique(ItemName, ItemNum))
-	{
-		// 减少数量
-		Item->Quantity -= ReduceNum;
-
-		// 检查数量
-		if (Item->Quantity <= 0)
-		{
-			Items.Remove(Item); 
-			OnInventoryUpdateDelegate.Broadcast(); 
-		}
-		return true;
-	}
-	return false;
+	TheItem->AddToQuantity(ReduceNum);
+	
+	return true;
 }
 
-UUItem* AInventory::FindItem(FName ItemID)
+UItem* AInventory::FindItemFromID(FName ItemID)
 {
-	for (UUItem* Item : Items)
+	for (UItem* Item : Items)
 	{
 		if (Item->ItemInfo.ItemID == ItemID)
 		{
@@ -113,9 +95,9 @@ UUItem* AInventory::FindItem(FName ItemID)
 	return nullptr;
 }
 
-UUItem* AInventory::FindItemFromName(FString ItemName)
+UItem* AInventory::FindItemFromName(FString ItemName)
 {
-	for (UUItem* Item : Items)
+	for (UItem* Item : Items)
 	{
 		if (Item->ItemInfo.Name == ItemName)
 		{
@@ -125,9 +107,9 @@ UUItem* AInventory::FindItemFromName(FString ItemName)
 	return nullptr;
 }
 
-UUItem* AInventory::FindItem_NotFull(FName ItemID)
+UItem* AInventory::FindItem_NotFull(FName ItemID)
 {
-	for (UUItem* Item : Items)
+	for (UItem* Item : Items)
 	{
 		if (Item->ItemInfo.ItemID == ItemID && !Item->bSizeIsMaxStack())
 		{
@@ -137,11 +119,11 @@ UUItem* AInventory::FindItem_NotFull(FName ItemID)
 	return nullptr;
 }
 
-UUItem* AInventory::FindItem_Unique(FString ItemName, int32 ItemNum)
+UItem* AInventory::FindItem_Unique(FString ItemName, int32 ItemNum)
 {
-	for (UUItem* Item : Items)
+	for (UItem* Item : Items)
 	{
-		if (Item->ItemInfo.Name == ItemName && Item->Quantity == ItemNum)
+		if (Item->ItemInfo.Name == ItemName && Item->GetQuantity() == ItemNum)
 		{
 			return Item;
 		}
@@ -149,7 +131,7 @@ UUItem* AInventory::FindItem_Unique(FString ItemName, int32 ItemNum)
 	return nullptr;
 }
 
-TArray<UUItem*> AInventory::GetItems() const
+TArray<UItem*> AInventory::GetItems() const
 {
 	return Items;
 }

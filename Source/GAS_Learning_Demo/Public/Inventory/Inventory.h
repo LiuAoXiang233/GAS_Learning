@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventoryComponent.h"
 #include "Inventory.generated.h"
 
-class UUItem;
+class UItem;
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryUpdate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemQuantityAdded, const int32, AddedQuantity);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemAdded,  const UUItem*, Item);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemAdded,  const UItem*, Item);
+
 /**
  * 
  */
@@ -24,38 +25,40 @@ public:
 	AInventory();
 
 	FOnInventoryUpdate OnInventoryUpdateDelegate;
-	FOnItemQuantityAdded OnItemQuantityAddedDelegate;
 	FOnItemAdded OnItemAddedDelegate;
-
+	
 	
 	UPROPERTY()
-	TArray<UUItem*> Items;
+	TArray<UItem*> Items;
 
-	bool ReplaceItems(TArray<UUItem*> InItems);
+	bool ReplaceItems(TArray<UItem*> InItems);
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	virtual bool AddItem(UUItem* NewItem);
+	virtual bool AddItem(UItem* NewItem);
+
+	
 	
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	bool UseItem(FString ItemName);
+	bool UseItem(UItem* TheUsedItem);
+
+	UFUNCTION()
+	void RemoveItem(UItem* TheItem);
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	bool RemoveItem(FName ItemID);
+	bool ReduceItem(UItem* TheItem, int32 ReduceNum);
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	UItem* FindItemFromID(FName ItemID);
+	
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	bool ReduceItem(FString ItemName, int32 ItemNum, int32 ReduceNum);
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	UUItem* FindItem(FName ItemID);
-
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	UUItem* FindItemFromName(FString ItemName);
+	UItem* FindItemFromName(FString ItemName);
 	
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	UUItem* FindItem_NotFull(FName ItemID);
+	UItem* FindItem_NotFull(FName ItemID);
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	UUItem* FindItem_Unique(FString ItemName, int32 ItemNum);
+	UItem* FindItem_Unique(FString ItemName, int32 ItemNum);
 	
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	TArray<UUItem*> GetItems() const;
+	TArray<UItem*> GetItems() const;
 };

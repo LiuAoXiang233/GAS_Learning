@@ -8,7 +8,7 @@
 #include "InventoryMenuWidget.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCreateSubWidget, const UUItem*, Item);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCreateSubWidget, const UItem*, Item);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FClearSubWidget);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemQuantityAddedSignature, const int32, AddedQuantity);
 
@@ -34,7 +34,7 @@ public:
 	void SetInventory(AInventory* InInventory);
 
 	UFUNCTION()
-	void CreateNewSubWidget(const UUItem* Item);
+	void CreateNewSubWidget(const UItem* Item);
 
 	UFUNCTION()
 	void AddItemQuantity(const int32 ItemQuantity);
@@ -69,7 +69,7 @@ public:
 	TObjectPtr<UInventoryItem> InventoryItemInfo; 
 
 	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr<UUItem> TheClickedItem;
+	TObjectPtr<UItem> TheClickedItem;
 	
 private:
 	// 当前已经加载的物品数量

@@ -8,7 +8,6 @@
 
 class UMVVM_InventoryViewModel;
 class UInventoryWidgetControllerBase;
-class UUItem;
 class AInventory;
 
 

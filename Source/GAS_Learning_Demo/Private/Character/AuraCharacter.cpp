@@ -16,7 +16,7 @@
 #include "GameFramework/GameSession.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Inventory/InventoryComponent.h"
-#include "Inventory/UItem.h"
+#include "Inventory/Item.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -53,13 +53,13 @@ void AAuraCharacter::LoadInventoryAsync()
 	{
 		if (ULoadScreenSaveGame* SaveGame = Cast<ULoadScreenSaveGame>(GameMode->RetrieveInGameSaveData()))
 		{
-			TArray<UUItem*> Items;
+			TArray<UItem*> Items;
 			for (const FItemDataToSaveAndLoad& SavedItem : SaveGame->SavedItems)
 			{
-				UUItem* Item = NewObject<UUItem>();
+				UItem* Item = NewObject<UItem>();
 
 				Item->ItemInfo.Name = SavedItem.Name;
-				Item->Quantity = SavedItem.Quantity;
+				Item->ChangeItemQuantity(SavedItem.Quantity);
 				Item->ItemInfo.ItemID = SavedItem.ItemID;
 				Item->ItemInfo.Description = SavedItem.Description;
 				Item->ItemInfo.MaxStackSize = 64;	
@@ -158,6 +158,15 @@ void AAuraCharacter::LoadProgress()
 AInventory* AAuraCharacter::GetInventory() const
 {
 	return InventoryComponent->Inventory;
+}
+
+UInventoryComponent* AAuraCharacter::GetInventoryComponent()
+{
+	if (InventoryComponent)
+	{
+		return InventoryComponent;
+	}
+	return nullptr;
 }
 
 void AAuraCharacter::AddToXP_Implementation(int32 InXP)
@@ -299,11 +308,11 @@ void AAuraCharacter::SaveProgress_Implementation()
 
 		// 保存玩家背包中的物品
 		SaveGame->SavedItems.Empty();
-		for (UUItem* Item : GetInventory()->Items)
+		for (UItem* Item : GetInventory()->Items)
 		{
 			FItemDataToSaveAndLoad SavedItem;
 			SavedItem.Name = Item->ItemInfo.Name;
-			SavedItem.Quantity = Item->Quantity;
+			SavedItem.Quantity = Item->GetQuantity();
 			SavedItem.ItemID = Item->ItemInfo.ItemID;
 			SavedItem.Description = Item->ItemInfo.Description;
 			

@@ -7,6 +7,8 @@
 #include "Blueprint/UserWidget.h"
 #include "InventoryWidget.generated.h"
 
+class UInventoryComponent;
+class URichTextBlock;
 class AInventory;
 class UInventoryItem;
 class UInventoryWidgetControllerBase;
@@ -24,7 +26,11 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<UInventoryWidgetControllerBase> WidgetController;
+
+public:
 	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UInventoryWidgetControllerBase> WidgetControllerClass;
 protected:
 
 	virtual void NativeConstruct() override;
@@ -35,12 +41,16 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UScrollBox* ItemScrollBox;
 	
-
+	UPROPERTY(meta=(BindWidget))
+	URichTextBlock* DescriptionTextBlock;
 
 public:
 
 	UFUNCTION()
 	void Exit();
+
+	UFUNCTION()
+	bool AddWidgetToScrollBox(UUserWidget* InWidget) const;
 
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetController(UInventoryWidgetControllerBase* InWidgetController);
@@ -51,5 +61,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	UInventoryWidgetControllerBase* GetInventoryWidgetController() const;
 
-	void Init(AInventory* Inventory, UInventoryItem* InventoryItemInfo);
+	void Init(UInventoryItem* InventoryItemInfo, UInventoryComponent* InventoryComponent);
+
+	void ShowDescriptionAndIcon(const FString& ItemDescription) const;
+
+	void HideDescriptionAndIcon();
 };

@@ -33,6 +33,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AInventory* GetInventory() const;
 
+	UInventoryComponent* GetInventoryComponent();
+
 	/*
 	 *	PlayerInterface
 	 */

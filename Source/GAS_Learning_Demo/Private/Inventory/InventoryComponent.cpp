@@ -4,6 +4,7 @@
 #include "Inventory/InventoryComponent.h"
 
 #include "Inventory/Inventory.h"
+#include "Inventory/Item.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -13,7 +14,7 @@ UInventoryComponent::UInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	Inventory = CreateDefaultSubobject<AInventory>(FName("Inventory"));
-
+	
 }
 
 
@@ -37,5 +38,35 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UInventoryComponent::AddItemToInventory(UItem* NewItem)
+{
+	if (Inventory)
+	{
+		Inventory->AddItem(NewItem);
+	}
+}
+
+void UInventoryComponent::ReplaceInventory(AInventory* NewInventory)
+{
+	if (NewInventory && Inventory)
+	{
+		Inventory->ReplaceItems(NewInventory->GetItems());
+	}
+}
+
+void UInventoryComponent::UseItem(UItem* TheItem, int32 UsedQuantity)
+{
+	if (TheItem && UsedQuantity > 0)
+	{
+		TheItem->AddToQuantity(UsedQuantity, false);
+
+		if (TheItem->GetQuantity() <= 0)
+		{
+			Inventory->RemoveItem(TheItem);
+			OnItemDestroyDelegate.Broadcast(TheItem);
+		}
+	}
 }
 
